@@ -1,0 +1,21 @@
+{
+    "name": "香烟", 
+    "description": "为对方全体角色施加buff「幻」，攻击降低1点",
+    "effect": [{
+        "__effect__": true, 
+        "type": 7, 
+        "target": {"__target__": true, "type": 3}, 
+        "buff": {
+            "identification": 3, 
+            "name": "幻", 
+            "lasttime": -1, 
+            "usetime": -1, 
+            "type": 3, 
+            "positivity": 1,
+            "buffdata": {
+                "attrid": "2",
+                "value": {"__mathexpression__": true, "operator": "2", "data": ["original", 1]}
+            }
+        }
+    }]
+}

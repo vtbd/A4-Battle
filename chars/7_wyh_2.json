@@ -1,0 +1,156 @@
+{
+    "name": "wyh II",
+    "attack": 5,
+    "health": 36,
+    "group": 1,
+    "skill": [
+        {
+            "__skill__": true, 
+            "name": "惰以积智",
+            "description": "（被动）自第一回合或上次造成伤害的回合起每过1回合，下一次造成的伤害就多2点",
+            "type": 3,
+            "effect": [
+                {
+                    "__effect__":true, 
+                    "type": 7, 
+                    "target": {"__target__": true, "type": 7},
+                    "buff":{
+                        "identification": -1,
+                        "name": "__wyh_2__",
+                        "lasttime": -1,
+                        "usetime": -1,
+                        "type": 4,
+                        "positivity": 3, 
+                        "buffdata":{
+                            "effects":[{
+                                "__effect__":true,
+                                "type":5, 
+                                "variableid":{"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "lazy"}, 
+                                "value":0
+                            }], 
+                            "eventtime":11
+                        }}
+                }, 
+                {
+                    "__effect__":true, 
+                    "type": 7, 
+                    "target": {"__target__": true, "type": 7},
+                    "buff":{
+                        "identification": -1,
+                        "name": "__wyh_2__",
+                        "lasttime": -1,
+                        "usetime": -1,
+                        "type": 4,
+                        "positivity": 3, 
+                        "buffdata":{
+                            "effects":[{
+                                "__effect__":true,
+                                "type":4, 
+                                "variableid":{"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "lazy"}, 
+                                "increment":1
+                            }], 
+                            "eventtime":10
+                        }}
+                }, 
+                {
+                    "__effect__":true, 
+                    "type": 7, 
+                    "target": {"__target__": true, "type": 7},
+                    "buff":{
+                        "identification": -1,
+                        "name": "__wyh_2__",
+                        "lasttime": -1,
+                        "usetime": -1,
+                        "type": 1,
+                        "positivity": 3, 
+                        "buffdata":{"increment":{"__mathexpression__":true, "operator": "1", "data":["damage", 
+                            {"__mathexpression__": true, "operator": "3", "data":[2, 
+                            {"__mathexpression__": true, "operator": "0", "data":
+                            {"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "lazy"}}
+                            ]}]}}
+                    }
+                }
+            ]
+        },
+        {
+            "__skill__": true, 
+            "name": "吞噬一切",
+            "description": "对对方出战角色造成15点伤害，并使其攻击力-3，自身攻击力+3，持续4回合",
+            "type": 1,
+            "effect": [{
+                "__effect__": true, 
+                "type": 1, 
+                "target": {"__target__": true, "type": 1}, 
+                "damage": 15,
+                "flags": []
+            }, {
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 1}, 
+                "buff": {
+                    "identification": -1, 
+                    "name": "__wyh_2_attack-3__", 
+                    "lasttime": 8, 
+                    "usetime": -1, 
+                    "type": 3, 
+                    "positivity": 3,
+                    "buffdata": {
+                        "attrid": "2",
+                        "value": {"__mathexpression__": true, "operator": "2", "data": ["original", 3]}
+                    }
+                }
+            }, {
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 7}, 
+                "buff": {
+                    "identification": -1, 
+                    "name": "__wyh_2_attack+3__", 
+                    "lasttime": 8, 
+                    "usetime": -1, 
+                    "type": 3, 
+                    "positivity": 3,
+                    "buffdata": {
+                        "attrid": "2",
+                        "value": {"__mathexpression__": true, "operator": "1", "data": ["original", 3]}
+                    }
+                }
+            }]
+        },
+        {
+            "__skill__": true, 
+            "name": "交换侠",
+            "description": "与对方出战角色交换护盾值",
+            "type": 2,
+            "effect": [
+                {
+                    "__effect__": true, 
+                    "type": 5, 
+                    "variableid": {"__variableid__": true, "type": "0", "varname": "__wyh_2__"},
+                    "value": {"__mathexpression__":true, "operator": "0", "data":
+                    {"__variableid__":true, "type":"7", "target":{"__target__":true, "type":1}}}
+                }, 
+                {
+                    "__effect__": true, 
+                    "type": 5, 
+                    "variableid": {"__variableid__": true, "type": "7", "target": {"__target__":true, "type":1}},
+                    "value": {"__mathexpression__":true, "operator": "0", "data":
+                    {"__variableid__": true, "type": "7", "target":{"__target__":true, "type":7}}}
+                }, 
+                {
+                    "__effect__": true, 
+                    "type": 5, 
+                    "variableid": {"__variableid__": true, "type": "7", "target": {"__target__":true, "type":7}},
+                    "value": {"__mathexpression__":true, "operator": "0", "data":
+                    {"__variableid__":true, "type": "0", "varname": "__wyh_2__"}}
+                }, 
+                {
+                    "__effect__": true, 
+                    "type": 5, 
+                    "variableid": {"__variableid__": true, "type": "0", "varname": "__wyh_2__"},
+                    "value": 0
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,119 @@
+{
+    "name": "wjt", 
+    "attack": 6, 
+    "health": 38,
+    "group": 2,
+    "skill": [
+        {
+            "__skill__": true, 
+            "name": "鞭抽则爽", 
+            "description": "（被动）每受到1点伤害就为自身增加一个「爽」标记，每获得10个「爽」标记，攻击力+1", 
+            "type": 3, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 7,
+                "target": {"__target__": true, "type": 7},
+                "buff": {
+                    "identification": -1,
+                    "name": "__wjt__",
+                    "lasttime": -1,
+                    "usetime": -1,
+                    "type": 4,
+                    "positivity": 3,
+                    "buffdata": {
+                        "effects": [
+                            {
+                                "__effect__": true, 
+                                "type": 4, 
+                                "variableid": {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "shuang"},
+                                "increment": "damage"
+                            },
+                            {
+                                "__effect__": true, 
+                                "type": 4, 
+                                "variableid": {"__variableid__": true, "type": "2", "target": {"__target__": true, "type": 7}},
+                                "increment": {"__mathexpression__":true, "operator":"2", "data":[
+                                    {"__mathexpression__":true, "operator": "8", "data":[
+                                    {"__mathexpression__":true, "operator": "4", "data": [
+                                    {"__mathexpression__":true, "operator": "0", "data":
+                                    {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "shuang"}}, 10]}]},
+                                    {"__mathexpression__":true, "operator": "0", "data":
+                                    {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "__wjt__"}}]}
+                            }, 
+                            {
+                                "__effect__": true, 
+                                "type": 4, 
+                                "variableid": {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark":"__wjt__"},
+                                "increment": {"__mathexpression__":true, "operator":"2", "data":[
+                                    {"__mathexpression__":true, "operator": "8", "data":[
+                                    {"__mathexpression__":true, "operator": "4", "data": [
+                                    {"__mathexpression__":true, "operator": "0", "data":
+                                    {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "shuang"}}, 10]}]},
+                                    {"__mathexpression__":true, "operator": "0", "data":
+                                    {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "__wjt__"}}]}
+                            }
+                        ],
+                        "eventtime": 5
+                    }
+                }
+            }]
+        }, 
+        {
+            "__skill__": true, 
+            "name": "岂有此理", 
+            "description": "对对方所有角色附加buff「恐惧」，持续3回合。持有「恐惧」的角色，按照获得buff的回合数，在回合开始时依次流失5， 3， 1点生命", 
+            "type": 1, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 3}, 
+                "buff": {
+                    "identification": -1, 
+                    "name": "恐惧", 
+                    "lasttime": 6, 
+                    "usetime": -1, 
+                    "type": 4, 
+                    "positivity": 1, 
+                    "buffdata": {
+                        "effects":[{
+                            "__effect__": true, 
+                            "type": 4, 
+                            "variableid": {"__variableid__": true, "type": "1", "target": {
+                                "__target__": true, "type": 7}},
+                            "increment": {"__mathexpression__":true, "operator":"2", "data":["age", 6]}
+                        }],
+                        "eventtime":9
+                    }
+                }
+            }]
+        }, 
+        {
+            "__skill__": true, 
+            "name": "明年核战", 
+            "description": "在己方下一回合结束时对全场所有角色造成8点无来源伤害", 
+            "type": 2, 
+            "effect": [{
+                "__effect__":true, 
+                "type": 10, 
+                "buff":{
+                    "identification": -1, 
+                    "name": "__wjt__", 
+                    "lasttime": -1,
+                    "usetime": 1,
+                    "type":4, 
+                    "environmental": true, 
+                    "buffdata": {
+                        "effects":[{
+                            "__effect__": true, 
+                            "type": 1, 
+                            "target": {"__target__":true, "type":8}, 
+                            "damage":8, 
+                            "source":{"None": true}
+                        }]
+                    }, 
+                    "condition": {"__boolexpression__":true, "operator": "2", "data": ["age", 3]}
+                }
+            }]
+        }
+    ]
+}

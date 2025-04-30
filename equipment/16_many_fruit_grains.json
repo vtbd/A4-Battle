@@ -1,0 +1,23 @@
+{
+    "name": "果粒多", 
+    "description": "饮用后获得buff「果粒多」，持续3回合，受到来自教师的伤害减半（向上取整）",
+    "effect": [{
+        "__effect__": true, 
+        "type": 7, 
+        "target": {"__target__": true, "type": 4}, 
+        "buff": {
+            "identification": -1, 
+            "name": "果粒多", 
+            "lasttime": 6, 
+            "usetime": -1, 
+            "type": 2, 
+            "positivity": 0,
+            "buffdata": {
+                "decrement": {"__mathexpression__": true, "operator": "9", "data": [{"__mathexpression__": true, "operator": "4", "data": ["damage", 2]}]}
+            }, 
+            "condition": {"__boolexpression__":true, "operator":"2", "data":[
+                "group", 2
+            ]}
+        }
+    }]
+}

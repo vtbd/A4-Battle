@@ -1,0 +1,69 @@
+{
+    "name": "wm",
+    "attack": 9,
+    "health": 30,
+    "group": 2,
+    "skill": [
+        {
+            "__skill__": true, 
+            "name": "百勉朝凤",
+            "description": "对对方出战角色造成12点伤害，备战角色造成3点伤害",
+            "type": 1,
+            "effect": [
+                {
+                    "__effect__": true, 
+                    "type": 1,
+                    "target": {"__target__": true, "type": 1},
+                    "damage": 12,
+                    "flags": []
+                },
+                {
+                    "__effect__": true, 
+                    "type": 1,
+                    "target": {"__target__": true, "type": 5},
+                    "damage": 3,
+                    "flags": []
+                }
+            ]
+        },
+        {
+            "__skill__": true, 
+            "name": "时速170",
+            "description": "对对方出战角色造成floor((30-目前生命值)*1.3)伤害",
+            "type": 1,
+            "effect": [
+                {
+                    "__effect__": true, 
+                    "type": 1,
+                    "target": {"__target__": true, "type": 1},
+                    "damage": {
+                        "__mathexpression__": true, 
+                        "operator": "8", 
+                        "data": [{"__mathexpression__": true, "operator": "3", "data":[1.3, 
+                        {"__mathexpression__": true, "operator": "2", "data":[30, 
+                        {"__mathexpression__": true, "operator": "0", "data":
+                        {"__variableid__": true, "target": {"__target__":true, "type":7}, "type": "1"}}]}]}]
+                    }, "flags": []
+                }
+            ]
+        },
+        {
+            "__skill__": true, 
+            "name": "教室有味",
+            "description": "移除全场一切buff",
+            "type": 2,
+            "effect": [
+                {
+                    "__effect__": true, 
+                    "type": 8,
+                    "target": {"__target__": true, "type": 8},
+                    "positivities": [
+                        0,
+                        1,
+                        2
+                    ]
+                }
+            ]
+        }
+    ]
+}

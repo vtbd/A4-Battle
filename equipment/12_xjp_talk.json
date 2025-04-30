@@ -1,0 +1,10 @@
+{
+    "name": "xjp谈治国理政", 
+    "description": "我方全体获得3点护盾",
+    "effect": [{
+        "__effect__": true, 
+        "type": 4, 
+        "variableid": {"__variableid__": true, "type": "7", "target": {"__target__":true, "type":4}},
+        "increment": 3
+    }]
+}

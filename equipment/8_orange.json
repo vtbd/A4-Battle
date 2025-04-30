@@ -1,0 +1,21 @@
+{
+    "name": "橙子", 
+    "description": "为对方出战角色施加buff「橙」",
+    "effect": [{
+        "__effect__": true, 
+        "type": 7, 
+        "target": {"__target__": true, "type": 1}, 
+        "buff": {
+            "identification": 0, 
+            "name": "橙", 
+            "lasttime": -1, 
+            "usetime": -1, 
+            "type": 2, 
+            "positivity": 2, 
+            "buffdata": {
+                "decrement": {"__mathexpression__": true, "operator": "1", "data": [2, "damage"]}
+            }, 
+            "condition": {"__boolexpression__": true, "operator":"10", "data": [2, "flags"]}
+        }
+    }]
+}

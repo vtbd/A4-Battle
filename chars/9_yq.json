@@ -1,0 +1,31 @@
+{
+    "name": "yq", 
+    "attack": 4, 
+    "health": 30,
+    "group": 2,
+    "skill": [
+        {
+            "__skill__": true, 
+            "name": "", 
+            "description": "", 
+            "type": 2, 
+            "effect": []
+        }, 
+        {
+            "__skill__": true, 
+            "choose":true, 
+            "name": "", 
+            "description": "", 
+            "type": 2, 
+            "effect": []
+        }, 
+        {
+            "__skill__": true, 
+            "choose":true, 
+            "name": "", 
+            "description": "", 
+            "type": 2, 
+            "effect": []
+        }
+    ]
+}

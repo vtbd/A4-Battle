@@ -1,0 +1,89 @@
+{
+    "name": "Felix",
+    "attack": 6,
+    "health": 41,
+    "group": 2,
+    "skill": [
+        {
+            "__skill__": true, 
+            "name": "撕逼客",
+            "description": "同队学生攻击+2，生命+5",
+            "type": 2,
+            "effect": [
+                {
+                    "__effect__": true, 
+                    "type": 4, 
+                    "variableid": {"__variableid__": true, "type": "1", "target": {
+                        "__target__": true, "type": 14, "sets": [{
+                            "__target__": true, "type": 12, "groups": [1]
+                        }, {
+                            "__target__": true, "type": 4
+                        }]}},
+                    "increment": 5
+                }, 
+                {
+                    "__effect__": true, 
+                    "type": 4, 
+                    "variableid": {"__variableid__": true, "type": "2", "target": {
+                        "__target__": true, "type": 14, "sets": [{
+                            "__target__": true, "type": 12, "groups": [1]
+                        }, {
+                            "__target__": true, "type": 4
+                        }]}},
+                    "increment": 2
+                }
+
+            ]
+        },
+        {
+            "__skill__": true, 
+            "name": "迪克太深",
+            "description": "对对方出战角色造成15点伤害，备战角色造成5点伤害",
+            "type": 1,
+            "effect": [
+                {
+                    "__effect__": true, 
+                    "type": 1,
+                    "target": {"__target__": true, "type": 1},
+                    "damage": 15, 
+                    "flags": []
+                },
+                {
+                    "__effect__": true, 
+                    "type": 1,
+                    "target": {"__target__": true, "type": 5},
+                    "damage": 5, 
+                    "flags": []
+                }
+            ]
+        },
+        {
+            "__skill__": true, 
+            "name": "摸您牛子",
+            "description": "固定对方出战角色3回合",
+            "type": 2,
+            "effect": [{
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 1}, 
+                "buff": {
+                    "identification": -1, 
+                    "name": "__fixed__", 
+                    "lasttime": 7, 
+                    "usetime": -1, 
+                    "type": 4, 
+                    "positivity": 3,
+                    "buffdata":{
+                        "eventtime": 9, 
+                        "effects": [{
+                            "__effect__": true, 
+                            "type": 5, 
+                            "variableid": {"__variableid__":true, "type":"5"},
+                            "value": 0
+                        }]
+                    }
+                }
+            }]
+        }
+    ]
+}

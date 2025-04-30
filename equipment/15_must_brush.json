@@ -1,0 +1,10 @@
+{
+    "name": "高中必刷题", 
+    "description": "攻击力+2",
+    "effect": [{
+        "__effect__": true, 
+        "type": 4, 
+        "variableid": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type": 7}},
+        "increment": 2
+    }]
+}

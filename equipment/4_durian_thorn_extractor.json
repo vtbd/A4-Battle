@@ -1,0 +1,10 @@
+{
+    "name": "榴莲拔刺器", 
+    "description": "降低对方出战角色1点攻击力",
+    "effect": [{
+        "__effect__": true, 
+        "type": 4, 
+        "variableid": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type": 1}},
+        "increment": -1
+    }]
+}

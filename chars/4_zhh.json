@@ -1,0 +1,122 @@
+{
+    "name": "zhh",
+    "attack": 6,
+    "health": 44,
+    "group": 1,
+    "skill": [
+        {
+            "__skill__": true, 
+            "name": "万物光滑",
+            "description": "随机去除对手一件现有装备",
+            "type": 2,
+            "effect": [
+                {
+                    "__effect__": true, 
+                    "type": 9,
+                    "specific": 1
+                }
+            ]
+        },
+        {
+            "__skill__": true, 
+            "name": "摸摸珠珠",
+            "description": "对对方出战角色造成18点伤害，并施加「shy」buff，两个回合内无法使用技能",
+            "type": 1,
+            "effect": [{
+                "__effect__": true, 
+                "type": 1, 
+                "target": {"__target__": true, "type": 1}, 
+                "damage": 18,
+                "flags": []
+            }, {
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 1}, 
+                "buff": {
+                    "identification": 4, 
+                    "name": "shy", 
+                    "lasttime": 5, 
+                    "usetime": -1, 
+                    "type": 5, 
+                    "positivity": 1
+                }
+            }]
+        },
+        {
+            "__skill__": true, 
+            "name": "憋憋笑笑",
+            "description": "被动：自身每受到一次伤害，则增加一个「憋」标记，若生命值小于10，则生命值立刻变为1，获得(「憋」标记数*2)护盾，失去所有标记且所有技能立即失效",
+            "type": 3,
+            "effect": [{
+                "__effect__": true, 
+                "type": 7,
+                "target": {"__target__": true, "type": 7},
+                "buff": {
+                    "identification": -1,
+                    "name": "__zhh__",
+                    "lasttime": -1,
+                    "usetime": -1,
+                    "type": 4,
+                    "positivity": 3,
+                    "buffdata": {
+                        "effects": [
+                            {
+                                "__effect__": true, 
+                                "type": 4, 
+                                "variableid": {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "suppress"},
+                                "increment": 1
+                            }
+                        ],
+                        "eventtime": 5
+                    }
+                }
+            }, 
+                {
+                    "__effect__": true, 
+                    "type": 7,
+                    "target": {"__target__": true, "type": 7},
+                    "buff": {
+                        "identification": -1,
+                        "name": "__zhh__",
+                        "lasttime": -1,
+                        "usetime": 1,
+                        "type": 4,
+                        "positivity": 3,
+                        "buffdata": {
+                            "effects": [
+                                {
+                                    "__effect__": true, 
+                                    "type": 5, 
+                                    "variableid": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type":7}},
+                                    "value": 1
+                                }, 
+                                {
+                                    "__effect__": true, 
+                                    "type": 4,
+                                    "variableid": {"__variableid__": true, "type": "7", "target": {"__target__": true, "type": 7}},
+                                    "increment": {"__mathexpression__": true, "operator": "3", "data":[2, 
+                                    {"__mathexpression__": true, "operator": "0", "data":
+                                    {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "suppress"}}]}
+                                }, {
+                                    "__effect__":true, 
+                                    "type": 7, 
+                                    "target": {"__target__": true, "type": 7},
+                                    "buff":{
+                                        "identification": -1,
+                                        "name": "__zhh__",
+                                        "lasttime": -1,
+                                        "usetime": -1,
+                                        "type": 5,
+                                        "positivity": 3}
+                                }
+                            ],
+                            "eventtime": 5
+                        }, 
+                        "condition": {"__boolexpression__":true, "operator": "1", "data":[
+                            {"__mathexpression__": true, "operator": "0", "data":
+                            {"__variableid__": true, "target": {"__target__":true, "type":7}, "type": "1"}}, 10]}}
+                }
+            ]
+        }
+    ]
+}

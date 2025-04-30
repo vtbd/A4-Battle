@@ -1,0 +1,10 @@
+{
+    "name": "zhh保温杯", 
+    "description": "护盾翻倍（最多增加10点）",
+    "effect": [{
+        "__effect__": true, 
+        "type": 4, 
+        "variableid": {"__variableid__": true, "type": "7", "target": {"__target__":true, "type":7}},
+        "increment": {"__mathexpression__": true, "operator": "12", "data": [10, {"__mathexpression__":true, "operator":"0", "data":{"__variableid__":true, "type": "7", "target":{"__target__":true, "type":7}}}]}
+    }]
+}

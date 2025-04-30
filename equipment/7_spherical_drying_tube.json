@@ -1,0 +1,15 @@
+{
+    "name": "球形干燥管", 
+    "description": "去除己方所有buff",
+    "effect": [
+        {
+            "__effect__": true, 
+            "type": 8,
+            "target": {"__target__": true, "type": 4},
+            "positivities": [
+                0,
+                1,
+                2
+            ]
+        }]
+}

@@ -1,0 +1,10 @@
+{
+    "name": "练透", 
+    "description": "护盾+5",
+    "effect": [{
+        "__effect__": true, 
+        "type": 4, 
+        "variableid": {"__variableid__": true, "type": "7", "target": {"__target__":true, "type":7}},
+        "increment": 5
+    }]
+}

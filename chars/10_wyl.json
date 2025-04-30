@@ -1,0 +1,151 @@
+{
+    "name": "wyl", 
+    "attack": 5, 
+    "health": 46,
+    "group": 2,
+    "skill": [
+        {
+            "__skill__": true, 
+            "name": "主任权威", 
+            "description": "（被动）受到来自学生和老师的伤害-1，生命值低于20时额外-1", 
+            "type": 3, 
+            "effect": [{"__effect__": true, 
+                        "type": 7, 
+                        "target": {"__target__": true, "type": 7}, 
+                        "buff": {
+                            "identification": -1, 
+                            "name": "__wyl__", 
+                            "lasttime": -1, 
+                            "usetime": -1, 
+                            "type": 2, 
+                            "positivity": 3,
+                            "buffdata": {
+                                "decrement": {"__mathexpression__": true, "operator": "1", "data": [-1, "damage"]}
+                            }, 
+                            "condition": {"__boolexpression__":true, "operator":"10", "data":["group", [1, 2]]
+                            }}},
+                    {
+                        "__effect__": true, 
+                        "type": 7, 
+                        "target": {"__target__": true, "type": 7}, 
+                        "buff": {
+                            "identification": -1, 
+                            "name": "__wyl__", 
+                            "lasttime": -1, 
+                            "usetime": -1, 
+                            "type": 2, 
+                            "positivity": 3,
+                            "buffdata": {
+                                "decrement": {"__mathexpression__": true, "operator": "1", "data": [-1, "damage"]}
+                            }, 
+                            "condition": {"__boolexpression__":true, "operator":"6", "data":[
+                                {"__boolexpression__":true, "operator":"10", "data":["group", [1, 2]]}, 
+                                {"__boolexpression__":true, "operator":"1", "data":[
+                                {"__mathexpression__": true, "operator":"0", "data":
+                                {"__variableid__":true, "type":"1", "target": {"__target__":true, "type":7}}}, 20]}
+                            ]
+                            }}}
+                ]
+        }, 
+        {
+            "__skill__": true, 
+            "name": "有点虚", 
+            "description": "我方所有角色获得buff「实」，每回合获得3护盾，持续3回合", 
+            "type": 2, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 4}, 
+                "buff": {
+                    "identification": -1, 
+                    "name": "实", 
+                    "lasttime": 5, 
+                    "usetime": -1, 
+                    "type": 4, 
+                    "positivity": 0, 
+                    "buffdata": {
+                        "effects":[{
+                            "__effect__": true, 
+                            "type": 4, 
+                            "variableid": {"__variableid__": true, "type": "7", "target": {"__target__": true, "type": 7}},
+                            "increment": 3
+                        }],
+                        "eventtime":9
+                    }
+                }
+            }, {
+                "__effect__": true, 
+                "type": 4, 
+                "variableid": {"__variableid__": true, "type": "7", "target": {"__target__": true, "type": 4}},
+                "increment": 3
+            }]
+        }, 
+        {
+            "__skill__": true, 
+            "name": "烟云缭绕", 
+            "description": "为对方全体角色附加「名烟浓雾」（不可移除），在当前回合数能被3整除时会在回合开始时对所有者附加buff「尘肺烟嗓」，持续3回合，触发3次后失效。「尘肺烟嗓」使角色攻击伤害-2，并在每回合流失2生命。", 
+            "type": 2, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 3}, 
+                "buff": {
+                    "identification": -1, 
+                    "name": "名烟浓雾", 
+                    "lasttime": -1, 
+                    "usetime": 3, 
+                    "type": 4, 
+                    "positivity": 3, 
+                    "buffdata": {
+                        "effects":[{
+                            "__effect__": true, 
+                            "type": 7, 
+                            "target": {"__target__": true, "type": 7}, 
+                            "buff": {
+                                "identification": -1, 
+                                "name": "尘肺烟嗓", 
+                                "lasttime": 5, 
+                                "usetime": -1, 
+                                "type": 4, 
+                                "positivity": 1, 
+                                "buffdata": {
+                                    "effects":[{
+                                        "__effect__": true, 
+                                        "type": 4, 
+                                        "variableid": {"__variableid__": true, "type": "1", "target": {
+                                            "__target__": true, "type": 7}},
+                                        "increment": -2
+                                    }],
+                                    "eventtime":9
+                                }
+                            }
+                        },{
+                            "__effect__": true, 
+                            "type": 7, 
+                            "target": {"__target__": true, "type": 7}, 
+                            "buff": {
+                                "identification": -1, 
+                                "name": "__尘肺烟嗓__", 
+                                "lasttime": 5, 
+                                "usetime": -1, 
+                                "type": 1, 
+                                "positivity": 1, 
+                                "buffdata": {
+                                    "increment": {
+                                        "__mathexpression__": true,
+                                        "operator": "1", 
+                                        "data": ["damage", -2]
+                                    }
+                                }
+                            }
+                        }],
+                        "eventtime":9
+                    }, 
+                    "condition": {"__boolexpression__":true, "operator":"2", "data":[
+                        {"__mathexpression__": true, "operator":"10", "data":[
+                        {"__mathexpression__": true, "operator":"0", "data":
+                        {"__variableid__":true, "type":"6"}}, 3]}, 0]
+                }
+            }
+        }]
+}]}

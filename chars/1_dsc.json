@@ -1,0 +1,94 @@
+{
+    "name": "dsc", 
+    "attack": 8, 
+    "health": 34,
+    "group": 1,
+    "skill": [
+        {
+            "__skill__": true, 
+            "name": "橙气东来", 
+            "description": "对对方全体角色造成5伤害，并为对方出战角色施加buff「橙」", 
+            "type": 1, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 1, 
+                "target": {"__target__": true, "type": 3}, 
+                "damage": 5,
+                "flags": []
+            }, {
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 1}, 
+                "buff": {
+                    "identification": 0, 
+                    "name": "橙", 
+                    "lasttime": -1, 
+                    "usetime": -1, 
+                    "type": 2, 
+                    "positivity": 2, 
+                    "buffdata": {
+                        "decrement": {"__mathexpression__": true, "operator": "1", "data": [2, "damage"]}
+                    }, 
+                    "condition": {"__boolexpression__": true, "operator":"10", "data": [2, "flags"]}
+                }
+            }]
+        }, 
+        {
+            "__skill__": true, 
+            "name": "断四橙", 
+            "description": "对对方出战角色造成1,3,5,7四段伤害，对附属「橙」的角色，伤害+2", 
+            "type": 1, 
+            "animation": "dsc2", 
+            "effect": [{
+                "__effect__": true, 
+                "type": 1, 
+                "target": {"__target__": true, "type": 1}, 
+                "damage": 1,
+                "flags": [2]
+            },{
+                "__effect__": true, 
+                "type": 1, 
+                "target": {"__target__": true, "type": 1}, 
+                "damage": 3,
+                "flags": [2]
+            },{
+                "__effect__": true, 
+                "type": 1, 
+                "target": {"__target__": true, "type": 1}, 
+                "damage": 5,
+                "flags": [2]
+            },{
+                "__effect__": true, 
+                "type": 1, 
+                "target": {"__target__": true, "type": 1}, 
+                "damage": 7,
+                "flags": [2]
+            }]
+        }, 
+        {
+            "__skill__": true, 
+            "name": "盖饭", 
+            "description": "对对方出战角色造成8点伤害，并附加buff「饭中淹」，3回合内不能使用技能", 
+            "type": 1, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 1, 
+                "target": {"__target__": true, "type": 1}, 
+                "damage": 8,
+                "flags": []
+            }, {
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 1}, 
+                "buff": {
+                    "identification": 1, 
+                    "name": "饭中淹", 
+                    "lasttime": 7, 
+                    "usetime": -1, 
+                    "type": 5, 
+                    "positivity": 1
+                }
+            }]
+        }
+    ]
+}

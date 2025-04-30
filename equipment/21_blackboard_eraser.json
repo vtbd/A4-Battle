@@ -1,0 +1,15 @@
+{
+    "name": "板擦", 
+    "description": "擦除对方出战角色的所有护盾和buff",
+    "effect": [{
+        "__effect__": true, 
+        "type": 5, 
+        "variableid": {"__variableid__": true, "type": "7", "target": {"__target__":true, "type": 1}},
+        "value": 0
+    },{
+        "__effect__": true, 
+        "type": 8,
+        "target": {"__target__": true, "type": 1},
+        "positivities": [0,1,2]
+    }]
+}

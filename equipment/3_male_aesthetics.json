@@ -1,0 +1,20 @@
+{
+    "name": "男性美学", 
+    "description": "己方全体角色获得buff「美」，受到伤害-1",
+    "effect": [{
+        "__effect__": true, 
+        "type": 7, 
+        "target": {"__target__": true, "type": 4}, 
+        "buff": {
+            "identification": 2, 
+            "name": "美", 
+            "lasttime": -1, 
+            "usetime": -1, 
+            "type": 2, 
+            "positivity": 0,
+            "buffdata": {
+                "decrement": {"__mathexpression__": true, "operator": "1", "data": [-1, "damage"]}
+            }
+        }
+    }]
+}

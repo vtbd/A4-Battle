@@ -1,0 +1,26 @@
+{
+    "name": "none", 
+    "attack": 0, 
+    "health": 0,
+    "group": 0,
+    "skill": [
+        {
+            "name": "", 
+            "description": "", 
+            "type": 3, 
+            "effect": []
+        }, 
+        {
+            "name": "", 
+            "description": "", 
+            "type": 3, 
+            "effect": []
+        }, 
+        {
+            "name": "", 
+            "description": "", 
+            "type": 3, 
+            "effect": []
+        }
+    ]
+}

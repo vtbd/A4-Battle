@@ -1,0 +1,41 @@
+{
+    "name": "教师资格证", 
+    "description": "受到来自教师的伤害-2，受到来自学生的伤害+1",
+    "effect": [{
+        "__effect__": true, 
+        "type": 7, 
+        "target": {"__target__": true, "type": 4}, 
+        "buff": {
+            "identification": -1, 
+            "name": "__teacher_card__", 
+            "lasttime": -1, 
+            "usetime": -1, 
+            "type": 2, 
+            "positivity": 3,
+            "buffdata": {
+                "decrement": {"__mathexpression__": true, "operator": "1", "data": [-2, "damage"]}
+            }, 
+            "condition": {"__boolexpression__":true, "operator":"2", "data":[
+                "group", 2
+            ]}
+        }
+    }, {
+        "__effect__": true, 
+        "type": 7, 
+        "target": {"__target__": true, "type": 4}, 
+        "buff": {
+            "identification": -1, 
+            "name": "__student_card__", 
+            "lasttime": -1, 
+            "usetime": -1, 
+            "type": 2, 
+            "positivity": 3,
+            "buffdata": {
+                "decrement": {"__mathexpression__": true, "operator": "1", "data": [1, "damage"]}
+            }, 
+            "condition": {"__boolexpression__":true, "operator":"2", "data":[
+                "group", 1
+            ]}
+        }
+    }]
+}
