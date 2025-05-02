@@ -11,6 +11,8 @@ with open('res.json', encoding='utf-8') as fl:
     CHARAVATARFILE:dict[str, str] = f['charavatarfile']
     EQUIPMENTFILE:dict[str, str] = f['equipmentfile']
     EQUIPMENTPICTUREFILE:dict[str, str] = f['equipmentpicturefile']
+    CHARNULLFILE = CHARFILE['default']
+    EQUIPMENTNULLFILE = EQUIPMENTFILE['default']
 
 ##specific
 ###screen
@@ -152,7 +154,7 @@ class CharGroup:
 
 TARGET = {1: 'ENEMYONFIGHT', 2: 'SELFONFIGHT', 3: 'ENEMYALL', 4: 'SELFALL', 5: 'ENEMYNOTONFIGHT', 6: 'SELFNOTONFIGHT', 7:'SELF', 8:'ALL', 
           9: 'Specific char', 10: 'Specific position', 11:'DAMAGESOURCE', 12:'GROUP', 13:'UNIONSET', 14:'INTERSECTIONSET', 
-          15:'DAMAGERECEIVER', 16: 'CHOOSE'}
+          15:'DAMAGERECEIVER', 16: 'CHOOSE', 17: 'MAXIMIZE'}
 class Target:
     ENEMYONFIGHT = 1
     SELFONFIGHT = 2
@@ -170,9 +172,11 @@ class Target:
     INTERSECTIONSET = 14
     DAMAGERECEIVER = 15
     CHOOSE = 16
+    MAXIMIZE = 17
+    ITERCHAR = 18
 
 EFFECTTYPE = {1: 'DAMAGE', 2: 'HEAL', 3:'KILL', 4: 'INCREASE', 5: 'SET', 6: 'RANDOM', 7:'BUFF', 8:'BUFFCLEAR', 9:'SPECIFIC',
-              10:'ENVIRONMENTALBUFF', 11:'SUMMON'}
+              10:'ENVIRONMENTALBUFF', 11:'SUMMON', 12:'REVIVE'}
 class EffectType:
     DAMAGE = 1
     HEAL = 2
@@ -185,10 +189,12 @@ class EffectType:
     SPECIFIC = 9
     ENVIRONMENTALBUFF = 10
     SUMMON = 11
+    REVIVE = 12
     class Specific:
         ZHH = 1
 
-VARIABLEID = {'0':'SPECIALVARIABLE', '1': 'HEALTH(targeted)', '2': 'ATTACK(targeted)', '3': 'ATTACKTIME', '4': 'SKILLTIME', '5': 'SWITCHCHARTIME', '6': 'ROUND', '7': 'SHIELD(targeted)', '8': 'MARKS(targeted)'}
+VARIABLEID = {'0':'SPECIALVARIABLE', '1': 'HEALTH', '2': 'ATTACK', '3': 'ATTACKTIME', '4': 'SKILLTIME', 
+              '5': 'SWITCHCHARTIME', '6': 'ROUND', '7': 'SHIELD', '8': 'MARKS', 9: 'SKILLUSETIME'}
 class VariableId:
     SPECIALVARIABLE = '0'
     HEALTH = '1'
@@ -199,6 +205,7 @@ class VariableId:
     ROUND = '6'
     SHIELD = '7'
     MARKS = '8'
+    SKILLUSETIME = '9'
 
 MARKNAMES = {'suppress': '憋', 'dam': '坝', 'lazy': '惰', 'shuang': '爽'}
 
@@ -208,12 +215,13 @@ class SkillType:
     ACTIVENONAGGRESSIVE = 2
     PASSIVE = 3
 
-ATTACKFLAGS = {0: 'COMMONATTACK', 1:'NOEVENT', 2:'DSC', 3:'NORETURN'}
+ATTACKFLAGS = {0: 'COMMONATTACK', 1:'NOEVENT', 2:'DSC', 3:'NORETURN', 4:'SKIPSHIELD'}
 class AttackFlags:
     COMMONATTACK = 0
     NOEVENT = 1
     DSC = 2
     NORETURN = 3
+    SKIPSHIELD = 4
 
 CALCULATOR = {'-1': 'CALLSPECIALVARIABLE', '0': 'CALLVARIABLE', '1': 'ADD', '2': 'SUB', '3': 'TIMES', '4': 'DIV', '5': 'EXP', '6': 'LOG',
                '7': 'ROUND', '8': 'FLOOR', '9': 'CEIL', '10': 'MODE', '11': 'MAX', '12': 'MIN'}
@@ -285,7 +293,7 @@ class BuffPositivity:
     INDESTRUCTIBLE = 3
 
 BOOLJUDGEMENT = {'0': 'GREATER', '1': 'LESS', '2': 'EQUAL', '3': 'GREATEROREQUAL', '4': 'LESSOREQUAL', '5': 'NOTEQUAL', 
-                 '6': 'AND', '7': 'OR', '8': 'NOT', '9': 'XOR', '10': 'IN', '11': 'NOTIN'}
+                 '6': 'AND', '7': 'OR', '8': 'NOT', '9': 'XOR', '10': 'IN', '11': 'NOTIN', '12': 'ALIVE', '13': 'GROUP'}
 class BoolJudgement:
     GREATER = '0'
     LESS = '1'
@@ -299,7 +307,8 @@ class BoolJudgement:
     XOR = '9'
     IN = '10'
     NOTIN = '11'
-
+    ALIVE = '12'
+    GROUP = '13'
 
 
 #editor

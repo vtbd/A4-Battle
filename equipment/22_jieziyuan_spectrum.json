@@ -1,0 +1,49 @@
+{
+    "name": "介籽圆题谱", 
+    "description": "全队学生攻击力+1，生命+3，若对方出战角色是学生，则固定其一回合",
+    "effect": [
+        {
+            "__effect__": true, 
+            "type": 4, 
+            "variableid": {"__variableid__": true, "type": "1", "target": {
+                "__target__": true, "type": 14, "sets": [{
+                    "__target__": true, "type": 12, "groups": [1]
+                }, {
+                    "__target__": true, "type": 4
+                }]}},
+            "increment": 3
+        }, 
+        {
+            "__effect__": true, 
+            "type": 4, 
+            "variableid": {"__variableid__": true, "type": "2", "target": {
+                "__target__": true, "type": 14, "sets": [{
+                    "__target__": true, "type": 12, "groups": [1]
+                }, {
+                    "__target__": true, "type": 4
+                }]}},
+            "increment": 1
+        }, {
+            "__effect__": true, 
+            "type": 7, 
+            "target": {"__target__": true, "type": 1}, 
+            "buff": {
+                "identification": -1, 
+                "name": "__fixed_student__", 
+                "lasttime": 2, 
+                "usetime": -1, 
+                "type": 4, 
+                "positivity": 3,
+                "condition": {"__boolexpression__": true, "operator": "13", "data": [{"__target__":true, "type":7}, 1]}, 
+                "buffdata":{
+                    "eventtime": 9, 
+                    "effects": [{
+                        "__effect__": true, 
+                        "type": 5, 
+                        "variableid": {"__variableid__":true, "type":"5"},
+                        "value": 0
+                    }]
+                }
+            }
+        }]
+}

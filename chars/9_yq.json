@@ -6,26 +6,83 @@
     "skill": [
         {
             "__skill__": true, 
-            "name": "", 
-            "description": "", 
+            "name": "算什么本事", 
+            "description": "我方所有角色护盾+8，当前护盾最多的角色受到的下一次伤害归零", 
             "type": 2, 
-            "effect": []
+            "effect": [{
+                "__effect__": true, 
+                "type": 4,
+                "variableid": {
+                    "__variableid__": true,
+                    "type": "7", 
+                    "target": {"__target__": true, "type": 4}
+                },
+                "increment": 8
+            }, {
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 17, "range": {"__target__": true, "type": 4}, "expression":
+                    {"__mathexpression__": true, "operator": "0", "data":
+                    {"__variableid__": true, "target": {"__target__":true, "type":18}, "type": "7"}}}, 
+                "buff": {
+                    "identification": -1, 
+                    "name": "__resist__", 
+                    "lasttime": -1, 
+                    "usetime": 1, 
+                    "type": 2, 
+                    "positivity": 3,
+                    "buffdata": {
+                        "decrement": 0
+                    }
+                }
+            }]
         }, 
         {
             "__skill__": true, 
-            "choose":true, 
-            "name": "", 
-            "description": "", 
+            "choose": true, 
+            "choosecondition": {"__boolexpression__": true, "operator": "6", "data": 
+                [{"__boolexpression__": true, "operator": "10", "data": ["iterchar", {"__target__":true, "type":4}]},
+                {"__boolexpression__": true, "operator": "8", "data": [{"__boolexpression__": true, "operator": "12", "data": 
+                [{"__target__":true, "type":18}]}]}]}, 
+            "name": "再别睡了", 
+            "description": "选择一名己方已故角色，将其复活，使其获得10点生命，技能2使用次数变为1，然后自身受到10点无来源伤害", 
             "type": 2, 
-            "effect": []
+            "effect": [{
+                "__effect__": true, 
+                "type": 12, 
+                "revivehealth": 10, 
+                "target": {"__target__": true, "type": 16}
+            }, {
+                "__effect__": true, 
+                "type": 5, 
+                "variableid": {"__variableid__": true, "type": "9", "target": {"__target__":true, "type":16}, "serial":1},
+                "value": 1
+            }, {
+                "__effect__": true, 
+                "type": 1, 
+                "target": {"__target__":true, "type":7}, 
+                "damage":10, 
+                "source":{"None": true}
+            }]
         }, 
         {
             "__skill__": true, 
-            "choose":true, 
-            "name": "", 
-            "description": "", 
+            "choose": true, 
+            "choosecondition": {"__boolexpression__": true, "operator": "10", "data": ["iterchar", {"__target__":true, "type":4}]}, 
+            "name": "特级教师", 
+            "description": "选择一名己方角色，使其护盾+15，攻击力+3", 
             "type": 2, 
-            "effect": []
+            "effect": [{
+                "__effect__": true, 
+                "type": 4, 
+                "variableid": {"__variableid__": true, "type": "2", "target": {"__target__": true, "type": 16}},
+                "increment": 3
+            }, {
+                "__effect__": true, 
+                "type": 4, 
+                "variableid": {"__variableid__": true, "type": "7", "target": {"__target__": true, "type": 16}},
+                "increment": 15
+            }]
         }
     ]
 }

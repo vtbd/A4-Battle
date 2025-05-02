@@ -108,10 +108,11 @@ class Target:
                 a.remove(game.onfightr)
                 return a
         elif t == constants.Target.DAMAGESOURCE:
-            return [kw.get('source')] if kw.get('source') else []
+            print('source')
+            return [kw.get('source')] if kw.get('source') is not None else []
         elif t == constants.Target.DAMAGERECEIVER:
             return [kw.get('receiver')]
-        if t == constants.Target.SPECIFICCHAR:
+        elif t == constants.Target.SPECIFICCHAR:
             rl = []
             for i, x in enumerate(game.charidlist):
                 if x == td['char']:
@@ -131,6 +132,22 @@ class Target:
             return list(set(td['sets'][0].concretize(game, **kw)).intersection(*map(lambda x:x.concretize(game, **kw), td['sets'][1:])))
         elif t == constants.Target.CHOOSE:
             return kw['chose']
+        elif t == constants.Target.MAXIMIZE:
+            rangef = self.targetdata['range'].concretize(game, **kw)
+            if rangef == []:
+                return []
+            for i, ci in enumerate(rangef):
+                if i == 0:
+                    largestnum = game.calcnum(self.targetdata['expression'], iterchar=i)
+                    largestchar = ci
+                else:
+                    n = game.calcnum(self.targetdata['expression'], iterchar=i)
+                    if largestnum < n:
+                        largestnum = n
+                        largestchar = ci
+            return [largestchar]   
+        elif t == constants.Target.ITERCHAR:
+            return [kw['iterchar']]
         else:
             raise ValueError(f'Invalid target id:{t}')
 
@@ -185,6 +202,7 @@ class Effect:
 
     def load(self, **kw):
         self.effecttype:int = kw['type']
+        self.condition:bool = kw.get('condition', True)
         t = self.effecttype
         if t == constants.EffectType.DAMAGE:
             self.damage:int = kw['damage']
@@ -207,12 +225,17 @@ class Effect:
             self.specific = kw['specific']
         elif t == constants.EffectType.ENVIRONMENTALBUFF:
             self.buff = Buff(kw['buff'])
+        elif t == constants.EffectType.KILL:
+            self.target = kw['target']
         elif t == constants.EffectType.RANDOM:
             self.probabilities = kw['probabilities']
             self.effects = kw['effects']
         elif t == constants.EffectType.SUMMON:
             self.summoned:Summoned = kw['summoned']
             self.target:Target = kw['target']
+        elif t == constants.EffectType.REVIVE:
+            self.target:Target = kw['target']
+            self.revivehealth = kw['revivehealth']
         else:
             raise ValueError(f'Invalid effect type:{t}')
     
@@ -224,8 +247,12 @@ class EffectSet:
 
 class Equipment:
     def __init__(self, datafilestr, game, seq:int):
-        with open(datafilestr, encoding='utf-8') as datafile:
-            data:dict = json.load(datafile, object_hook=custom_decoder)
+        try:
+            with open(datafilestr, encoding='utf-8') as datafile:
+                data:dict = json.load(datafile, object_hook=custom_decoder)
+        except FileNotFoundError:
+            with open(constants.EQUIPMENTNULLFILE, encoding='utf-8') as datafile:
+                data:dict = json.load(datafile, object_hook=custom_decoder)
 
         self.seq:int = seq
         self.owner:int = seq // 2
@@ -233,7 +260,7 @@ class Equipment:
         self.description:str = data['description']
         #self.equiptype:int = data['type']
         self.effects:EffectSet = EffectSet(data['effect'])
-        self.usetime = 1
+        self.usetime = data.get('defaultusetime', 1)
         
         self.infoboard = gui.LayoutObj(game.root, constants.INFOBOARDPOS, size=constants.INFOBOARDSIZE)
         self.infoboard.movability = True
@@ -262,13 +289,12 @@ class Summoned:
     def __init__(self, **kw):
         self.dic = kw
         self.name:str = kw['name']
-        self.additionalbuff:list[Buff] = list(map(lambda x:Buff(x), kw['buff']))
+        self.additionalbuff:list[Buff] = list(map(lambda x:Buff(x), kw.get('buff', [])))
         self.health:int = kw['health']
 
     def copy(self):
         return Summoned(**self.dic)
     
-
 
 class Skill:
     def __init__(self, skilldict:dict, game=None):
@@ -290,8 +316,12 @@ class Skill:
 
 class Char:
     def __init__(self, datafilestr, game, seq:int):
-        with open(datafilestr, encoding='utf-8') as datafile:
-            data:dict = json.load(datafile, object_hook=custom_decoder)
+        try:
+            with open(datafilestr, encoding='utf-8') as datafile:
+                data:dict = json.load(datafile, object_hook=custom_decoder)
+        except FileNotFoundError:
+            with open(constants.CHARNULLFILE, encoding='utf-8') as datafile:
+                data:dict = json.load(datafile, object_hook=custom_decoder)
 
         self.game:Game = game
         self.seq:int = seq
@@ -331,7 +361,7 @@ class Char:
         self.updatestatus()
         
     def updatestatus(self):
-        bufftext = constants.BUFFHINT + '\n    ' + ', '.join([buff.name for buff in self.buffs if buff.name[0] != '_'])
+        bufftext = constants.BUFFHINT + '\n    ' + ', '.join([buff.name for buff in self.buffs if buff.name[0] != '_' or debug_showallbuff])
         markstext = constants.MARKHINT + '\n    ' + ', '.join([f'{constants.MARKNAMES.get(k)}:{v}' for k, v in self.marks.items() if v != 0 and k in constants.MARKNAMES])
         summontext = constants.SUMMONHINT + '\n    ' + ', '.join([f'{s.name}(生命:{s.health})' for s in self.summons if s.name[0] != '_'])
         self.statusdisplayer = gui.TextImagifier(self.game.screen, self.statusboard, self.game.font_big, bufftext + '\n' + markstext+ '\n'+ summontext, (0, 0, 0), constants.STATUSTEXTPOS, (1, 1), constants.STATUSTEXTLENGTH).imagify()
@@ -376,18 +406,23 @@ class Char:
                 if self.game.calbool(b.condition, source=source, damage=damage_t, flags=flags, group=sourcegroup, charself=self.seq):
                     damage_t = self.game.calcnum(b.decrement, damage=damage_t)
                     b.usetime -= 1
-        if self.shield >= damage_t:
-            self.shield -= damage_t
+        if constants.AttackFlags.SKIPSHIELD in flags:
+            damage_aftershield = damage_t
         else:
-            if self.summons == []:
-                self._health -= damage_t-self.shield
+            if self.shield >= damage_t:
+                damage_aftershield = 0
+                self.shield -= damage_t
             else:
-                self.summons[-1].health -= damage_t-self.shield
-                if self.summons[-1].health <= 0:
-                    s = self.summons.pop()
-                    for b in s.additionalbuff:
-                        self.buffs.remove(b)
-            self.shield = 0
+                damage_aftershield = damage_t-self.shield
+                self.shield = 0
+        if self.summons == []:
+            self._health -= damage_aftershield
+        else:
+            self.summons[-1].health -= damage_aftershield
+            if self.summons[-1].health <= 0:
+                s = self.summons.pop()
+                for b in s.additionalbuff:
+                    self.buffs.remove(b)
         self.updatebuff()
         if not constants.AttackFlags.NOEVENT in flags:
             self.game.handleevent((constants.EventType.HURTED, self.seq), source=source, damage=damage_t)
@@ -418,8 +453,14 @@ class Variableid:
         self.vardata = varid
         t = varid['type']
         targetedtypes = [constants.VariableId.ATTACK, constants.VariableId.HEALTH, constants.VariableId.MARKS, constants.VariableId.SHIELD]
+        doubletargetedtypes = [constants.VariableId.SKILLUSETIME]
         if t in targetedtypes:
             self.targeted = True
+            self.doubletargeted = False
+            self.target:Target = self.vardata['target']
+        elif t in doubletargetedtypes:
+            self.targeted = True
+            self.doubletargeted = True
             self.target:Target = self.vardata['target']
         else:
             self.targeted = False
@@ -643,8 +684,6 @@ class Game:
                         self.chosetype = 1
                         self.updatedecorator()
                         self.charlist[i].updatestatus()
-                        #print(list(map(lambda x: x.name, self.charlist[self.chose].buffs)))
-                        #print(self.charlist[self.chose].marks)
             for i, frame in enumerate(self.equipframelist):
                 if frame.surveil(pos):
                     if (self.chose, self.chosetype) == (i, 2):
@@ -669,8 +708,19 @@ class Game:
                         if m.surveil(pos):
                             sk = chosechar.skills[i]
                             if sk.choose:
+                                for j, deco in enumerate(self.choosechardecoratorlist):
+                                    deco.setappr(0)
                                 self.stack.append(3)
+                                self.choselist = []
+                                self.chooseskill = sk
+                                self.chooseskillseri = i
+                                self.chooseskillcharseri = chosechar
                                 self.choosecondition = sk.choosecondition
+                                self.choosecount = sk.choosecount
+                                self.availablechoice = []
+                                for j in range(6):
+                                    if self.calbool(self.choosecondition, iterchar=j):
+                                        self.availablechoice.append(j)
                                 return
                             self.useskill(i, chosechar, sk)
                 if chosechar.switchcharbutton.drawn:
@@ -723,12 +773,30 @@ class Game:
                 self.stack.pop()
         elif layoutid == 3:
             if self.choosesurebutton.surveil(pos):
+                if len(self.choselist) == self.choosecount:
+                    self.useskill(self.chooseskillseri, self.chooseskillcharseri, self.chooseskill, chose=self.choselist)
                 self.stack.pop()
             elif self.choosecancelbutton.surveil(pos):
                 self.stack.pop()
+            else:
+                for i, ava in enumerate(self.choosecharframelist):
+                    if i in self.availablechoice:
+                        if ava.surveil(pos):
+                            if self.choosecount == 1:
+                                for j, deco in enumerate(self.choosechardecoratorlist):
+                                    deco.setappr(0)
+                                self.choselist = [i]
+                                self.choosechardecoratorlist[i].setappr(2)
+                            else:
+                                if i in self.choselist:
+                                    self.choselist.remove(i)
+                                    self.choosechardecoratorlist[i].setappr(0)
+                                else:
+                                    self.choselist.append(i)
+                                    self.choosechardecoratorlist[i].setappr(2)                     
 
-    def useskill(self, i:int, char:Char, sk:Skill):
-        self.executeeffects(sk.effects, self.chose)
+    def useskill(self, skillindex:int, char:Char, sk:Skill, **kw):
+        self.executeeffects(sk.effects, self.chose, **kw)
         if sk.skilltype == constants.SkillType.ACTIVEAGGRESSIVE:
             self.attacktime -= 1
             self.skilltime -= 1
@@ -737,10 +805,10 @@ class Game:
         sk.usetime -= 1
         self.handleevent((constants.EventType.SKILL, self.chose))
         if sk.usetime <= 0:
-            char.displayimagifier[i].color = (128, 128, 128)
-            char.displayimagifier[i+3].color = (128, 128, 128)
-            char.skilldisplayer[i] = char.displayimagifier[i].imagify()
-            char.skilldisplayer[i+3] = char.displayimagifier[i+3].imagify()
+            char.displayimagifier[skillindex].color = (128, 128, 128)
+            char.displayimagifier[skillindex+3].color = (128, 128, 128)
+            char.skilldisplayer[skillindex] = char.displayimagifier[skillindex].imagify()
+            char.skilldisplayer[skillindex+3] = char.displayimagifier[skillindex+3].imagify()
         '''if sk.animation != None:
                                 self.animations.append(sk.animation)
                                 sk.animation.start()'''
@@ -841,6 +909,10 @@ class Game:
                 self.charlist[a].buffs = k
         elif effect.effecttype == constants.EffectType.ENVIRONMENTALBUFF:
             self.environmentalbuff.append(effect.buff.copy())
+        elif effect.effecttype == constants.EffectType.KILL:
+            for i in effect.target:
+                self.charlist[i].health = 0
+                self.charlist[i].alive = False
         elif effect.effecttype == constants.EffectType.RANDOM:
             r = random.random()
             for p, e in zip(effect.probabilities, effect.effects):
@@ -855,6 +927,11 @@ class Game:
                     self.charlist[a].summons.append(s)
                     for b in s.additionalbuff:
                         self.charlist[a].buffs.append(b)
+        elif effect.effecttype == constants.EffectType.REVIVE:
+            target = effect.target.concretize(self, charself=charself, **kw)
+            for a in target:
+                self.charlist[a].health = effect.revivehealth
+                self.charlist[a].alive = True
         elif effect.effecttype == constants.EffectType.SPECIFIC:
             if effect.specific == constants.EffectType.Specific.ZHH:
                 equipseqs = [range(6, 12), range(0, 6)][self.turns%2]
@@ -975,6 +1052,8 @@ class Game:
             return self.charlist[varid.targetabs].shield
         if dt == constants.VariableId.MARKS:
             return self.charlist[varid.targetabs].marks.get(d['mark'], 0)
+        if dt == constants.VariableId.SKILLUSETIME:
+            return self.charlist[varid.targetabs].skills[varid.vardata['serial']].usetime
         raise ValueError(f'Invalid id:{dt}')
             
     def setvariable(self, varid:Variableid, value):
@@ -998,6 +1077,21 @@ class Game:
             self.charlist[varid.targetabs].shield = value
         elif dt == constants.VariableId.MARKS:
             self.charlist[varid.targetabs].marks[d['mark']] = value
+        elif dt == constants.VariableId.SKILLUSETIME:
+            char = self.charlist[varid.targetabs]
+            skillindex = varid.vardata['serial']
+            sk = char.skills[skillindex]
+            sk.usetime = value
+            if sk.usetime <= 0:
+                char.displayimagifier[skillindex].color = (128, 128, 128)
+                char.displayimagifier[skillindex+3].color = (128, 128, 128)
+                char.skilldisplayer[skillindex] = char.displayimagifier[skillindex].imagify()
+                char.skilldisplayer[skillindex+3] = char.displayimagifier[skillindex+3].imagify()
+            else:
+                char.displayimagifier[skillindex].color = (0, 0, 0)
+                char.displayimagifier[skillindex+3].color = (0, 0, 0)
+                char.skilldisplayer[skillindex] = char.displayimagifier[skillindex].imagify()
+                char.skilldisplayer[skillindex+3] = char.displayimagifier[skillindex+3].imagify()
         else:
             raise ValueError(f'Invalid id:{dt}')
     
@@ -1064,7 +1158,6 @@ class Game:
             if cal.operator == constants.BoolJudgement.GREATEROREQUAL:
                 return self.calcnum(dat[0], **vars) >= self.calcnum(dat[1], **vars)
             if cal.operator == constants.BoolJudgement.LESS:
-                print(self.calcnum(dat[0], **vars) , self.calcnum(dat[1], **vars))
                 return self.calcnum(dat[0], **vars) < self.calcnum(dat[1], **vars)
             if cal.operator == constants.BoolJudgement.LESSOREQUAL:
                 return self.calcnum(dat[0], **vars) <= self.calcnum(dat[1], **vars)
@@ -1084,6 +1177,10 @@ class Game:
                 return self.calcnum(dat[0], **vars) in self.callist(dat[1], **vars)
             if cal.operator == constants.BoolJudgement.NOTIN:
                 return self.calcnum(dat[0], **vars) not in self.callist(dat[1], **vars)
+            if cal.operator == constants.BoolJudgement.ALIVE:
+                return self.charlist[dat[0].concretize(self, **vars)[0]].alive
+            if cal.operator == constants.BoolJudgement.GROUP:
+                return self.charlist[dat[0].concretize(self, **vars)[0]].group == dat[1]
             raise ValueError(f'Invalid operator:{cal.operator}')
         if type(cal) == str:
             if vars.get(cal) != None:
@@ -1125,3 +1222,5 @@ class Game:
                 self.gameend = True
                 self.stack.append(1)
                 self.winner = 0
+
+debug_showallbuff = False

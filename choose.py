@@ -134,7 +134,7 @@ class GameConfigApp(wx.Frame):
                 dropdowns[1].SetValue(available_equipment_both[i//3].pop(0))
                 dropdowns[2].SetValue(available_equipment_both[i//3].pop(0))
             
-            wx.MessageBox("随机配置已完成！", "成功", wx.ICON_INFORMATION)
+            #wx.MessageBox("随机配置已完成！", "成功", wx.ICON_INFORMATION)
         except Exception as e:
             wx.MessageBox(f"随机配置失败：{e}", "错误", wx.ICON_ERROR)
 

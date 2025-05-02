@@ -1,0 +1,27 @@
+{
+    "name": "wyh小吉他", 
+    "description": "该角色下一次造成伤害时额外造成6点无视护盾的伤害",
+    "effect": [{
+        "__effect__": true, 
+        "type": 7,
+        "target": {"__target__": true, "type": 7},
+        "buff": {
+            "identification": -1,
+            "name": "__wyh_guitar__",
+            "lasttime": -1,
+            "usetime": 1,
+            "type": 4,
+            "positivity": 3,
+            "buffdata": {
+                "effects": [{
+                    "__effect__": true, 
+                    "type": 1, 
+                    "target": {"__target__": true, "type": 1}, 
+                    "damage": 6,
+                    "flags": [4]
+                }],
+                "eventtime": 5
+            }
+        }
+    }]
+}

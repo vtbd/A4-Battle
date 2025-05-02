@@ -1,0 +1,19 @@
+{
+    "name": "wyh小花盆", 
+    "description": "该角色本回合接下来造成的伤害增加50%（下取整）",
+    "effect": [{
+        "__effect__":true, 
+        "type": 7, 
+        "target": {"__target__": true, "type": 7},
+        "buff":{
+            "identification": -1,
+            "name": "__wyh_flowerpot__",
+            "lasttime": 1,
+            "usetime": -1,
+            "type": 1,
+            "positivity": 3, 
+            "buffdata":{"increment":{"__mathexpression__":true, "operator": "8", "data":
+            [{"__mathexpression__":true, "operator": "3", "data":["damage", 1.5]}]}}
+        }
+    }]
+}
