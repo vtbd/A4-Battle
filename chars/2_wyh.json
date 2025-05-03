@@ -82,7 +82,7 @@
         {
             "__skill__": true, 
             "name": "唧罢反甲",
-            "description": "被动：首次受击时，对攻击者“舍”出ceil(受到伤害/3)点伤害，为自己附加「立」buff，攻击伤害+5，持续3回合",
+            "description": "被动：首次受击时，对攻击者“舍”出ceil(受到伤害/3)点伤害，为自己附加「立」buff，下一次攻击伤害+5，持续3回合",
             "type": 3,
             "effect": [
                 {
@@ -114,7 +114,7 @@
                                         "identification": -1,
                                         "name": "立",
                                         "lasttime": 7,
-                                        "usetime": -1,
+                                        "usetime": 1,
                                         "type": 1,
                                         "positivity": 0, 
                                         "buffdata": {
