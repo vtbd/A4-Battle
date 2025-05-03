@@ -400,7 +400,7 @@ class Char:
                         damage_t = self.game.calcnum(b.increment, damage=damage_t, charself=source)
                         b.usetime -= 1
             self.game.charlist[source].updatebuff()
-        self.game.handleevent((constants.EventType.DAMAGEMADE, self.seq, source), source=source, damage=damage_t)
+        self.game.handleevent((constants.EventType.DAMAGEMADE, self.seq, source), source=source, damage=damage_t, receiver=self.seq)
         for b in self.buffs:
             if b.type == constants.Bufftype.DECREASEDAMAGERECEIVED:
                 if self.game.calbool(b.condition, source=source, damage=damage_t, flags=flags, group=sourcegroup, charself=self.seq):
@@ -876,7 +876,8 @@ class Game:
                 so = effect.source['data'].concretize(self, charself=charself, **kw)
             for a in target:
                 if self.charlist[a].alive:
-                    self.charlist[a].receivedamage(self.calcnum(effect.damage, charself=charself, receiver=a, **kw), so, effect.flags)
+                    self.charlist[a].receivedamage(self.calcnum(effect.damage, charself=charself, **kw), so, effect.flags)
+                    #self.charlist[a].receivedamage(self.calcnum(effect.damage, charself=charself, receiver=a, **kw), so, effect.flags)
         elif effect.effecttype == constants.EffectType.SET:
             if not effect.variableid.targeted:
                 self.setvariable(effect.variableid, self.calcnum(effect.value, charself=charself, **kw))
