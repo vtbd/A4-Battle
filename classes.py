@@ -385,6 +385,13 @@ class Char:
             if b.type == constants.Bufftype.ATTRIBUTE:
                 if b.attrid == constants.VariableId.ATTACK:
                     self.absattack = self.game.calcnum(b.value, original=self.absattack)
+        for skillindex, sk in enumerate(self.skills):
+            if sk.usetime <= 0:
+                self.displayimagifier[skillindex].color = (128, 128, 128)
+                self.displayimagifier[skillindex+3].color = (128, 128, 128)
+            else:
+                self.displayimagifier[skillindex].color = (0, 0, 0)
+                self.displayimagifier[skillindex+3].color = (0, 0, 0)
         self.displayimagifier[6] = gui.TextImagifier(self.game.screen, self.skillboard, self.game.font_big, constants.ATTACKHINT+str(self.absattack), (0, 0, 0), constants.ATTACKPOS, (1, 0))
         self.skilldisplayer:list[gui.ImageObj] = [m.imagify() for i, m in enumerate(self.displayimagifier)]
         #???  ↓
@@ -775,7 +782,7 @@ class Game:
             if self.choosesurebutton.surveil(pos):
                 if len(self.choselist) == self.choosecount:
                     self.useskill(self.chooseskillseri, self.chooseskillcharseri, self.chooseskill, chose=self.choselist)
-                self.stack.pop()
+                    self.stack.pop()
             elif self.choosecancelbutton.surveil(pos):
                 self.stack.pop()
             else:
@@ -803,12 +810,8 @@ class Game:
         elif sk.skilltype == constants.SkillType.ACTIVENONAGGRESSIVE:
             self.skilltime -= 1
         sk.usetime -= 1
+        char.update()
         self.handleevent((constants.EventType.SKILL, self.chose))
-        if sk.usetime <= 0:
-            char.displayimagifier[skillindex].color = (128, 128, 128)
-            char.displayimagifier[skillindex+3].color = (128, 128, 128)
-            char.skilldisplayer[skillindex] = char.displayimagifier[skillindex].imagify()
-            char.skilldisplayer[skillindex+3] = char.displayimagifier[skillindex+3].imagify()
         '''if sk.animation != None:
                                 self.animations.append(sk.animation)
                                 sk.animation.start()'''
@@ -1083,16 +1086,7 @@ class Game:
             skillindex = varid.vardata['serial']
             sk = char.skills[skillindex]
             sk.usetime = value
-            if sk.usetime <= 0:
-                char.displayimagifier[skillindex].color = (128, 128, 128)
-                char.displayimagifier[skillindex+3].color = (128, 128, 128)
-                char.skilldisplayer[skillindex] = char.displayimagifier[skillindex].imagify()
-                char.skilldisplayer[skillindex+3] = char.displayimagifier[skillindex+3].imagify()
-            else:
-                char.displayimagifier[skillindex].color = (0, 0, 0)
-                char.displayimagifier[skillindex+3].color = (0, 0, 0)
-                char.skilldisplayer[skillindex] = char.displayimagifier[skillindex].imagify()
-                char.skilldisplayer[skillindex+3] = char.displayimagifier[skillindex+3].imagify()
+            char.update()
         else:
             raise ValueError(f'Invalid id:{dt}')
     
