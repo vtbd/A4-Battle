@@ -3,6 +3,7 @@ import gui
 import json
 import math
 import random
+import settings
 
 def custom_decoder(obj):
     if "__tuple__" in obj:
@@ -236,6 +237,8 @@ class Effect:
         elif t == constants.EffectType.REVIVE:
             self.target:Target = kw['target']
             self.revivehealth = kw['revivehealth']
+        elif t == constants.EffectType.SWITCHSCENE:
+            self.scene = kw['scene']
         else:
             raise ValueError(f'Invalid effect type:{t}')
     
@@ -251,6 +254,7 @@ class Equipment:
             with open(datafilestr, encoding='utf-8') as datafile:
                 data:dict = json.load(datafile, object_hook=custom_decoder)
         except FileNotFoundError:
+            print(f'Warning: File not found: {datafilestr}')
             with open(constants.EQUIPMENTNULLFILE, encoding='utf-8') as datafile:
                 data:dict = json.load(datafile, object_hook=custom_decoder)
 
@@ -261,13 +265,16 @@ class Equipment:
         #self.equiptype:int = data['type']
         self.effects:EffectSet = EffectSet(data['effect'])
         self.usetime = data.get('defaultusetime', 1)
+        self.choose:bool = data.get('choose', False)
+        self.choosecondition:bool|BoolExpression = data.get('choosecondition', True)
+        self.choosecount:int = data.get('choosecount', 1)
         
         self.infoboard = gui.LayoutObj(game.root, constants.INFOBOARDPOS, size=constants.INFOBOARDSIZE)
         self.infoboard.movability = True
-        self.displayimagifier:list[gui.TextImagifier] = []
-        self.displayimagifier += [gui.TextImagifier(game.screen, self.infoboard, game.font_big, self.name, (0, 0, 0), constants.EQUIPMENTNAMEPOS, (0, 0))]
-        self.displayimagifier += [gui.TextImagifier(game.screen, self.infoboard, game.font_small, self.description, (0, 0, 0), constants.EQUIPMENTDESCRIPTIONPOS, (1, 0), constants.EQUIPMENTDESCRIPTIONLENGTH)]
-        self.infodisplayer:list[gui.ImageObj] = [m.imagify() for i, m in enumerate(self.displayimagifier)]
+        self.skilltexts:list[gui.TextImagifier] = []
+        self.skilltexts += [gui.TextImagifier(game.screen, self.infoboard, game.font_big, self.name, (0, 0, 0), constants.EQUIPMENTNAMEPOS, (0, 0))]
+        self.skilltexts += [gui.TextImagifier(game.screen, self.infoboard, game.font_small, self.description, (0, 0, 0), constants.EQUIPMENTDESCRIPTIONPOS, (1, 0), constants.EQUIPMENTDESCRIPTIONLENGTH)]
+        self.infodisplayer:list[gui.ImageObj] = [m.imagify() for i, m in enumerate(self.skilltexts)]
 
         self.useequipbutton:gui.ButtonObj = gui.ButtonObj(game.screen, self.infoboard, constants.USEBUTTONFILE, constants.USEEQUIPMENTBUTTONPOS, (1, 0), constants.S, True)
 
@@ -282,7 +289,34 @@ class Equipment:
                 if game.useequiptime > 0:
                     self.changingdisplayer.append(self.useequipbutton)
                     
-        self.infodisplayer:list[gui.ImageObj] = [m.imagify() for i, m in enumerate(self.displayimagifier)]
+        self.infodisplayer:list[gui.ImageObj] = [m.imagify() for i, m in enumerate(self.skilltexts)]
+
+
+class Scene:
+    def __init__(self, datafilestr, game):
+        try:
+            with open(datafilestr, encoding='utf-8') as datafile:
+                data:dict = json.load(datafile, object_hook=custom_decoder)
+        except FileNotFoundError:
+            print(f'Warning: File not found: {datafilestr}')
+            with open(constants.SCENENULLFILE, encoding='utf-8') as datafile:
+                data:dict = json.load(datafile, object_hook=custom_decoder)
+
+        self.datafilestr = datafilestr
+        self.game:Game = game
+        self.name:str = data['name']
+        self.description:str = data['description']
+        self.sceneid = data['id']
+        if constants.SHOWSCENEBACKGROUND:
+            self.bgfile:str = constants.SCENEPICTUREFILE[self.sceneid]
+            self.bgimage:gui.ImageObj = gui.ImageObj(game.screen, game.root, self.bgfile, (0, 0), (1, 1), constants.SCREENSIZE, notfound=constants.NULLPICTUREFILE)
+        self.effects_instant = EffectSet(data['effect'])
+        self.effect_time_sets:list[EffectSet] = [EffectSet(fl) for fl in data['effect_time']]
+        self.timelist:list[int] = data['timelist']
+        self.age = 0
+    
+    def copy(self):
+        return Scene(self.datafilestr, self.game)
 
 
 class Summoned:
@@ -320,6 +354,7 @@ class Char:
             with open(datafilestr, encoding='utf-8') as datafile:
                 data:dict = json.load(datafile, object_hook=custom_decoder)
         except FileNotFoundError:
+            print(f'Warning: File not found: {datafilestr}')
             with open(constants.CHARNULLFILE, encoding='utf-8') as datafile:
                 data:dict = json.load(datafile, object_hook=custom_decoder)
 
@@ -341,20 +376,27 @@ class Char:
 
         self.skillboard = gui.LayoutObj(game.root, constants.SKILLBOARDPOS, size=constants.SKILLBOARDSIZE)
         self.skillboard.movability = True
-        self.displayimagifier:list[gui.TextImagifier] = []
-        self.displayimagifier += [gui.TextImagifier(game.screen, self.skillboard, game.font_big, skill.name, (0, 0, 0), constants.SKILLTITLEPOSLIST[i], (0, 0)) for i, skill in enumerate(self.skills)]
-        self.displayimagifier += [gui.TextImagifier(game.screen, self.skillboard, game.font_small, skill.description, (0, 0, 0), constants.SKILLDESCRIPTIONPOSLIST[i], (1, 0), constants.SKILLDESCRIPTIONLENGTH) for i, skill in enumerate(self.skills)]
-        self.displayimagifier += [gui.TextImagifier(game.screen, self.skillboard, game.font_big, constants.ATTACKHINT+str(self.attack), (0, 0, 0), constants.ATTACKPOS, (1, 0))]
-        self.skilldisplayer:list[gui.ImageObj] = [m.imagify() for i, m in enumerate(self.displayimagifier)]
+        self.skilltexts_black:list[gui.TextImagifier] = []
+        self.skilltexts_black += [gui.TextImagifier(game.screen, self.skillboard, game.font_big, skill.name, (0, 0, 0), constants.SKILLTITLEPOSLIST[i], (0, 0)) for i, skill in enumerate(self.skills)]
+        self.skilltexts_black += [gui.TextImagifier(game.screen, self.skillboard, game.font_small, skill.description, (0, 0, 0), constants.SKILLDESCRIPTIONPOSLIST[i], (1, 0), constants.SKILLDESCRIPTIONLENGTH) for i, skill in enumerate(self.skills)]
+        self.skilltexts_grey:list[gui.TextImagifier] = []
+        self.skilltexts_grey += [gui.TextImagifier(game.screen, self.skillboard, game.font_big, skill.name, (128, 128, 128), constants.SKILLTITLEPOSLIST[i], (0, 0)) for i, skill in enumerate(self.skills)]
+        self.skilltexts_grey += [gui.TextImagifier(game.screen, self.skillboard, game.font_small, skill.description, (128, 128, 128), constants.SKILLDESCRIPTIONPOSLIST[i], (1, 0), constants.SKILLDESCRIPTIONLENGTH) for i, skill in enumerate(self.skills)]
+
+        self.skillimage_black:list[gui.ImageObj] = [m.imagify() for i, m in enumerate(self.skilltexts_black)]
+        self.skillimage_grey:list[gui.ImageObj] = [m.imagify() for i, m in enumerate(self.skilltexts_grey)]
+        self.skilldisplayer:list[gui.ImageObj] = self.skillimage_black.copy()
+
+        self.attacktext = gui.TextImagifier(game.screen, self.skillboard, game.font_big, constants.ATTACKHINT+str(self.attack), (0, 0, 0), constants.ATTACKPOS, (1, 0))
+        self.attackdisplayer = self.attacktext.imagify()
 
         self.attackbutton = gui.ButtonObj(game.screen, self.skillboard, constants.ATTACKBUTTONFILE, constants.ATTACKBUTTONPOS, (1, 0), constants.S, True)
         self.useskillbuttons: list[gui.ButtonObj] = [gui.ButtonObj(game.screen, self.skillboard, constants.USEBUTTONFILE, constants.USESKILLBUTTONPUSLIST[i], (1, 0), constants.S, True) for i, skill in enumerate(self.skills)]
         self.switchcharbutton = gui.ButtonObj(game.screen, self.skillboard, constants.SWICHCHARBUTTONFILE, constants.SWICHCHARBUTTONPOS, (0, 0), constants.S, True)
 
-        self.allrelatingobjs = self.skilldisplayer.copy()
-        self.allrelatingobjs.append(self.attackbutton)
-        self.allrelatingobjs += self.useskillbuttons
-        self.allrelatingobjs.append(self.switchcharbutton)
+        self.buttons = self.useskillbuttons.copy()
+        self.buttons.append(self.attackbutton)
+        self.buttons.append(self.switchcharbutton)
 
         self.statusboard = gui.LayoutObj(game.root, constants.STATUSBOARDPOS, size=constants.STATUSBOARDSIZE)
         self.statusboard.movability = True
@@ -387,15 +429,16 @@ class Char:
                     self.absattack = self.game.calcnum(b.value, original=self.absattack)
         for skillindex, sk in enumerate(self.skills):
             if sk.usetime <= 0:
-                self.displayimagifier[skillindex].color = (128, 128, 128)
-                self.displayimagifier[skillindex+3].color = (128, 128, 128)
+                self.skilldisplayer[skillindex] = self.skillimage_grey[skillindex]
+                self.skilldisplayer[skillindex+3] = self.skillimage_grey[skillindex+3]
             else:
-                self.displayimagifier[skillindex].color = (0, 0, 0)
-                self.displayimagifier[skillindex+3].color = (0, 0, 0)
-        self.displayimagifier[6] = gui.TextImagifier(self.game.screen, self.skillboard, self.game.font_big, constants.ATTACKHINT+str(self.absattack), (0, 0, 0), constants.ATTACKPOS, (1, 0))
-        self.skilldisplayer:list[gui.ImageObj] = [m.imagify() for i, m in enumerate(self.displayimagifier)]
+                self.skilldisplayer[skillindex] = self.skillimage_black[skillindex]
+                self.skilldisplayer[skillindex+3] = self.skillimage_black[skillindex+3]
+        self.attacktext = gui.TextImagifier(self.game.screen, self.skillboard, self.game.font_big, constants.ATTACKHINT+str(self.absattack), (0, 0, 0), constants.ATTACKPOS, (1, 0))
+        self.attackdisplayer = self.attacktext.imagify()
+        #self.skilldisplayer:list[gui.ImageObj] = [m.imagify() for i, m in enumerate(self.skilltexts)]
         #???  ↓
-        #self.displayimagifier[6] = [gui.TextImagifier(game.screen, self.skillboard, game.font_big, constants.ATTACKHINT+str(self.attack), (0, 0, 0), constants.ATTACKPOS, (1, 0))]
+        #self.skilltexts[6] = [gui.TextImagifier(game.screen, self.skillboard, game.font_big, constants.ATTACKHINT+str(self.attack), (0, 0, 0), constants.ATTACKPOS, (1, 0))]
 
     def receivedamage(self, damage: int, source: int, flags: list[int]):
         damage_t = damage
@@ -500,6 +543,7 @@ class Game:
             it = json.load(itf, object_hook=custom_decoder)
             self.charidlist:list[str] = it['chars']
             self.equipidlist:list[int] = it['equipment']
+            self.initial_sceneid:str = it['scene']
         self.charlist:list[Char] = [Char(constants.CHARFILE[char], self, i) for i, char in enumerate(self.charidlist)]
 
         self.charavatarlist:list[gui.ImageObj] = [gui.ImageObj(screen, root, constants.CHARAVATARFILE.get(char, 'a'), constants.CHARPOSLIST[i], (0, 0), constants.S, True) for i, char in enumerate(self.charidlist)]
@@ -521,6 +565,9 @@ class Game:
         for i, deco in enumerate(self.equipdecoratorlist):
             deco.setimagelist(constants.EQUIPMENTDECORATORFILELIST, 2, [(deco.rect.center, (0, 0), constants.S, True)]*len(constants.EQUIPMENTDECORATORFILELIST))
             deco.start()
+
+        self.scenes:dict[str, Scene] = {scene:Scene(constants.SCENEFILE[scene], self) for i, scene in enumerate(constants.SCENEIDLIST)}
+        self.currentscene:Scene = self.scenes[self.initial_sceneid]
 
         self.endturnbutton = gui.ButtonObj(screen, root, constants.ENDTURNBUTTONFILE, constants.ENDTURNBUTTONPOS, (0, 0), constants.S, True)
         self.informationbutton = gui.ButtonObj(screen, root, constants.INFORMATIONBUTTONFILE, constants.INFORMATIONBUTTONPOS, (0, 0), constants.S, True)
@@ -564,7 +611,6 @@ class Game:
             equip.update(self)
         self.updatedecorator()
 
-
         self.mask = gui.ImageObj(screen, root, constants.MASKFILE, (0, 0), size=constants.SCREENSIZE, alpha=True)
         self.winblock = gui.ImageObj(screen, root, constants.WINBLOCKFILE, constants.WINBLOCKPOS, (0, 0), constants.S, True)
         self.wintext = [gui.TextImagifier(screen, root, font_big, constants.WINTEXT[i], (0, 0, 0), constants.WINTEXTPOS, (0, 1)).imagify() for i in range(2)]
@@ -581,11 +627,9 @@ class Game:
         self.choosesurebutton = gui.ButtonObj(screen, root, constants.SURESUREBUTTONFILE, constants.CHOOSEYESBUTTONPOS, (0, 0), constants.S, True)
         self.choosecancelbutton = gui.ButtonObj(screen, root, constants.SURECANCELBUTTONFILE, constants.CHOOSENOBUTTONPOS, (0, 0), constants.S, True)
 
-
         self.gameend = False
         self.winner = -1
         self.new = False
-
 
         self.choosecharavatarlist:list[gui.ImageObj] = [gui.ImageObj(screen, root, constants.CHARAVATARFILE.get(char, 'a'), constants.CHOOSECHARPOSLIST[i], (0, 0), constants.S, True) for i, char in enumerate(self.charidlist)]
         self.choosecharframelist:list[gui.ButtonObj] = [gui.ButtonObj(screen, root, constants.CHARFRAMEFILE, constants.CHOOSECHARPOSLIST[i], (0, 0), constants.S, True) for i, char in enumerate(self.charidlist)]
@@ -604,6 +648,7 @@ class Game:
          - 1: win
          - 2: sure ending round
          - 3: choose
+         - 4: info
         '''
 
     def inturncharseqs(self) -> list[int]:
@@ -620,6 +665,8 @@ class Game:
     def displayall(self):
         for layoutid in self.stack:
             if layoutid == 0:
+                if constants.SHOWSCENEBACKGROUND:
+                    self.displaysingle(self.currentscene.bgimage)
                 self.displaylist(self.charframelist)
                 self.displaylist(self.charframeonfightlist)
                 self.displaylist(self.charavatarlist)
@@ -636,6 +683,7 @@ class Game:
                 if self.chosetype == 1:
                     if self.displaymode == 0:
                         self.displaylist(self.charlist[self.chose].skilldisplayer)
+                        self.displaysingle(self.charlist[self.chose].attackdisplayer)
                         self.displaylist(self.charlist[self.chose].changingdisplayer)
                     elif self.displaymode == 1:
                         self.displaysingle(self.charlist[self.chose].statusdisplayer)
@@ -715,21 +763,9 @@ class Game:
                         if m.surveil(pos):
                             sk = chosechar.skills[i]
                             if sk.choose:
-                                for j, deco in enumerate(self.choosechardecoratorlist):
-                                    deco.setappr(0)
-                                self.stack.append(3)
-                                self.choselist = []
-                                self.chooseskill = sk
-                                self.chooseskillseri = i
-                                self.chooseskillcharseri = chosechar
-                                self.choosecondition = sk.choosecondition
-                                self.choosecount = sk.choosecount
-                                self.availablechoice = []
-                                for j in range(6):
-                                    if self.calbool(self.choosecondition, iterchar=j):
-                                        self.availablechoice.append(j)
+                                self.initialize_choose_skill(i, chosechar, sk)
                                 return
-                            self.useskill(i, chosechar, sk)
+                            self.use_skill(chosechar, sk)
                 if chosechar.switchcharbutton.drawn:
                     if chosechar.switchcharbutton.surveil(pos):
                         if self.turns%2 == 0:
@@ -746,12 +782,10 @@ class Game:
                 choseequip = self.equiplist[self.chose]
                 if choseequip.useequipbutton.drawn:
                     if choseequip.useequipbutton.surveil(pos):
-                        self.executeeffects(choseequip.effects, [self.onfightl, self.onfightr][self.turns%2])
-                        choseequip.usetime -= 1
-                        self.useequiptime -= 1
-                        self.chosetype = -1
-                        self.chose = -1
-                        self.updatedecorator()
+                        if choseequip.choose:
+                            self.initialize_choose_equip(choseequip)
+                            return
+                        self.use_equipment(choseequip)
             if self.endturnbutton.surveil(pos):
                 if self.attacktime > 0:
                     self.stack.append(2)
@@ -781,7 +815,10 @@ class Game:
         elif layoutid == 3:
             if self.choosesurebutton.surveil(pos):
                 if len(self.choselist) == self.choosecount:
-                    self.useskill(self.chooseskillseri, self.chooseskillcharseri, self.chooseskill, chose=self.choselist)
+                    if self.choosetype == 1:
+                        self.use_skill(self.chooseskillcharseri, self.chooseskill, chose=self.choselist)
+                    elif self.choosetype == 2:
+                        self.use_equipment(self.chooseequip, chose=self.choselist)
                     self.stack.pop()
             elif self.choosecancelbutton.surveil(pos):
                 self.stack.pop()
@@ -800,9 +837,47 @@ class Game:
                                     self.choosechardecoratorlist[i].setappr(0)
                                 else:
                                     self.choselist.append(i)
-                                    self.choosechardecoratorlist[i].setappr(2)                     
+                                    self.choosechardecoratorlist[i].setappr(2)
 
-    def useskill(self, skillindex:int, char:Char, sk:Skill, **kw):
+    def use_equipment(self, choseequip:Equipment, **kw):
+        self.executeeffects(choseequip.effects, [self.onfightl, self.onfightr][self.turns%2], **kw)
+        choseequip.usetime -= 1
+        self.useequiptime -= 1
+        self.chosetype = -1
+        self.chose = -1
+        self.updatedecorator()
+
+    def initialize_choose_skill(self, seq:int, chosechar:Char, sk:Skill):
+        for j, deco in enumerate(self.choosechardecoratorlist):
+            deco.setappr(0)
+        self.stack.append(3)
+        self.choosetype = 1
+        self.choselist = []
+        self.chooseskill = sk
+        self.chooseskillseri = seq
+        self.chooseskillcharseri = chosechar
+        self.choosecondition = sk.choosecondition
+        self.choosecount = sk.choosecount
+        self.availablechoice = []
+        for j in range(6):
+            if self.calbool(self.choosecondition, iterchar=j):
+                self.availablechoice.append(j)                    
+
+    def initialize_choose_equip(self, equip:Equipment):
+        for j, deco in enumerate(self.choosechardecoratorlist):
+            deco.setappr(0)
+        self.stack.append(3)
+        self.choosetype = 2
+        self.choselist = []
+        self.chooseequip = equip
+        self.choosecondition = equip.choosecondition
+        self.choosecount = equip.choosecount
+        self.availablechoice = []
+        for j in range(6):
+            if self.calbool(self.choosecondition, iterchar=j):
+                self.availablechoice.append(j)                    
+
+    def use_skill(self, char:Char, sk:Skill, **kw):
         self.executeeffects(sk.effects, self.chose, **kw)
         if sk.skilltype == constants.SkillType.ACTIVEAGGRESSIVE:
             self.attacktime -= 1
@@ -854,7 +929,7 @@ class Game:
         self.charshieldlist:list[gui.ImageObj] = [gui.TextImagifier(self.screen, self.root, self.font_big, str(char.shield) if char.shield > 0 else '', (128, 128, 128), constants.CHARSHIELDPOSLIST[i], (1 if i <= 2 else -1, 1)).imagify() for i, char in enumerate(self.charlist)]
         #self.charsummonedhealthlist:list[gui.ImageObj] = [gui.TextImagifier(self.screen, self.root, self.font_big, str(k) if (k:=sum(map(lambda x:x.health, char.summons))) > 0 else '', (0xcc, 0x99, 0x66), constants.CHARSHIELDPOSLIST[i], (1 if i <= 2 else -1, 1)).imagify() for i, char in enumerate(self.charlist)]
         for a in self.charlist:
-            for b in a.allrelatingobjs:
+            for b in a.buttons:
                 b.drawn = False
         for a in self.equiplist:
             for b in a.allrelatingobjs:
@@ -914,7 +989,7 @@ class Game:
         elif effect.effecttype == constants.EffectType.ENVIRONMENTALBUFF:
             self.environmentalbuff.append(effect.buff.copy())
         elif effect.effecttype == constants.EffectType.KILL:
-            for i in effect.target:
+            for i in effect.target.concretize(self, charself=charself, **kw):
                 self.charlist[i].health = 0
                 self.charlist[i].alive = False
         elif effect.effecttype == constants.EffectType.RANDOM:
@@ -936,6 +1011,9 @@ class Game:
             for a in target:
                 self.charlist[a].health = effect.revivehealth
                 self.charlist[a].alive = True
+        elif effect.effecttype == constants.EffectType.SWITCHSCENE:
+            self.currentscene = self.scenes[effect.scene].copy()
+            self.executeeffects(self.currentscene.effects_instant, charself=charself, **kw)
         elif effect.effecttype == constants.EffectType.SPECIFIC:
             if effect.specific == constants.EffectType.Specific.ZHH:
                 equipseqs = [range(6, 12), range(0, 6)][self.turns%2]
@@ -1049,7 +1127,7 @@ class Game:
         if dt == constants.VariableId.ROUND:
             return self.rounds
         if dt == constants.VariableId.ATTACK:
-            return self.charlist[varid.targetabs].attack
+            return self.charlist[varid.targetabs].absattack
         if dt == constants.VariableId.HEALTH:
             return self.charlist[varid.targetabs].health
         if dt == constants.VariableId.SHIELD:

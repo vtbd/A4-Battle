@@ -10,7 +10,9 @@
         "7": "chars/7_wyh_2.json", 
         "8": "chars/8_wjt.json", 
         "9": "chars/9_yq.json", 
-        "10": "chars/10_wyl.json"
+        "10": "chars/10_wyl.json", 
+        "11": "chars/11_zzm.json", 
+        "TEST_1": "chars/test_1.json"
     },
     "charavatarfile": {
         "0": "res/null.png",
@@ -23,7 +25,8 @@
         "7": "res/char/wyh_2.png",
         "8": "res/char/wjt.png",
         "9": "res/char/yq.png",
-        "10": "res/char/wyl.png"
+        "10": "res/char/wyl.png", 
+        "11": "res/char/zzm.png"
     },
     "equipmentfile": {
         "default": "equipment/0.json", 
@@ -48,7 +51,8 @@
         "19": "equipment/19_wyh_flowerpot.json",
         "20": "equipment/20_practice_thoroughly.json",
         "21": "equipment/21_blackboard_eraser.json", 
-        "22": "equipment/22_jieziyuan_spectrum.json"
+        "22": "equipment/22_jieziyuan_problems_spectrum.json", 
+        "23": "equipment/23_japanese_slippers.json"
     },
     "equipmentpicturefile": {
         "1": "res/equipment/1_ladybug_correction_tape.png",
@@ -72,6 +76,32 @@
         "19": "res/equipment/19_wyh_flowerpot.png",
         "20": "res/equipment/20_practice_thoroughly.png",
         "21": "res/equipment/21_blackboard_eraser.png", 
-        "22": "res/equipment/22_jieziyuan_problems_spectrum.png"
+        "22": "res/equipment/22_jieziyuan_problems_spectrum.png", 
+        "23": "res/equipment/23_japanese_slippers.png"
+    }, 
+    "scenefile": {
+        "default": "scene/0.json",
+        "0": "scene/0.json", 
+        "1": "scene/1_classroom.json",
+        "2": "scene/2_school_gate.json", 
+        "3": "scene/3_admin_building.json",
+        "4": "scene/4_laboratory.json",
+        "5": "scene/5_toilet.json",
+        "6": "scene/6_canteen.json",
+        "7": "scene/7_dormitory.json",
+        "8": "scene/8_dongfanghong.json",
+        "9": "scene/9_home.json"
+    }, 
+    "scenepicturefile": {
+        "0": "res/background.png",
+        "1": "res/scene/1_classroom.png",
+        "2": "res/scene/2_school_gate.png", 
+        "3": "res/scene/3_admin_building.png",
+        "4": "res/scene/4_laboratory.png",
+        "5": "res/scene/5_toilet.png",
+        "6": "res/scene/6_canteen.png",
+        "7": "res/scene/7_dormitory.png",
+        "8": "res/scene/8_dongfanghong.png",
+        "9": "res/scene/9_home.png"
     }
-    }
+}

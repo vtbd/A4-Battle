@@ -1,18 +1,33 @@
+import sys
+import os
 import json
+
 
 #display
 ##general
+if getattr(sys, 'frozen', False):
+    _base_path = sys._MEIPASS
+else:
+    _base_path = os.path.dirname(__file__)
+
+_res_path = os.path.join(_base_path, 'res.json')
+
 with open('settings.json', encoding='utf-8') as fl:
     f = json.load(fl)
     S = f['size']
-with open('res.json', encoding='utf-8') as fl:
+    SHOWSCENEBACKGROUND = f['show_scene_background']
+
+with open(_res_path, encoding='utf-8') as fl:
     f = json.load(fl)
     CHARFILE:dict[str, str] = f['charfile']
     CHARAVATARFILE:dict[str, str] = f['charavatarfile']
     EQUIPMENTFILE:dict[str, str] = f['equipmentfile']
     EQUIPMENTPICTUREFILE:dict[str, str] = f['equipmentpicturefile']
+    SCENEFILE:dict[str, str] = f['scenefile']
+    SCENEPICTUREFILE:dict[str, str] = f['scenepicturefile']
     CHARNULLFILE = CHARFILE['default']
     EQUIPMENTNULLFILE = EQUIPMENTFILE['default']
+    SCENENULLFILE = SCENEFILE['default']
 
 ##specific
 ###screen
@@ -78,6 +93,8 @@ INITIALIZEFILE = 'initialize.json'
 #CHARNAME = {1:'dsc', 2:'wyh', 3:'wm', 4:'zhh', 5:'Felix', 6:'zyf'}
 #CHARFILE = {0:'chars/0.json', 1:'chars/1_dsc.json', 2:'chars/2_wyh.json', 3:'chars/3_wm.json', 4:'chars/4_zhh.json', 5:'chars/5_felix.json', 6:'chars/6_zyf.json'}
 #CHARAVATARFILE = {0:'res/null.png',1:'res/char/dsc.png', 2:'res/char/wyh.png', 3:'res/char/wm.png', 4:'res/char/zhh.png', 5:'res/char/felix.png', 6:'res/char/zyf.png'}
+SCENEIDLIST = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+
 CHARFRAMEFILE = 'res/avatar_frame.png'
 CHARONFIGHTFRAMEFILE = 'res/avatar_frame_on_fight.png'
 CHARDECORATORFILELIST = ['res/null.png', 'res/avatar_dead.png', 'res/choosing_block.png']
@@ -113,6 +130,7 @@ CHARDECORATORFILELIST = ['res/null.png', 'res/avatar_dead.png', 'res/choosing_bl
 EQUIPMENTFRAMEFILE = 'res/equipment_frame.png'
 EQUIPMENTDECORATORFILELIST = ['res/null.png', 'res/equipment_used.png', 'res/choosing_block.png']
 
+NULLPICTUREFILE = 'res/null.png'
 
 ATTACKBUTTONFILE = 'res/common_attack_button.png'
 USEBUTTONFILE = 'res/use_button.png'
@@ -176,7 +194,7 @@ class Target:
     ITERCHAR = 18
 
 EFFECTTYPE = {1: 'DAMAGE', 2: 'HEAL', 3:'KILL', 4: 'INCREASE', 5: 'SET', 6: 'RANDOM', 7:'BUFF', 8:'BUFFCLEAR', 9:'SPECIFIC',
-              10:'ENVIRONMENTALBUFF', 11:'SUMMON', 12:'REVIVE'}
+              10:'ENVIRONMENTALBUFF', 11:'SUMMON', 12:'REVIVE', 13:'SWITCHSCENE'}
 class EffectType:
     DAMAGE = 1
     HEAL = 2
@@ -190,6 +208,7 @@ class EffectType:
     ENVIRONMENTALBUFF = 10
     SUMMON = 11
     REVIVE = 12
+    SWITCHSCENE = 13
     class Specific:
         ZHH = 1
 
@@ -309,192 +328,3 @@ class BoolJudgement:
     NOTIN = '11'
     ALIVE = '12'
     GROUP = '13'
-
-
-#editor
-ED_TYPE_READER = {
-    '角色': 'char',
-    '装备': 'equipment',
-    '技能': 'skill',
-    '效果': 'effect',
-    'Buff': 'buff',
-    '数字表达式': 'expression',
-    '布尔表达式': 'boolean'
-}
-
-ED_TYPE_READER_INVERT = {
-    'char': '角色',
-    'equipment': '装备',
-    'skill': '技能',
-    'effect': '效果',
-    'buff': 'Buff',
-    'expression': '数字表达式',
-    'boolean': '布尔表达式'
-}
-
-ED_SAVE_HINT = {
-    '角色': 'A4 Battle 角色',
-    '装备': 'A4 Battle 装备',
-    '技能': 'A4 Battle 技能',
-    '效果': 'A4 Battle 效果',
-    'Buff': 'A4 Battle Buff',
-    '数字表达式': 'A4 Battle 数字表达式',
-    '布尔表达式': 'A4 Battle 布尔表达式'
-}
-
-ED_SAVE_TYPE = {
-    '角色': '.a4bc',
-    '装备': '.a4be',
-    '技能': '.a4bs',
-    '效果': '.a4be',
-    'Buff': '.a4bb',
-    '数字表达式': '.a4bx',
-    '布尔表达式': '.a4bo'
-}
-
-ED_CHAR_INPUTER_VALUES = {
-    0: 'name', 
-    1: 'health', 
-    2: 'attack'
-}
-
-ED_CHAR_CHOICE_VALUES = {
-    0: 'group'
-}
-
-ED_CHAR_CHOICE_READER = {
-    '学生': 1,
-    '教师': 2
-}
-
-ED_CHAR_CHOICE_READER_INVERT = {
-    1: '学生',
-    2: '教师'
-}
-
-ED_EFFECT_TYPE_READER = {
-    '伤害': 1,
-    '治疗': 2,
-    #'击杀': 3,
-    '增加': 4,
-    '设定': 5,
-    '随机': 6,
-    'Buff': 7,
-    'Buff 清除': 8,
-    #'特殊': 9
-}
-
-ED_EFFECT_TYPE_READER_INVERT = {
-    1: '伤害',
-    2: '治疗',
-    #3: '击杀',
-    4: '增加',
-    5: '设定',
-    6: '随机',
-    7: 'Buff',
-    8: 'Buff 清除',
-    #9: '特殊'
-}
-
-ED_TARGET_READER = {
-    '敌方出战': 1,
-    '我方出战': 2,
-    '敌方全体': 3,
-    '我方全体': 4,
-    '敌方非场上角色': 5,
-    '我方非场上角色': 6,
-    '自身': 7,
-    '所有角色': 8,
-    #'指定角色': 9,
-    #'指定位置': 10,
-    #'伤害来源': 11,
-    #'组': 12,
-    #'并集': 13,
-    #'交集': 14
-}
-
-ED_TARGET_READER_INVERT = {
-    1: '敌方出战',
-    2: '我方出战',
-    3: '敌方全体',
-    4: '我方全体',
-    5: '敌方非场上角色',
-    6: '我方非场上角色',
-    7: '自身',
-    8: '所有角色',
-    #9: '指定角色',
-    #10: '指定位置',
-    #11: '伤害来源',
-    #12: '组',
-    #13: '并集',
-    #14: '交集'
-}
-
-ED_VARIABLEID_READER = {
-    '生命值': '1',
-    '攻击力': '2',
-    '攻击次数': '3',
-    '技能次数': '4',
-    '换人次数': '5',
-    '回合数': '6',
-    '护盾值': '7',
-    '标记数': '8'
-}
-
-ED_VARIABLEID_READER_INVERT = {
-    '1': '生命值',
-    '2': '攻击力',
-    '3': '攻击次数',
-    '4': '技能次数',
-    '5': '换人次数',
-    '6': '回合数',
-    '7': '护盾值',
-    '8': '标记数'
-}
-
-ED_SKILL_TYPE_READER = {
-    '主动攻击': 1,
-    '主动非攻击': 2,
-    '被动': 3
-}
-
-ED_SKILL_TYPE_READER_INVERT = {
-    1: '主动攻击',
-    2: '主动非攻击',
-    3: '被动'
-}
-
-ED_BUFF_TYPE_READER = {
-    '无': 0, 
-    '改变打出伤害': 1, 
-    '改变受到伤害': 2,  
-    '改变属性': 3, 
-    '定时执行效果': 4, 
-    '禁止使用技能': 5, 
-    '禁止攻击': 6
-}
-
-ED_BUFF_TYPE_READER_INVERT = {
-    0: '无',
-    1: '改变打出伤害',
-    2: '改变受到伤害',
-    3: '改变属性',
-    4: '定时执行效果',
-    5: '禁止使用技能',
-    6: '禁止攻击'
-}
-
-ED_BUFF_POSITIVITY_READER = {
-    '正面': 0,
-    '负面': 1,
-    '中性': 2,
-    '不被清除标识': 3
-}
-
-ED_BUFF_POSITIVITY_READER_INVERT = {
-    0: '正面', 
-    1: '负面', 
-    2: '中性', 
-    3: '不被清除标识'
-}
-

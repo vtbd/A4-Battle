@@ -1,0 +1,81 @@
+{
+    "name": "zzm", 
+    "attack": 0, 
+    "health": 41,
+    "group": 1,
+    "skill": [
+        {
+            "__skill__": true, 
+            "name": "丰盛早餐", 
+            "description": "（被动）造成的伤害增加100%", 
+            "type": 3, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 7,
+                "target": {"__target__": true, "type": 7},
+                "buff": {
+                    "identification": -1,
+                    "name": "__zzm__",
+                    "lasttime": -1,
+                    "usetime": -1,
+                    "type": 1,
+                    "positivity": 0, 
+                    "buffdata": {
+                        "increment": {
+                            "__mathexpression__": true,
+                            "operator": "3", 
+                            "data": ["damage", 2]
+                        }
+                    }
+                }
+            }]
+        }, 
+        {
+            "__skill__": true, 
+            "name": "赌狗开箱", 
+            "description": "有50%概率在三回合内使自身攻击力增加100%", 
+            "type": 2, 
+            "effect": [{
+                "__effect__":true,
+                "type":6, 
+                "effects":[
+                    [{
+                        "__effect__": true, 
+                        "type": 7, 
+                        "target": {"__target__": true, "type": 7}, 
+                        "buff": {
+                            "identification": -1, 
+                            "name": "__zzm_attack__", 
+                            "lasttime": 5, 
+                            "usetime": -1, 
+                            "type": 3, 
+                            "positivity": 3,
+                            "buffdata": {
+                                "attrid": "2",
+                                "value": {"__mathexpression__": true, "operator": "3", "data": ["original", 2]}
+                            }
+                        }
+                    }]], 
+                "probabilities": [0.5]
+            }]
+        }, 
+        {
+            "__skill__": true, 
+            "name": "绍绍液液", 
+            "description": "对对方出战角色造成相当于2倍攻击力的伤害，然后自身立即死亡", 
+            "type": 1, 
+            "effect": [
+                {
+                    "__effect__": true, 
+                    "type": 1,
+                    "target": {"__target__": true, "type": 1},
+                    "damage": {"__mathexpression__": true, "operator": "3", "data":[2, 
+                        {"__mathexpression__": true, "operator": "0", "data":
+                        {"__variableid__": true, "target": {"__target__":true, "type":7}, "type": "2"}}]},
+                        "flags": []
+                }, {
+                    "__effect__": true, 
+                    "type": 3,
+                    "target": {"__target__": true, "type": 7}
+                }]
+}]}

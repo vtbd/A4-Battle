@@ -138,12 +138,12 @@ class RootObj(PlaObj):
 
 class ImageObj(PlaObj):
     objtype = 'image'
-    def __init__(self, screen: pygame.Surface, parent_t: PlaObj, file: str|pygame.Surface|int, pos: tuple[float], mode: tuple[int]= (1, 1), size: tuple[float]=(-1, -1), alpha: bool = False) -> None:
+    def __init__(self, screen: pygame.Surface, parent_t: PlaObj, file: str|pygame.Surface|int, pos: tuple[float], mode: tuple[int]= (1, 1), size: tuple[float]=(-1, -1), alpha: bool = False, notfound=None) -> None:
         '''mode: 1: l/h 0:c -1: r/d'''
         self.parent = parent_t
         self._screen = screen
         if type(file) == str:
-            self.setimagefromfile(file, pos, mode, size, alpha)
+            self.setimagefromfile(file, pos, mode, size, alpha, notfound)
         elif type(file) == pygame.Surface:
             self._surf = file.copy()
             self._rect = self._surf.get_rect(center=tuple(pos[i]+self._surf.get_size()[i]*mode[i]//2 for i in range(2)))
@@ -155,8 +155,11 @@ class ImageObj(PlaObj):
         self._movability = False
         self._movement = (0, 0)
 
-    def setimagefromfile(self, file: str, pos: tuple[float], mode: tuple[int]= (1, 1), size: tuple[float]=(-1, -1), alpha: bool = False) -> None:
-        self._surf, self._rect = loadimagefromfile(file, pos, mode, size, alpha)
+    def setimagefromfile(self, file: str, pos: tuple[float], mode: tuple[int]= (1, 1), size: tuple[float]=(-1, -1), alpha: bool = False, notfound=None) -> None:
+        if notfound is None:
+            self._surf, self._rect = loadimagefromfile(file, pos, mode, size, alpha)
+        else:
+            self._surf, self._rect = loadimagefromfile(file, pos, mode, size, alpha, notfound)
         self._originalsurf = self._surf.copy()
         self._originalrect = self._rect.copy()
 
@@ -182,7 +185,7 @@ class ImageObj(PlaObj):
 
 class MtpApprObj(ImageObj):
     objtype = 'mtpappr'
-    def setimagelist(self, images:list[str], align:int = 0, attrs:list[tuple] = None, alpha=False):
+    def setimagelist(self, images:list[str], align:int = 0, attrs:list[tuple] = None, alpha=False, notfound=None) -> None:
         '''When align is 0 (default), the new images aligns with the top and left of the initial picture; \n
         when align is 1, the new images aligns with the center of the initial picture; \n
         when align is 2, the position and size of the new images will be given in sequence in the list attrs, \n

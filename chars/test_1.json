@@ -1,0 +1,47 @@
+{
+    "name": "测试-伤害测试器", 
+    "attack": 50, 
+    "health": 1000,
+    "group": 0,
+    "skill": [
+        {
+            "__skill__": true,
+            "name": "修理桩子", 
+            "description": "生命值+1000", 
+            "type": 2, 
+            "effect": [
+                {
+                    "__effect__": true, 
+                    "type": 4, 
+                    "variableid": {"__variableid__": true, "type": "1", "target": {
+                        "__target__": true, "type": 7}},
+                    "increment": 1000
+                }]
+        }, 
+        {
+            "__skill__": true,
+            "name": "复原桩子", 
+            "description": "生命值设为1000", 
+            "type": 2, 
+            "effect": [
+                {
+                    "__effect__": true, 
+                    "type": 5, 
+                    "variableid": {"__variableid__": true, "type": "1", "target": {
+                        "__target__": true, "type": 7}},
+                    "value": 1000
+                }]
+        }, 
+        {
+            "__skill__": true,
+            "name": "摧毁桩子", 
+            "description": "立即死亡", 
+            "type": 2, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 3,
+                "target": {"__target__": true, "type": 7}
+            }]
+        }
+    ]
+}

@@ -5,7 +5,7 @@ import random
 class GameConfigApp(wx.Frame):
     def __init__(self, parent, title):
         # 设置窗口样式，禁止调整大小
-        super().__init__(parent, title=title, size=(600, 360), style=wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER)
+        super().__init__(parent, title=title, size=(600, 380), style=wx.DEFAULT_FRAME_STYLE & ~wx.RESIZE_BORDER)
         
         # 读取角色和装备数据
         icon = wx.Icon("res/icon.ico", wx.BITMAP_TYPE_ICO)
@@ -20,7 +20,13 @@ class GameConfigApp(wx.Frame):
         self.data = self.load_data('initialize.json')
         self.char_data = self.data['chars']
         self.equipment_data = self.data['equipment']
-        
+
+        # 初始场景数据
+        self.scenes_display = self.names["scenes"]
+        self.scenes_reversed = {v : k for k, v in self.scenes_display.items()}
+        # 从 initialize.json 读取场景初始值
+        self.scene_data = self.data.get("scene", "0")
+
         # 初始化界面
         self.init_ui()
         self.Centre()
@@ -98,7 +104,25 @@ class GameConfigApp(wx.Frame):
         
         main_sizer.Add(grid_sizer_bottom, 0, wx.ALL | wx.EXPAND, 15)
 
+        # 场景布局
+        scene_sizer = wx.BoxSizer(wx.HORIZONTAL)
+        scene_label = wx.StaticText(panel, label="初始场景:")
+        scene_sizer.Add(scene_label, 0, wx.ALIGN_CENTER | wx.RIGHT, 5)
+        
+        # 场景下拉框
+        self.scene_dropdown = wx.ComboBox(
+            parent=panel,
+            choices=list(self.scenes_display.values()),
+            style=wx.CB_READONLY,
+            value=self.scenes_display.get(self.scene_data, "默认场景")
+        )
+        scene_sizer.Add(self.scene_dropdown, 1, wx.EXPAND)
+        
+        # 将场景选择添加到主布局
+        main_sizer.Add(scene_sizer, 0, wx.EXPAND | wx.LEFT | wx.RIGHT, 15)
+
         button_sizer = wx.BoxSizer(wx.HORIZONTAL)
+
         # 添加随机按钮
         random_button = wx.Button(panel, label="随机")
         random_button.Bind(wx.EVT_BUTTON, self.randomize_config)
@@ -147,7 +171,14 @@ class GameConfigApp(wx.Frame):
                 chars.append(self.chars_reversed[dropdowns[0].GetValue()])
                 equipment.append(self.equipment_reversed[dropdowns[1].GetValue()])
                 equipment.append(self.equipment_reversed[dropdowns[2].GetValue()])
-            out = json.dumps({"chars": chars, "equipment": equipment})
+
+            scene_id = self.scenes_reversed[self.scene_dropdown.GetValue()]
+            out = json.dumps({
+                "chars": chars,
+                "equipment": equipment,
+                "scene": scene_id
+            })
+
             with open("initialize.json", "w", encoding="utf-8") as file:
                 file.write(out)
                 wx.MessageBox("配置已保存到 initialize.json", "成功", wx.ICON_INFORMATION)

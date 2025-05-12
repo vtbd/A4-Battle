@@ -1,0 +1,15 @@
+{
+    "name": "音速拖把杆", 
+    "description": "本回合内攻击次数、技能次数+1",
+    "effect": [{
+        "__effect__": true, 
+        "type": 4, 
+        "variableid": {"__variableid__": true, "type": "3"},
+        "increment": 1
+    }, {
+        "__effect__": true, 
+        "type": 4, 
+        "variableid": {"__variableid__": true, "type": "4"},
+        "increment": 1
+    }]
+}

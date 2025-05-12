@@ -18,7 +18,8 @@
                         "__effect__": true, 
                         "type": 1, 
                         "target": {"__target__": true, "type": 1}, 
-                        "damage": 2
+                        "damage": 2, 
+                        "source":{"None": true}
                     }
                 ],
                 "eventtime": 0

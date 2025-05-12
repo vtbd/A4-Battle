@@ -1,0 +1,9 @@
+{
+    "__scene__": true,
+    "id": "0", 
+    "name": "无场景", 
+    "description": "无效果", 
+    "effect": [], 
+    "effect_time":[],
+    "timelist": []
+}

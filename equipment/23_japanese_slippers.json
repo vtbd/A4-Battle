@@ -1,0 +1,19 @@
+{
+    "name": "日本拖鞋", 
+    "description": "选择一名生命值在23至43的角色，将其生命值设为33",
+    "choose": true, 
+    "choosecondition": 
+        {"__boolexpression__": true, "operator": "6", "data": 
+        [{"__boolexpression__": true, "operator": "1", "data": [23, 
+        {"__mathexpression__":true, "operator": "0", "data":
+        {"__variableid__":true, "type": "1", "target":{"__target__":true, "type": 18}}}]}, 
+        {"__boolexpression__": true, "operator": "0", "data": [43, 
+        {"__mathexpression__":true, "operator": "0", "data":
+        {"__variableid__":true, "type": "1", "target":{"__target__":true, "type": 18}}}]}]}, 
+    "effect": [{
+        "__effect__": true, 
+        "type": 5, 
+        "variableid": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type": 16}},
+        "value": 33
+    }]
+}
