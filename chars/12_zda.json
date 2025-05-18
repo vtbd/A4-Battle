@@ -1,0 +1,103 @@
+{
+    "name": "zda", 
+    "attack": 5, 
+    "health": 30,
+    "group": 1,
+    "skill": [
+        {
+            "__skill__": true,
+            "name": "“勤”以积智", 
+            "description": "己方使用道具时，获得 3 护盾", 
+            "type": 3, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 7,
+                "target": {"__target__": true, "type": 7},
+                "buff": {
+                    "identification": -1,
+                    "name": "__zda__",
+                    "lasttime": -1,
+                    "usetime": -1,
+                    "type": 4,
+                    "positivity": 3,
+                    "buffdata": {
+                        "effects": [
+                            {
+                                "__effect__": true, 
+                                "type": 4, 
+                                "variableid": {"__variableid__": true, "type": "7", "target": {"__target__": true, "type": 7}},
+                                "increment": 3
+                            }
+                        ],
+                        "eventtime": 12
+                    }
+                }
+            }]
+        }, 
+        {
+            "__skill__": true,
+            "name": "大叫", 
+            "description": "对对方出战造成 18 点伤害，敌方所有角色获得「银」buff，持续 4 回合，效果：受伤 +1", 
+            "type": 1, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 1, 
+                "target": {"__target__": true, "type": 1}, 
+                "damage": 18,
+                "flags": []
+            }, {
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 3}, 
+                "buff": {
+                    "identification": -1, 
+                    "name": "银", 
+                    "lasttime": 8, 
+                    "usetime": -1, 
+                    "type": 2, 
+                    "positivity": 1,
+                    "buffdata": {
+                        "decrement": {"__mathexpression__": true, "operator": "1", "data": [1, "damage"]}
+                    }}}]
+        }, 
+        {
+            "__skill__": true,
+            "name": "海斯沃力", 
+            "description": "对方所有角色失去 5 生命，自身获得「骇」buff，持续 2 回合，效果：40% 反伤，下取整", 
+            "type": 1, 
+            "effect": [
+                {
+                    "__effect__": true, 
+                    "type": 4, 
+                    "variableid": {"__variableid__": true, "type": "1", "target": {
+                        "__target__": true, "type": 3}},
+                    "increment": -5
+                }, {
+                    "__effect__": true, 
+                    "type": 7,
+                    "target": {"__target__": true, "type": 7},
+                    "buff": {
+                        "identification": -1,
+                        "name": "骇",
+                        "lasttime": 4,
+                        "usetime": -1,
+                        "type": 4,
+                        "positivity": 3,
+                        "buffdata": {
+                            "effects": [
+                                {
+                                    "__effect__": true, 
+                                    "type": 1,
+                                    "target": {"__target__": true, "type": 11},
+                                    "damage": {"__mathexpression__": true, "operator": "8", "data": [
+                                        {"__mathexpression__": true, "operator": "3", "data": ["damage", 0.4]}]},
+                                    "flags": [3]
+                                }
+                            ],
+                            "eventtime": 5
+                        }
+                    }
+                }]
+        }
+    ]
+}

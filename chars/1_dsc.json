@@ -1,5 +1,6 @@
 {
     "name": "dsc", 
+    "description": "游戏开发者。不知道有没有偷偷加强自己。",
     "attack": 8, 
     "health": 34,
     "group": 1,

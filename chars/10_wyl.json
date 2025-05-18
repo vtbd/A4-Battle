@@ -83,7 +83,7 @@
         {
             "__skill__": true, 
             "name": "烟云缭绕", 
-            "description": "为对方全体角色附加「名烟浓雾」（不可移除），在当前回合数能被3整除时会在回合开始时对所有者附加buff「尘肺烟嗓」，持续3回合，触发3次后失效。「尘肺烟嗓」使角色攻击伤害-1，并在每回合流失1生命。", 
+            "description": "为对方全体角色附加「名烟浓雾」（不可移除），在当前回合数能被3整除时会在回合开始时对所有者附加buff「尘肺烟嗓」，持续2回合，触发2次后失效。「尘肺烟嗓」使角色攻击伤害-1，并在每回合流失2生命。", 
             "type": 2, 
             "effect": [{
                 "__effect__": true, 
@@ -93,7 +93,7 @@
                     "identification": -1, 
                     "name": "名烟浓雾", 
                     "lasttime": -1, 
-                    "usetime": 3, 
+                    "usetime": 2, 
                     "type": 4, 
                     "positivity": 3, 
                     "buffdata": {
@@ -104,7 +104,7 @@
                             "buff": {
                                 "identification": -1, 
                                 "name": "尘肺烟嗓", 
-                                "lasttime": 5, 
+                                "lasttime": 3, 
                                 "usetime": -1, 
                                 "type": 4, 
                                 "positivity": 1, 
@@ -114,7 +114,7 @@
                                         "type": 4, 
                                         "variableid": {"__variableid__": true, "type": "1", "target": {
                                             "__target__": true, "type": 7}},
-                                        "increment": -1
+                                        "increment": -2
                                     }],
                                     "eventtime":9
                                 }
@@ -126,7 +126,7 @@
                             "buff": {
                                 "identification": -1, 
                                 "name": "__尘肺烟嗓__", 
-                                "lasttime": 5, 
+                                "lasttime": 3, 
                                 "usetime": -1, 
                                 "type": 1, 
                                 "positivity": 1, 
@@ -134,7 +134,7 @@
                                     "increment": {
                                         "__mathexpression__": true,
                                         "operator": "1", 
-                                        "data": ["damage", -2]
+                                        "data": ["damage", -1]
                                     }
                                 }
                             }

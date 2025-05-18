@@ -4,10 +4,10 @@
     "choose": true, 
     "choosecondition": 
         {"__boolexpression__": true, "operator": "6", "data": 
-        [{"__boolexpression__": true, "operator": "1", "data": [23, 
+        [{"__boolexpression__": true, "operator": "4", "data": [23, 
         {"__mathexpression__":true, "operator": "0", "data":
         {"__variableid__":true, "type": "1", "target":{"__target__":true, "type": 18}}}]}, 
-        {"__boolexpression__": true, "operator": "0", "data": [43, 
+        {"__boolexpression__": true, "operator": "3", "data": [43, 
         {"__mathexpression__":true, "operator": "0", "data":
         {"__variableid__":true, "type": "1", "target":{"__target__":true, "type": 18}}}]}]}, 
     "effect": [{

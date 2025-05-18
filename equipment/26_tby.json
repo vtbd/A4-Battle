@@ -1,0 +1,11 @@
+{
+    "name": "tby", 
+    "description": "若对方出战是学生，则通过“击打”对其造成 10 点伤害，否则无效果", 
+    "effect": [{
+        "__effect__": true, 
+        "condition": {"__boolexpression__": true, "operator": "13", "data": [{"__target__":true, "type":1}, 1]},
+        "type": 1,
+        "target": {"__target__": true, "type": 1},
+        "damage": 10
+    }]
+}

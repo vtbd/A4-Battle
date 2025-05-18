@@ -1,4 +1,10 @@
 {
     "size": 1.0,
-    "show_scene_background": false
+    "show_scene_background": false,
+    "display_char_keys": [
+        "chars_normal"
+    ],
+    "display_equipment_keys": [
+        "equipment"
+    ]
 }

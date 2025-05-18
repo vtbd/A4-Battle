@@ -1,7 +1,14 @@
 import wx
 import json
 import random
+from typing import Iterable
 
+def merge_dicts(dicts:Iterable[dict]) -> dict:
+    merged_dict = {}
+    for d in dicts:
+        merged_dict = merged_dict | d
+    return merged_dict
+    
 class GameConfigApp(wx.Frame):
     def __init__(self, parent, title):
         # 设置窗口样式，禁止调整大小
@@ -11,10 +18,11 @@ class GameConfigApp(wx.Frame):
         icon = wx.Icon("res/icon.ico", wx.BITMAP_TYPE_ICO)
         self.SetIcon(icon)
         self.names = self.load_data("names.json")
-        self.chars_display = self.names["chars"]
-        self.chars = self.chars_display | self.names["chars_hidden"]
-        self.equipment_display = self.names["equipment"]
-        self.equipment = self.equipment_display | self.names["equipment_hidden"]
+        self.settings = self.load_data("settings.json")
+        self.chars_display = merge_dicts(map(lambda n: self.names[n], self.settings["display_char_keys"]))
+        self.chars = self.chars_display
+        self.equipment_display = merge_dicts(map(lambda n: self.names[n], self.settings["display_equipment_keys"]))
+        self.equipment = self.equipment_display
         self.chars_reversed = {v : k for k,  v in self.chars.items()}
         self.equipment_reversed = {v : k for k,  v in self.equipment.items()}
         self.data = self.load_data('initialize.json')

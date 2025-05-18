@@ -11,7 +11,12 @@
         "8": "chars/8_wjt.json", 
         "9": "chars/9_yq.json", 
         "10": "chars/10_wyl.json", 
-        "11": "chars/11_zzm.json", 
+        "11": "chars/11_whr.json", 
+        "12": "chars/12_zda.json", 
+        "13": "chars/13_wyh_3.json", 
+        "14": "chars/14_lb.json", 
+        "p1": "chars/p1_zzm.json", 
+        "p2": "chars/p2_opf.json", 
         "TEST_1": "chars/test_1.json"
     },
     "charavatarfile": {
@@ -26,7 +31,11 @@
         "8": "res/char/wjt.png",
         "9": "res/char/yq.png",
         "10": "res/char/wyl.png", 
-        "11": "res/char/zzm.png"
+        "11": "res/char/whr.png", 
+        "12": "res/char/zda.png", 
+        "13": "res/char/wyh_3.png", 
+        "14": "res/char/lb.png", 
+        "p1": "res/char/zzm.png"
     },
     "equipmentfile": {
         "default": "equipment/0.json", 
@@ -52,7 +61,10 @@
         "20": "equipment/20_practice_thoroughly.json",
         "21": "equipment/21_blackboard_eraser.json", 
         "22": "equipment/22_jieziyuan_problems_spectrum.json", 
-        "23": "equipment/23_japanese_slippers.json"
+        "23": "equipment/23_japanese_slippers.json", 
+        "24": "equipment/24_salt_and_pepper_mushrooms.json", 
+        "25": "equipment/25_wyh_compass.json", 
+        "26": "equipment/26_tby.json"
     },
     "equipmentpicturefile": {
         "1": "res/equipment/1_ladybug_correction_tape.png",
@@ -77,7 +89,10 @@
         "20": "res/equipment/20_practice_thoroughly.png",
         "21": "res/equipment/21_blackboard_eraser.png", 
         "22": "res/equipment/22_jieziyuan_problems_spectrum.png", 
-        "23": "res/equipment/23_japanese_slippers.png"
+        "23": "res/equipment/23_japanese_slippers.png", 
+        "24": "res/equipment/24_salt_and_pepper_mushrooms.png", 
+        "25": "res/equipment/25_wyh_compass.png", 
+        "26": "res/equipment/26_tby.png"
     }, 
     "scenefile": {
         "default": "scene/0.json",

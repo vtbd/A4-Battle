@@ -37,7 +37,7 @@ SCREENSIZE = (1600*S, 900*S)
 CHARPOSLIST = [(400*S, 100*S), (400*S, 225*S), (400*S, 350*S), (1200*S, 100*S), (1200*S, 225*S), (1200*S, 350*S)]
 CHARHEALTHPOSLIST = [(470*S, 100*S), (470*S, 225*S), (470*S, 350*S), (1130*S, 100*S), (1130*S, 225*S), (1130*S, 350*S)]
 CHARSHIELDPOSLIST = [(530*S, 100*S), (530*S, 225*S), (530*S, 350*S), (1070*S, 100*S), (1070*S, 225*S), (1070*S, 350*S)]
-#CHARSUMMONEDPOSLIST = [()]
+CHARSUMMONEDPOSLIST = [(590*S, 100*S), (590*S, 225*S), (590*S, 350*S), (1010*S, 100*S), (1010*S, 225*S), (1010*S, 350*S)]
 CHARNAMEPOSLIST = [(470*S, 100*S), (470*S, 225*S), (470*S, 350*S), (1130*S, 100*S), (1130*S, 225*S), (1130*S, 350*S)]
 
 ###about chars' attributes
@@ -99,34 +99,6 @@ CHARFRAMEFILE = 'res/avatar_frame.png'
 CHARONFIGHTFRAMEFILE = 'res/avatar_frame_on_fight.png'
 CHARDECORATORFILELIST = ['res/null.png', 'res/avatar_dead.png', 'res/choosing_block.png']
 
-'''EQUIPMENTFILE = {
-    1: 'equipment/1_ladybug_correction_tape.json',
-    2: 'equipment/2_sonic_mop_rod.json',
-    3: 'equipment/3_male_aesthetics.json',
-    4: 'equipment/4_durian_thorn_extractor.json',
-    5: 'equipment/5_camouflage_jacket.json',
-    6: 'equipment/6_cigarette.json',
-    7: 'equipment/7_spherical_drying_tube.json',
-    8: 'equipment/8_orange.json',
-    9: 'equipment/9_lemon_tree.json',
-    10: 'equipment/10_masturbation_cup.json',
-    11: 'equipment/11_jersey_no_24.json',
-    12: 'equipment/12_xjp_talk.json', 
-    15: 'equipment/测试用电脑.a4be'
-}'''
-'''EQUIPMENTPICTUREFILE = {1: 'res/equipment/1_ladybug_correction_tape.png', 
-                 2: 'res/equipment/2_sonic_mop_rod.png', 
-                 3: 'res/equipment/3_male_aesthetics.png', 
-                 4: 'res/equipment/4_durian_thorn_extractor.png', 
-                 5: 'res/equipment/5_camouflage_jacket.png', 
-                 6: 'res/equipment/6_cigarette.png', 
-                 7: 'res/equipment/7_spherical_drying_tube.png', 
-                 8: 'res/equipment/8_orange.png',
-                 9: 'res/equipment/9_lemon_tree.png',
-                 10: 'res/equipment/10_masturbation_cup.png',
-                 11: 'res/equipment/11_jersey_no_24.png',
-                 12: 'res/equipment/12_xjp_talk.png', 
-                 15: 'res/equipment/测试用电脑.png'}'''
 EQUIPMENTFRAMEFILE = 'res/equipment_frame.png'
 EQUIPMENTDECORATORFILELIST = ['res/null.png', 'res/equipment_used.png', 'res/choosing_block.png']
 
@@ -172,7 +144,7 @@ class CharGroup:
 
 TARGET = {1: 'ENEMYONFIGHT', 2: 'SELFONFIGHT', 3: 'ENEMYALL', 4: 'SELFALL', 5: 'ENEMYNOTONFIGHT', 6: 'SELFNOTONFIGHT', 7:'SELF', 8:'ALL', 
           9: 'Specific char', 10: 'Specific position', 11:'DAMAGESOURCE', 12:'GROUP', 13:'UNIONSET', 14:'INTERSECTIONSET', 
-          15:'DAMAGERECEIVER', 16: 'CHOOSE', 17: 'MAXIMIZE'}
+          15:'DAMAGERECEIVER', 16: 'CHOOSE', 17: 'MAXIMIZE', 18:'ITERCHAR', 19:'INTEAMNEXT'}
 class Target:
     ENEMYONFIGHT = 1
     SELFONFIGHT = 2
@@ -192,6 +164,7 @@ class Target:
     CHOOSE = 16
     MAXIMIZE = 17
     ITERCHAR = 18
+    INTEAMNEXT = 19
 
 EFFECTTYPE = {1: 'DAMAGE', 2: 'HEAL', 3:'KILL', 4: 'INCREASE', 5: 'SET', 6: 'RANDOM', 7:'BUFF', 8:'BUFFCLEAR', 9:'SPECIFIC',
               10:'ENVIRONMENTALBUFF', 11:'SUMMON', 12:'REVIVE', 13:'SWITCHSCENE'}
@@ -211,6 +184,8 @@ class EffectType:
     SWITCHSCENE = 13
     class Specific:
         ZHH = 1
+        LB_2 = 2
+        LB_3 = 3
 
 VARIABLEID = {'0':'SPECIALVARIABLE', '1': 'HEALTH', '2': 'ATTACK', '3': 'ATTACKTIME', '4': 'SKILLTIME', 
               '5': 'SWITCHCHARTIME', '6': 'ROUND', '7': 'SHIELD', '8': 'MARKS', 9: 'SKILLUSETIME'}
@@ -243,7 +218,7 @@ class AttackFlags:
     SKIPSHIELD = 4
 
 CALCULATOR = {'-1': 'CALLSPECIALVARIABLE', '0': 'CALLVARIABLE', '1': 'ADD', '2': 'SUB', '3': 'TIMES', '4': 'DIV', '5': 'EXP', '6': 'LOG',
-               '7': 'ROUND', '8': 'FLOOR', '9': 'CEIL', '10': 'MODE', '11': 'MAX', '12': 'MIN'}
+               '7': 'ROUND', '8': 'FLOOR', '9': 'CEIL', '10': 'MODE', '11': 'MAX', '12': 'MIN', '13': 'COUNT'}
 class Calculator:
     CALLSPECIALVARIABLE = '-1'
     CALLVARIABLE = '0'
@@ -259,8 +234,10 @@ class Calculator:
     MOD = '10'
     MAX = '11'
     MIN = '12'
+    COUNT = '13'
 
-EVENTTIME = {0: 'COMMONATTACK', 1: 'USESKILL', 2: 'WESWITCH', 3: 'SWITCHTO', 4: 'SWITCHFROM', 5: 'GETHURTED', 6: 'ENEMYCOMMONATTACK', 7: 'ENEMYUSESKILL', 8: 'ENEMYSWITCH', 9:'TURNSTART', 10:'TURNEND', 11:'MAKEDAMAGE'}
+EVENTTIME = {0: 'COMMONATTACK', 1: 'USESKILL', 2: 'WESWITCH', 3: 'SWITCHTO', 4: 'SWITCHFROM', 5: 'GETHURTED', 6: 'ENEMYCOMMONATTACK',
+              7: 'ENEMYUSESKILL', 8: 'ENEMYSWITCH', 9:'TURNSTART', 10:'TURNEND', 11:'MAKEDAMAGE', 12: 'WEEQUIP', 13:'ENEMYEQUIP', 14:'USEEQUIP'}
 class EventTime:
     COMMONATTACK = 0
     USESKILL = 1
@@ -274,9 +251,11 @@ class EventTime:
     TURNSTART = 9
     TURNEND = 10
     MAKEDAMAGE = 11
+    WEEQUIP = 12
+    ENEMYEQUIP = 13
+    USEEQUIP = 14
     
-    
-EVENTTYPE = {0: 'ATTACK', 1: 'SKILL', 2: 'SWITCH', 3: 'HURTED', 4: 'TURNSWITCH', 5:'DAMAGEMADE'}
+EVENTTYPE = {0: 'ATTACK', 1: 'SKILL', 2: 'SWITCH', 3: 'HURTED', 4: 'TURNSWITCH', 5:'DAMAGEMADE', 6:'EQUIP'}
 class EventType:
     ATTACK = 0
     SKILL = 1
@@ -284,6 +263,7 @@ class EventType:
     HURTED = 3
     TURNSWITCH = 4
     DAMAGEMADE = 5
+    EQUIP = 6
 
 BUFFTYPE = {0: 'NONE', 1: 'INCREASEDAMAGEMADE', 2: 'DECREASEDAMAGERECEIVED', 3: 'ATTRIBUTE', 4: 'EFFECT', 5: 'NOSKILL', 6: 'NOATTACK'}
 class Bufftype:
@@ -311,9 +291,10 @@ class BuffPositivity:
     NEUTRAL = 2
     INDESTRUCTIBLE = 3
 
-BOOLJUDGEMENT = {'0': 'GREATER', '1': 'LESS', '2': 'EQUAL', '3': 'GREATEROREQUAL', '4': 'LESSOREQUAL', '5': 'NOTEQUAL', 
+BOOLJUDGEMENT = {'-1': 'SPECIAL', '0': 'GREATER', '1': 'LESS', '2': 'EQUAL', '3': 'GREATEROREQUAL', '4': 'LESSOREQUAL', '5': 'NOTEQUAL', 
                  '6': 'AND', '7': 'OR', '8': 'NOT', '9': 'XOR', '10': 'IN', '11': 'NOTIN', '12': 'ALIVE', '13': 'GROUP'}
 class BoolJudgement:
+    SPECIAL = '-1'
     GREATER = '0'
     LESS = '1'
     EQUAL = '2'
@@ -328,3 +309,7 @@ class BoolJudgement:
     NOTIN = '11'
     ALIVE = '12'
     GROUP = '13'
+
+    class Special:
+        HAVEBUFF = "1"
+        EQUIPMENTUSED = "2"

@@ -4,7 +4,7 @@
     "effect": [{
         "__effect__": true, 
         "type": 7, 
-        "target": {"__target__": true, "type": 4}, 
+        "target": {"__target__": true, "type": 7}, 
         "buff": {
             "identification": -1, 
             "name": "__student_card__", 
@@ -22,7 +22,7 @@
     }, {
         "__effect__": true, 
         "type": 7, 
-        "target": {"__target__": true, "type": 4}, 
+        "target": {"__target__": true, "type": 7}, 
         "buff": {
             "identification": -1, 
             "name": "__student_card__", 

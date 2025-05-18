@@ -75,9 +75,14 @@
         {
             "__skill__": true, 
             "name": "吞噬一切",
-            "description": "对对方出战角色造成15点伤害，并使其攻击力-3，自身攻击力+3，持续4回合",
+            "description": "对对方出战角色造成15点伤害，并使其攻击力-3，自身攻击力+3，持续4回合。若此次攻击击杀对方角色，则自身攻击力 +3 效果持续时间无限",
             "type": 1,
             "effect": [{
+                "__effect__": true, 
+                "type": 5, 
+                "variableid": {"__variableid__": true, "type": "0", "varname": "__wyh_2_temp__"},
+                "value": {"__target__": true, "type": 1}
+            }, {
                 "__effect__": true, 
                 "type": 1, 
                 "target": {"__target__": true, "type": 1}, 
@@ -115,12 +120,35 @@
                         "value": {"__mathexpression__": true, "operator": "1", "data": ["original", 3]}
                     }
                 }
+            }, {
+                "__effect__": true, 
+                "condition": {"__boolexpression__": true, "operator": "8", "data": [{"__boolexpression__": true, "operator": "12", "data": [{"__target__":true, "type":10, "pos": {"__variableid__": true, "type": "0", "varname": "__wyh_2_temp__"}}]}]}, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 7}, 
+                "buff": {
+                    "identification": -1, 
+                    "name": "__wyh_2_attack+3_forever__", 
+                    "lasttime": -1, 
+                    "usetime": -1, 
+                    "type": 3, 
+                    "positivity": 3,
+                    "buffdata": {
+                        "attrid": "2",
+                        "value": {"__mathexpression__": true, "operator": "1", "data": ["original", 3]}
+                    }, 
+                    "condition": {"__boolexpression__":true, "operator": "0", "data": ["age", 7]}
+                }
+            }, {
+                "__effect__": true, 
+                "type": 5, 
+                "variableid": {"__variableid__": true, "type": "0", "varname": "__wyh_2_temp__"},
+                "value": 0
             }]
         },
         {
             "__skill__": true, 
             "name": "交换侠",
-            "description": "与对方出战角色交换护盾值",
+            "description": "与对方出战角色交换护盾值，然后自身攻击力-1",
             "type": 2,
             "effect": [
                 {
@@ -149,6 +177,11 @@
                     "type": 5, 
                     "variableid": {"__variableid__": true, "type": "0", "varname": "__wyh_2__"},
                     "value": 0
+                }, {
+                    "__effect__": true, 
+                    "type": 4, 
+                    "variableid": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type": 7}},
+                    "increment": -1
                 }
             ]
         }

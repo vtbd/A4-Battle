@@ -2,6 +2,7 @@ import wx
 import json
 from ed_constants import *
 from typing import Callable, Type
+from functools import partial
 
 
 def dump_json_to_file(data, f, ensure_ascii=False, indent=4, **kwargs):
@@ -201,10 +202,10 @@ class MainFrame(wx.Frame):
         if len(selected) > 1:
             return
         
-        data = self.current_data.get(selected[0], {})
+        data:dict = self.current_data.get(selected[0], {})
         
         if self.current_type == "角色":
-            editor = CharEditor(self, data)
+            editor = CharEditor(self, data.copy())
             editor.ShowModal()
             if editor.confirmed:
                 self.save_char_from_editor(editor)
@@ -367,12 +368,18 @@ class BaseEditorWindow(wx.Dialog):
         self.form_sizer.Add(row_panel, 0, wx.EXPAND|wx.ALL, 5)
         return control
     
+    def add_label(self, label_text):
+        """添加一行静态文本"""
+        lbl = wx.StaticText(self.scroll, label=label_text)
+        
+        self.form_sizer.Add(lbl, 0, wx.ALIGN_LEFT|wx.ALL, 10)
+    
     def add_custom_control(self, panel_builder: Callable[[wx.Window], wx.Panel]):
         """添加自定义控件组。`panel_builder` 参数是一个接受一个参数 `parent` 作为所添加控件的父控件，返回 `wx.Panel` 类的实例作为添加的控件的函数。"""
         custom_panel = panel_builder(self.scroll)
         self.form_sizer.Add(custom_panel, 0, wx.EXPAND|wx.ALL, 5)
 
-    def add_custom_control(self, label_text, panel_builder: Callable[[wx.Window], wx.Panel]):
+    def add_custom_control_line(self, label_text, panel_builder: Callable[[wx.Window], wx.Panel]):
         """添加单行，左侧为标签，右侧为自定义控件组。`panel_builder` 参数是一个接受一个参数 `parent` 作为所添加控件的父控件，返回 `wx.Panel` 类的实例作为添加的控件的函数。"""
         row_panel = wx.Panel(self.scroll)
         sizer = wx.BoxSizer(wx.HORIZONTAL)
@@ -399,9 +406,31 @@ class BaseEditorWindow(wx.Dialog):
         dialog_self.confirmed = False
         dialog_self.Close()
 
+class SkillControl(wx.Panel):
+    """技能行"""
+    def __init__(self, parent, index, func, **kwargs):
+        super().__init__(parent, **kwargs)
+        self.index = index
+        sizer = wx.BoxSizer(wx.HORIZONTAL)
+        self.txt_skill = wx.TextCtrl(self, style=wx.TE_READONLY)
+        btn_edit = wx.Button(self, label="编辑...", size=(80, -1))
+        btn_edit.Bind(wx.EVT_BUTTON, func)
+
+        sizer.Add(self.txt_skill, 1, wx.EXPAND|wx.RIGHT, 5)
+        sizer.Add(btn_edit, 0)
+        self.SetSizer(sizer)
+
+    def update_name(self, data):
+        self.txt_skill.SetValue(data.get("skill", [{}, {}, {}])[self.index].get("name", ""))
+
 class CharEditor(BaseEditorWindow):
     def __init__(self, parent, data:dict={}):
         super().__init__(parent, "角色编辑")
+
+        self.load_data(data)
+        if not data.get("skill"):
+            self._init_skill_data()
+
         def save_func(event, dialog_self):
             idf = self.get_identifier()
             if idf == "":
@@ -428,32 +457,51 @@ class CharEditor(BaseEditorWindow):
                                          choices=list(ED_CHAR_GROUP_READER.keys()), 
                                          style=wx.CB_READONLY)
         self.skill_controls = []
+        #for i in range(3):
+        #    new_btn = self.add_form_row(f"技能{i+1}:", wx.Button, label="编辑...")
+        #    func = partial(self._on_edit_skill, index=i)
+        #    new_btn.Bind(wx.EVT_BUTTON, func)
+        #    self.skill_controls.append(new_btn)
         for i in range(3):
-            new_btn = self.add_form_row(f"技能{i+1}:", wx.Button, label="编辑...")
-            new_btn.Bind(wx.EVT_BUTTON, lambda e: self._on_edit_skill(e, i))
-            self.skill_controls.append(new_btn)
+            func = partial(self._on_edit_skill, index=i)
+            skill_control = self.add_form_row(f"技能{i+1}:", SkillControl, index=i, func=func)
+            self.skill_controls.append(skill_control)
 
+        self.set_data()
         self.add_stretch()
-        
-        self.load_data(data)
-        if not data.get("skill"):
-            self._init_skill_data()
 
     def _init_skill_data(self):
-        self.data["skill"] = []
+        self.data["skill"] = [{}, {}, {}]
 
     def _on_edit_skill(self, event, index):
         """打开技能编辑器"""
-        pass     
+        editor = SkillEditor(self, self.data["skill"][index].copy())
+        editor.ShowModal()
+        if editor.confirmed:
+            self.save_skill_to_data(index, editor)
+        self.set_skill_controls()
+
+    def save_skill_to_data(self, index, editor):
+        skill_data = editor.data.copy()
+        skill_data["__skill__"] = True
+        self.data["skill"][index] = skill_data
 
     def load_data(self, data:dict):
         """加载数据"""
         self.data = data
-        self.txt_name.SetValue(data.get("name", ""))
-        self.spn_attack.SetValue(data.get("attack", 0))
-        self.spn_health.SetValue(data.get("health", 0))
-        self.cmb_group.SetStringSelection(ED_CHAR_GROUP_READER_INVERT[data.get("group", 0)])
-        self.txt_bottom.SetValue(data.get("__identifier__", ""))
+    
+    def set_data(self, event=None):
+        """将加载的数据设置个给控件"""
+        self.txt_name.SetValue(self.data.get("name", ""))
+        self.spn_attack.SetValue(self.data.get("attack", 0))
+        self.spn_health.SetValue(self.data.get("health", 0))
+        self.cmb_group.SetStringSelection(ED_CHAR_GROUP_READER_INVERT[self.data.get("group", 0)])
+        self.txt_bottom.SetValue(self.data.get("__identifier__", ""))
+        self.set_skill_controls()
+
+    def set_skill_controls(self):
+        for i, sc in enumerate(self.skill_controls):
+            sc.update_name(self.data)
 
     def update_direct_data(self):
         """将在本窗口中直接编辑的数据写入 `self.data` 属性中"""
@@ -466,6 +514,113 @@ class CharEditor(BaseEditorWindow):
     def get_identifier(self):
         return self.txt_bottom.GetValue()
     
+class SkillEditor(BaseEditorWindow):
+    def __init__(self, parent, data:dict = {}):
+        super().__init__(parent, "技能编辑器")
+
+        self.load_data(data)
+
+        def save_func(event, dialog_self):
+            self.update_direct_data()
+            SkillEditor.default_save_func(event, dialog_self)
+
+        self._init_bottom_zone(label_text="技能储存名（暂无效）", save_func=save_func)
+
+        # 基础属性
+        self.txt_name = self.add_form_row("技能名称:", wx.TextCtrl)
+        self.txt_desc = self.add_form_row("技能描述:", wx.TextCtrl, style=wx.TE_MULTILINE)
+        self.cmb_type = self.add_form_row("技能类型:", wx.ComboBox, 
+                                        choices=list(ED_SKILL_TYPE_READER.keys()), 
+                                        style=wx.CB_READONLY)
+        
+        self.add_label("效果：")
+        # 效果列表区域（使用自定义控件组）
+        def build_effect_panel(parent):
+            panel = wx.Panel(parent)
+            self.effect_list = wx.ListBox(panel, style=wx.LB_SINGLE)
+            self.btn_add = wx.Button(panel, label="新建")
+            self.btn_edit = wx.Button(panel, label="编辑")
+            self.btn_del = wx.Button(panel, label="删除")
+            
+            btn_sizer = wx.BoxSizer(wx.VERTICAL)
+            btn_sizer.Add(self.btn_add, 0, wx.BOTTOM, 5)
+            btn_sizer.Add(self.btn_edit, 0, wx.BOTTOM, 5)
+            btn_sizer.Add(self.btn_del, 0)
+            
+            main_sizer = wx.BoxSizer(wx.HORIZONTAL)
+            main_sizer.Add(self.effect_list, 1, wx.EXPAND|wx.RIGHT, 10)
+            main_sizer.Add(btn_sizer, 0)
+            panel.SetSizer(main_sizer)
+            return panel
+        
+        self.add_custom_control(build_effect_panel)
+        self.add_stretch()
+
+        # 绑定效果按钮事件
+        self.btn_add.Bind(wx.EVT_BUTTON, self.on_add_effect)
+        self.btn_edit.Bind(wx.EVT_BUTTON, self.on_edit_effect)
+        self.btn_del.Bind(wx.EVT_BUTTON, self.on_delete_effect)
+
+        self.set_data()
+
+    def on_add_effect(self, event):
+        """添加新效果"""
+        editor = EffectEditor(self)
+        editor.ShowModal()
+        if editor.confirmed:
+            new_effect = editor.data
+            if "effect" not in self.data:
+                self.data["effect"] = []
+            self.data["effect"].append(new_effect)
+            self.effect_list.Append(new_effect.get("name", "未命名效果"))
+
+    def on_edit_effect(self, event):
+        """编辑选中的效果"""
+        selection = self.effect_list.GetSelection()
+        if selection == wx.NOT_FOUND:
+            wx.MessageBox("请先选择一个效果！", "提示", wx.OK | wx.ICON_INFORMATION)
+            return
+        effect_data = self.data["effect"][selection]
+        editor = EffectEditor(self, effect_data.copy())
+        editor.ShowModal()
+        if editor.confirmed:
+            updated_effect = editor.data
+            self.data["effect"][selection] = updated_effect
+            self.effect_list.SetString(selection, updated_effect.get("name", "未命名效果"))
+
+    def on_delete_effect(self, event):
+        """删除选中的效果"""
+        selection = self.effect_list.GetSelection()
+        if selection != wx.NOT_FOUND:
+            del self.data["effect"][selection]
+            self.effect_list.Delete(selection)
+
+    def load_data(self, data:dict):
+        """加载数据"""
+        self.data = data
+
+    def set_data(self):
+        """将加载的数据设置个给控件"""
+        self.txt_name.SetValue(self.data.get("name", ""))
+        self.txt_desc.SetValue(self.data.get("description", ""))
+        self.cmb_type.SetStringSelection(ED_SKILL_TYPE_READER_INVERT[self.data.get("type", 1)])
+        self.effect_list:wx.ListBox
+        self.update_effect_list()
+
+    def update_direct_data(self):
+        """将在本窗口中直接编辑的数据写入 `self.data` 属性中"""
+        self.data["name"] = self.txt_name.GetValue()
+        self.data["description"] = self.txt_desc.GetValue()
+        self.data["type"] = ED_SKILL_TYPE_READER[self.cmb_type.GetStringSelection()]
+
+    def update_effect_list(self):
+        """刷新列表"""
+        self.effect_list.Clear()
+        self.effect_list.AppendItems(list(map(lambda x:x.get("name", "未命名效果"), self.data.get("effect", []))))
+
+class EffectEditor(BaseEditorWindow):
+    pass
+
 if __name__ == "__main__":
     app = wx.App()
     frame = MainFrame()

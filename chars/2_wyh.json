@@ -1,5 +1,6 @@
 {
     "name": "wyh",
+    "description": "西工大附中传奇人物，懒惰的辩护者，花活的神。", 
     "attack": 7,
     "health": 38,
     "group": 1,

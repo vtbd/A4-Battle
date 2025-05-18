@@ -1,0 +1,44 @@
+{
+    "name": "One Punch Felix", 
+    "attack": 10, 
+    "health": 20,
+    "group": 2,
+    "skill": [
+        {
+            "__skill__": true, 
+            "name": "普通攻击", 
+            "description": "造成 20 点伤害", 
+            "type": 1, 
+            "effect": [{
+                    "__effect__": true, 
+                    "type": 1,
+                    "target": {"__target__": true, "type": 1},
+                    "damage": 20
+                }]
+        }, 
+        {
+            "__skill__": true, 
+            "name": "普通连打", 
+            "description": "对对方所有角色造成 10 点伤害", 
+            "type": 2, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 1,
+                "target": {"__target__": true, "type": 3},
+                "damage": 10
+            }]
+        }, 
+        {
+            "__skill__": true, 
+            "name": "认真一拳", 
+            "description": "造成 100 点伤害", 
+            "type": 1, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 1,
+                "target": {"__target__": true, "type": 1},
+                "damage": 100
+            }]
+        }
+    ]
+}

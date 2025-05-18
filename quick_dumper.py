@@ -10,7 +10,7 @@ with open("res.json", encoding='utf-8') as fo:
                 fc = json.loads(d.read())
                 key = fc['name']
                 if key != 'none':
-                    value = f'{fc['name']}\n攻击：{fc['attack']}\n生命：{fc['health']}\n分组：{['无', '学生', '教师'][fc['group']]}\n技能：\n{'\n'.join(map(lambda x:f'{x['name']}：\n{x['description']}', fc['skill']))}'
+                    value = f'{fc['name']}\n{fc.get('description', '')}\n攻击：{fc['attack']}\n生命：{fc['health']}\n分组：{['无', '学生', '教师'][fc['group']]}\n技能：\n{'\n\n'.join(map(lambda x:f'{x['name']}：\n{x['description']}', fc['skill']))}'
                     char_dex[key] = value
         except FileNotFoundError:
             pass

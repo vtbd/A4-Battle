@@ -1,0 +1,49 @@
+{
+    "name": "lb", 
+    "attack": 8, 
+    "health": 33,
+    "group": 2,
+    "skill": [
+        {
+            "__skill__": true,
+            "name": "黄金左脚", 
+            "description": "猛踏（二声）对方未出战角色，每人造成 8 点伤害", 
+            "type": 1, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 1,
+                "target": {"__target__": true, "type": 5},
+                "damage": 8
+            }]
+        }, 
+        {
+            "__skill__": true,
+            "name": "直接滚蛋", 
+            "description": "若对方存活角色数不少于 2 ，则使对方当前出战角色“滚蛋”，换取对方随机一名未出战角色上场，然后对更换后的出战角色造成 15 伤害", 
+            "type": 1, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 9,
+                "specific": 2
+            }, {
+                "__effect__": true, 
+                "type": 1,
+                "target": {"__target__": true, "type": 1},
+                "damage": 15
+            }]
+        }, 
+        {
+            "__skill__": true,
+            "choose": true, 
+            "choosearea": {"__target__":true, "type":3, "restrict_alive": true},
+            "name": "排座次", 
+            "description": "指定一名敌方存活角色，使其立即位于前场", 
+            "type": 2, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 9,
+                "specific": 3
+            }]
+        }
+    ]
+}

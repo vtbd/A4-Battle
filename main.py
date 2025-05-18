@@ -2,7 +2,7 @@ import pygame
 import gui
 import sys
 import constants
-import classes
+import battle
 
 
 size = width, height = constants.SCREENSIZE
@@ -18,7 +18,7 @@ bg = gui.ImageObj(screen, root, 'res/background.png', (0, 0), size=size)
 font_big = pygame.font.Font('zcool.ttf', int(round(48*constants.S)))
 font_small = pygame.font.Font('zcool.ttf', int(round(32*constants.S)))
 
-game = classes.Game(screen, root, font_big, font_small)
+game = battle.Game(screen, root, font_big, font_small)
 
 clock = pygame.time.Clock()
 
@@ -34,7 +34,7 @@ while 1:
             game.detectclick(event.pos)
             pass
     if game.new == True:
-        game = classes.Game(screen, root, font_big, font_small)
+        game = battle.Game(screen, root, font_big, font_small)
         
 
     bg.draw()

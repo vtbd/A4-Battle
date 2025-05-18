@@ -1,11 +1,11 @@
 {
     "name": "斐济杯", 
-    "description": "恢复10点血量，但攻击力降低1点",
+    "description": "回复10点血量，但攻击力降低1点",
     "effect": [{
         "__effect__": true, 
-        "type": 4, 
-        "variableid": {"__variableid__": true, "type": "1", "target": {"__target__": true, "type":7}},
-        "increment": 10
+        "type": 2, 
+        "value": 10, 
+        "target": {"__target__": true, "type":7}
     }, {
         "__effect__": true, 
         "type": 4, 

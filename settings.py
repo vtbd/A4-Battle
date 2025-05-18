@@ -1,136 +1,165 @@
+import wx
 import json
-import tkinter as tk
-from tkinter import ttk
+from pathlib import Path
 
-class SettingsApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("游戏设置")
-        self.root.iconbitmap("res/icon.ico")
-        self.settings = {}
-        self.setting_widgets = []
+class SettingsPanel(wx.Panel):
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.settings_file = Path("settings.json")
+        self.settings = self.load_settings()
         
-        # 创建样式并配置无边框Frame
-        self.style = ttk.Style()
-        self.style.configure('NoBorder.TFrame', borderwidth=0, relief='flat')
-
-        # 创建滚动区域# 修改Canvas配置（添加背景色）
-        self.canvas = tk.Canvas(
-            root, 
-            borderwidth=0,
-            highlightthickness=0,  # 禁用高亮边框
-            background='#f0f0f0'   # 与主窗口背景一致
-        )
-        self.scrollbar = ttk.Scrollbar(root, orient="vertical", command=self.canvas.yview)
-        # 修改滚动区域Frame配置
-        self.scrollable_frame = ttk.Frame(
-            self.canvas, 
-            style='NoBorder.TFrame'
-        )
-
-        # 配置滚动区域
-        self.canvas.configure(yscrollcommand=self.scrollbar.set)
-        self.canvas_frame = self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor="nw")
+        # 主Sizer (垂直布局)
+        self.main_sizer = wx.BoxSizer(wx.VERTICAL)
         
-        # 布局
-        self.canvas.grid(row=0, column=0, sticky="nsew")
-        self.scrollbar.grid(row=0, column=1, sticky="ns")
-        root.grid_rowconfigure(0, weight=1)
-        root.grid_columnconfigure(0, weight=1)
+        # 创建滚动窗口
+        self.scrolled = wx.ScrolledWindow(self)
+        self.scrolled.SetScrollRate(10, 10)
         
-        # 绑定滚动区域调整事件
-        self.scrollable_frame.bind("<Configure>", self.on_frame_configure)
-        self.canvas.bind("<Configure>", self.on_canvas_configure)
-
+        # 滚动窗口的内容Sizer
+        self.scrolled_sizer = wx.BoxSizer(wx.VERTICAL)
+        
         # 创建控件
-        self.create_widgets()
-        self.create_save_button()
+        self.create_controls()
         
-        # 加载设置
-        self.load_settings()
-
-    def create_widgets(self):
-        """创建设置控件"""
-        # 窗口缩放控件
-        self.size_var = tk.DoubleVar()
-        size_frame = ttk.Frame(self.scrollable_frame, style='NoBorder.TFrame')
-        size_frame.pack(fill="x", padx=10, pady=5)
+        # 设置滚动窗口的Sizer
+        self.scrolled.SetSizer(self.scrolled_sizer)
         
-        ttk.Label(size_frame, text="窗口缩放 (0.2-1):").pack(side="left")
-        scale = ttk.Scale(
-            size_frame,
-            from_=0.2,
-            to=1.0,
-            variable=self.size_var,
-            command=lambda v: self.size_label.config(text=f"{float(v):.2f}")
-        )
-        scale.pack(side="left", expand=True, fill="x", padx=5)
+        # 添加滚动窗口到主Sizer，可扩展
+        self.main_sizer.Add(self.scrolled, 1, wx.EXPAND | wx.ALL, 0)
         
-        self.size_label = ttk.Label(size_frame, text="1.00", width=5)
-        self.size_label.pack(side="left")
-        self.setting_widgets.append(("size", self.size_var))
-
-        # 背景显示复选框
-        self.bg_var = tk.BooleanVar()
-        bg_frame = ttk.Frame(self.scrollable_frame, style='NoBorder.TFrame')
-        bg_frame.pack(fill="x", padx=10, pady=5)
+        # 添加保存按钮到主Sizer，不扩展
+        self.save_btn = wx.Button(self, label="保存设置")
+        self.save_btn.Bind(wx.EVT_BUTTON, self.on_save)
+        self.main_sizer.Add(self.save_btn, 0, wx.ALL | wx.ALIGN_CENTER, 10)
         
-        ttk.Checkbutton(
-            bg_frame,
-            text="显示场景背景",
-            variable=self.bg_var
-        ).pack(anchor="w")
-        self.setting_widgets.append(("show_scene_background", self.bg_var))
-
-    def create_save_button(self):
-        """创建保存按钮"""
-        btn_frame = ttk.Frame(self.root)
-        btn_frame.grid(row=1, column=0, columnspan=2, sticky="ew", padx=10, pady=10)
-        
-        ttk.Button(
-            btn_frame,
-            text="保存设置",
-            command=self.save_settings
-        ).pack(side="bottom", fill="x")
-
+        self.SetSizer(self.main_sizer)
+        self.Layout()
+    
     def load_settings(self):
-        """从文件加载设置"""
+        """加载设置文件"""
+        default_settings = {
+            "size": 1.0,
+            "show_scene_background": False,
+            "display_char_keys": ["chars_normal"],
+            "display_equipment_keys": ["equipment"]
+        }
+        
         try:
-            with open("settings.json", "r") as f:
-                self.settings = json.load(f)
-                
-            for name, var in self.setting_widgets:
-                if name in self.settings:
-                    var.set(self.settings[name])
-                    if name == "size":
-                        self.size_label.config(text=f"{self.settings[name]:.2f}")
-
-        except FileNotFoundError:
-            self.settings = {"size": 1.0, "show_scene_background": True}
-
+            if self.settings_file.exists():
+                with open(self.settings_file, 'r', encoding='utf-8') as f:
+                    return json.load(f)
+            return default_settings
+        except (json.JSONDecodeError, IOError):
+            return default_settings
+    
     def save_settings(self):
         """保存设置到文件"""
-        for name, var in self.setting_widgets:
-            self.settings[name] = var.get()
+        try:
+            with open(self.settings_file, 'w', encoding='utf-8') as f:
+                json.dump(self.settings, f, indent=4)
+            return True
+        except IOError:
+            return False
+    
+    def create_controls(self):
+        """在滚动窗口中创建所有设置控件"""
         
-        with open("settings.json", "w") as f:
-            json.dump(self.settings, f, indent=4)
+        # 窗口缩放大小
+        size_box = wx.StaticBox(self.scrolled, label="窗口缩放大小")
+        size_sizer = wx.StaticBoxSizer(size_box, wx.VERTICAL)
+        
+        self.size_slider = wx.Slider(self.scrolled, value=int(self.settings["size"] * 10), 
+                                    minValue=2, maxValue=10, 
+                                    style=wx.SL_HORIZONTAL | wx.SL_AUTOTICKS | wx.SL_LABELS)
+        self.size_slider.Bind(wx.EVT_SLIDER, self.on_size_change)
+        
+        self.size_text = wx.StaticText(self.scrolled, label=f"当前值: {self.settings['size']}")
+        size_sizer.Add(self.size_slider, 0, wx.EXPAND | wx.ALL, 5)
+        size_sizer.Add(self.size_text, 0, wx.LEFT | wx.BOTTOM, 5)
+        self.scrolled_sizer.Add(size_sizer, 0, wx.EXPAND | wx.ALL, 10)
+        
+        # 显示场景背景
+        self.bg_check = wx.CheckBox(self.scrolled, label="显示场景背景")
+        self.bg_check.SetValue(self.settings["show_scene_background"])
+        self.scrolled_sizer.Add(self.bg_check, 0, wx.ALL, 10)
+        
+        # 角色类型选择
+        char_box = wx.StaticBox(self.scrolled, label="角色类型")
+        char_sizer = wx.StaticBoxSizer(char_box, wx.VERTICAL)
+        
+        self.char_choices = {
+            "chars_normal": "常规角色",
+            "chars_fun": "娱乐角色",
+            "chars_test": "测试角色"
+        }
+        
+        self.char_boxes = []
+        for key, label in self.char_choices.items():
+            cb = wx.CheckBox(self.scrolled, label=label)
+            cb.SetValue(key in self.settings["display_char_keys"])
+            char_sizer.Add(cb, 0, wx.ALL, 5)
+            self.char_boxes.append((key, cb))
+        
+        self.scrolled_sizer.Add(char_sizer, 0, wx.EXPAND | wx.ALL, 10)
+        
+        # 装备类型选择
+        equip_box = wx.StaticBox(self.scrolled, label="装备类型")
+        equip_sizer = wx.StaticBoxSizer(equip_box, wx.VERTICAL)
+        
+        self.equip_choices = {
+            "equipment": "常规装备",
+            "equipment_test": "测试装备"
+        }
+        
+        self.equip_boxes = []
+        for key, label in self.equip_choices.items():
+            cb = wx.CheckBox(self.scrolled, label=label)
+            cb.SetValue(key in self.settings["display_equipment_keys"])
+            equip_sizer.Add(cb, 0, wx.ALL, 5)
+            self.equip_boxes.append((key, cb))
+        
+        self.scrolled_sizer.Add(equip_sizer, 0, wx.EXPAND | wx.ALL, 10)
+    
+    def on_size_change(self, event):
+        """处理缩放大小变化"""
+        value = self.size_slider.GetValue() / 10.0
+        self.size_text.SetLabel(f"当前值: {value:.1f}")
+        self.settings["size"] = value
+    
+    def on_save(self, event):
+        """保存按钮事件处理"""
+        # 更新设置值
+        self.settings["show_scene_background"] = self.bg_check.GetValue()
+        
+        # 更新角色选择
+        self.settings["display_char_keys"] = [
+            key for key, cb in self.char_boxes if cb.GetValue()
+        ]
+        
+        # 更新装备选择
+        self.settings["display_equipment_keys"] = [
+            key for key, cb in self.equip_boxes if cb.GetValue()
+        ]
+        
+        # 保存到文件
+        if self.save_settings():
+            wx.MessageBox("设置保存成功！", "成功", wx.OK | wx.ICON_INFORMATION)
+        else:
+            wx.MessageBox("保存设置失败！", "错误", wx.OK | wx.ICON_ERROR)
 
-    def on_frame_configure(self, event):
-        """更新滚动区域"""
-        self.canvas.configure(scrollregion=self.canvas.bbox("all"))
-
-    def on_canvas_configure(self, event):
-        """调整canvas窗口宽度"""
-        self.canvas.itemconfig(self.canvas_frame, width=event.width)
-
-
-def main():
-    root = tk.Tk()
-    root.geometry("400x300")
-    root.minsize(300, 200)
-    app = SettingsApp(root)
-    root.mainloop()
+class SettingsFrame(wx.Frame):
+    def __init__(self):
+        super().__init__(None, title="游戏设置", size=(400, 500))
+        
+        # 创建主面板
+        self.panel = SettingsPanel(self)
+        
+        # 设置窗口最小大小
+        self.SetMinSize(wx.Size(200, 200))
+        
+        self.Show()
 
 if __name__ == "__main__":
-    main()
+    app = wx.App(False)
+    frame = SettingsFrame()
+    app.MainLoop()

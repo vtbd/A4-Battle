@@ -1,0 +1,30 @@
+{
+    "name": "椒盐蘑菇", 
+    "description": "食用后，\n有 50% 概率吃到「椒盐蘑菇」：回复5生命，攻击+1；\n有 20% 概率吃到「椒椒蘑菇」：回复 10 生命；\n有 20% 概率吃到「盐盐蘑菇」：攻击力 +2；\n有 10% 概率吃到「蘑菇」：一无所有。",
+    "effect": [{
+        "__effect__":true,
+        "type":6, 
+        "effects":[[{
+            "__effect__": true, 
+            "type": 2, 
+            "target": {"__target__": true, "type": 7},
+            "value": 5
+        }, {
+            "__effect__": true, 
+            "type": 4, 
+            "variableid": {"__variableid__": true, "type": "2", "target": {"__target__": true, "type": 7}},
+            "increment": 1
+        }], [{
+            "__effect__": true, 
+            "type": 2, 
+            "target": {"__target__": true, "type": 7},
+            "value": 10
+        }], [{
+            "__effect__": true, 
+            "type": 4, 
+            "variableid": {"__variableid__": true, "type": "2", "target": {"__target__": true, "type": 7}},
+            "increment": 2
+        }], []], 
+        "probabilities": [0.5, 0.7, 0.9, 1]
+    }]
+}

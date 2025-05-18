@@ -1,0 +1,32 @@
+{
+    "name": "wyh小罗盘", 
+    "description": "选择一名敌方角色，当前回合将该角色视为敌方出战角色",
+    "choose": true, 
+    "choosecondition": {"__boolexpression__": true, "operator": "10", "data": ["iterchar", {"__target__":true, "type":3}]}, 
+    "effect": [{
+        "__effect__": true, 
+        "type": 5, 
+        "variableid": {"__variableid__": true, "type": "0", "varname": "____target_enemy_on_fight____"},
+        "value": {"__target__": true, "type": 16}
+    }, {
+        "__effect__":true, 
+        "type": 10, 
+        "buff":{
+            "identification": -1, 
+            "name": "__wyh_compass__", 
+            "lasttime": -1,
+            "usetime": 1,
+            "type":4, 
+            "environmental": true, 
+            "buffdata": {
+                "effects":[{
+                    "__effect__": true, 
+                    "type": 5, 
+                    "variableid": {"__variableid__": true, "type": "0", "varname": "____target_enemy_on_fight____"},
+                    "value": -1
+                }]
+            }, 
+            "condition": {"__boolexpression__":true, "operator": "2", "data": ["age", 1]}
+        }
+    }]
+}
