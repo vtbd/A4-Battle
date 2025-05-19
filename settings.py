@@ -89,7 +89,7 @@ class SettingsPanel(wx.Panel):
         
         self.char_choices = {
             "chars_normal": "常规角色",
-            "chars_fun": "娱乐角色",
+            "chars_playful": "娱乐角色",
             "chars_test": "测试角色"
         }
         

@@ -1,7 +1,7 @@
 {
     "name": "whr", 
     "attack": 6, 
-    "health": 38,
+    "health": 29,
     "group": 1,
     "skill": [
         {
@@ -65,7 +65,7 @@
         {
             "__skill__": true, 
             "name": "义结金兰", 
-            "description": "护盾+3，召唤「ybh」，拥有 12 点生命，协同该角普通角色攻击造成 3 伤害。该召唤物造成伤害时，whr 有 50% 概率获得 4 护盾", 
+            "description": "召唤「ybh」，拥有 12 点生命，协同该角普通角色攻击造成 3 伤害。该召唤物造成伤害时，whr 有 50% 概率获得 4 护盾", 
             "type": 2, 
             "effect": [{
                 "__effect__": true, 

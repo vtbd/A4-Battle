@@ -63,7 +63,7 @@ class Target:
                 if gt == 1:
                     return [game.onfightl]
                 raise
-            return game.specialvars.get('____target_enemy_on_fight____')
+            return [game.specialvars.get('____target_enemy_on_fight____')]
         elif t == constants.Target.ENEMYALL:
             if gt == 0:
                 return [3, 4, 5]
@@ -404,7 +404,7 @@ class Char:
         
     def updatestatus(self):
         bufftext = constants.BUFFHINT + '\n    ' + ', '.join([buff.name for buff in self.buffs if buff.name[0] != '_' or debug_showallbuff])
-        markstext = constants.MARKHINT + '\n    ' + ', '.join([f'{constants.MARKNAMES.get(k)}:{v}' for k, v in self.marks.items() if v != 0 and k in constants.MARKNAMES])
+        markstext = constants.MARKHINT + '\n    ' + ', '.join([f'{constants.MARKNAMES.get(k, k)}:{v}' for k, v in self.marks.items() if (v != 0 and k in constants.MARKNAMES) or debug_showallmark])
         summontext = constants.SUMMONHINT + '\n    ' + ', '.join([f'{s.name}(生命:{s.health})' for s in self.summons if s.name[0] != '_'])
         self.statusdisplayer = gui.TextImagifier(self.game.screen, self.statusboard, self.game.font_big, bufftext + '\n' + markstext+ '\n'+ summontext, (0, 0, 0), constants.STATUSTEXTPOS, (1, 1), constants.STATUSTEXTLENGTH).imagify()
 
@@ -499,6 +499,13 @@ class Char:
             self.alive = False
             self._health = 0
 
+    @property
+    def attack(self):
+        return self._attack
+    
+    @attack.setter
+    def attack(self, value):
+        self._attack = value
 
 class Variableid:
     def __init__(self, varid:dict):
@@ -518,6 +525,7 @@ class Variableid:
             self.targeted = False
         self.concretized = False
         self.targetabs = None
+        self.absolute = self.vardata.get("absolute", False)
     
     def copy(self):
         return Variableid(self.vardata)
@@ -983,6 +991,7 @@ class Game:
                 self.setvariable(effect.variableid, self.getvariable(effect.variableid) + self.calcnum(effect.increment, charself=charself, **kw))
             else:
                 var_x = effect.variableid.copy()
+                var_x.absolute = True
                 for tar in effect.variableid.target.concretize(self, charself=charself, **kw):
                     var_x.concretized = True
                     var_x.targetabs = tar
@@ -1163,7 +1172,7 @@ class Game:
         if dt == constants.VariableId.ROUND:
             return self.rounds
         if dt == constants.VariableId.ATTACK:
-            return self.charlist[varid.targetabs].absattack
+            return getattr(self.charlist[varid.targetabs], "attack" if varid.absolute else "absattack")
         if dt == constants.VariableId.HEALTH:
             return self.charlist[varid.targetabs].health
         if dt == constants.VariableId.SHIELD:
@@ -1369,3 +1378,4 @@ class Game:
         self.charframeonfightlist[1].rect.center = constants.CHARPOSLIST[self.onfightr]
 
 debug_showallbuff = False
+debug_showallmark = False

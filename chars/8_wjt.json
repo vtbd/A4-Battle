@@ -32,25 +32,23 @@
                                 "__effect__": true, 
                                 "type": 4, 
                                 "variableid": {"__variableid__": true, "type": "2", "target": {"__target__": true, "type": 7}},
-                                "increment": {"__mathexpression__":true, "operator":"2", "data":[
-                                    {"__mathexpression__":true, "operator": "8", "data":[
+                                "increment": 
+                                    {"__mathexpression__": true, "operator":"8", "data":[
+                                    {"__mathexpression__":true, "operator": "2", "data": [
                                     {"__mathexpression__":true, "operator": "4", "data": [
-                                    {"__mathexpression__":true, "operator": "0", "data":
-                                    {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "shuang"}}, 10]}]},
-                                    {"__mathexpression__":true, "operator": "0", "data":
-                                    {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "__wjt__"}}]}
+                                    {"__variableid__":true, "type":"8", "target":{"__target__":true, "type":7}, "mark":"shuang"}, 10]},
+                                    {"__variableid__":true, "type":"8", "target":{"__target__":true, "type":7}, "mark":"__wjt__"}]}]}
                             }, 
                             {
                                 "__effect__": true, 
                                 "type": 4, 
                                 "variableid": {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark":"__wjt__"},
-                                "increment": {"__mathexpression__":true, "operator":"2", "data":[
-                                    {"__mathexpression__":true, "operator": "8", "data":[
-                                    {"__mathexpression__":true, "operator": "4", "data": [
-                                    {"__mathexpression__":true, "operator": "0", "data":
-                                    {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "shuang"}}, 10]}]},
-                                    {"__mathexpression__":true, "operator": "0", "data":
-                                    {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "__wjt__"}}]}
+                                "increment": 
+                                {"__mathexpression__": true, "operator":"8", "data":[
+                                {"__mathexpression__":true, "operator": "2", "data": [
+                                {"__mathexpression__":true, "operator": "4", "data": [
+                                {"__variableid__":true, "type":"8", "target":{"__target__":true, "type":7}, "mark":"shuang"}, 10]},
+                                {"__variableid__":true, "type":"8", "target":{"__target__":true, "type":7}, "mark":"__wjt__"}]}]}
                             }
                         ],
                         "eventtime": 5

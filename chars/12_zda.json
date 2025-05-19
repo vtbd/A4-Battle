@@ -7,7 +7,7 @@
         {
             "__skill__": true,
             "name": "“勤”以积智", 
-            "description": "己方使用道具时，获得 3 护盾", 
+            "description": "己方使用道具时，生命值 +3", 
             "type": 3, 
             "effect": [{
                 "__effect__": true, 
@@ -25,7 +25,7 @@
                             {
                                 "__effect__": true, 
                                 "type": 4, 
-                                "variableid": {"__variableid__": true, "type": "7", "target": {"__target__": true, "type": 7}},
+                                "variableid": {"__variableid__": true, "type": "1", "target": {"__target__": true, "type": 7}},
                                 "increment": 3
                             }
                         ],
