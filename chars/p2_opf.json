@@ -20,7 +20,7 @@
             "__skill__": true, 
             "name": "普通连打", 
             "description": "对对方所有角色造成 10 点伤害", 
-            "type": 2, 
+            "type": 1, 
             "effect": [{
                 "__effect__": true, 
                 "type": 1,

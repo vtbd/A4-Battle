@@ -1,0 +1,125 @@
+{
+    "name": "wl", 
+    "attack": 5, 
+    "health": 34,
+    "group": 2,
+    "skill": [
+        {
+            "__skill__": true,
+            "name": "桌面放题", 
+            "description": "失去 1 生命，选择一名己方学生为其附加一层「题」buff。手动切换至有「题」的角色时，该角色消耗所有「题」，[夺取] 对方出战角色 (「题」层数*2) 点生命值", 
+            "infinite": true, 
+            "choose": true, 
+            "choosearea": {
+                "__target__": true, "type": 14, "sets": [{
+                    "__target__": true, "type": 12, "groups": [1]
+                }, {
+                    "__target__": true, "type": 4
+                }]}, 
+            "type": 2, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 4,
+                "variableid": {
+                    "__variableid__": true,
+                    "type": "1", 
+                    "target": {"__target__": true, "type": 7}
+                },
+                "increment": -1
+            }, {
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 16}, 
+                "buff": {
+                    "identification": -1, 
+                    "name": "题", 
+                    "lasttime": -1, 
+                    "usetime": 1, 
+                    "type": 0, 
+                    "positivity": 0, 
+                    "buffdata": {
+                        "effects":[{
+                            "__effect__": true, 
+                            "type": 14, 
+                            "from": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type":1}},
+                            "to": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type":2}},
+                            "value": 2
+                        }],
+                        "eventtime":3
+                    }
+                }
+            }]
+        }, 
+        {
+            "__skill__": true,
+            "name": "三页必刷", 
+            "description": "选择一名己方角色，当回合数为 3 的倍数时，若该角色存活，则该角色生命值 + 6", 
+            "choose": true, 
+            "choosearea": {"__target__": true, "type": 4}, 
+            "type": 2, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 16}, 
+                "buff": {
+                    "identification": -1, 
+                    "name": "__wl__", 
+                    "lasttime": -1, 
+                    "usetime": -1, 
+                    "type": 4, 
+                    "positivity": 3, 
+                    "buffdata": {
+                        "effects":[{
+                            "__effect__": true, 
+                            "type": 4, 
+                            "variableid": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type": 7, "restrict_alive":true}},
+                            "increment": 6
+                        }],
+                        "eventtime":9
+                    }, 
+                    "condition": {"__boolexpression__":true, "operator":"6", "data":
+                        [{"__boolexpression__":true, "operator":"2", "data":[
+                        {"__mathexpression__": true, "operator":"10", "data":[
+                        {"__variableid__":true, "type":"6"}, 3]}, 0]}, 
+                        {"__boolexpression__":true, "operator":"12", "data":[{"__target__":true, "type":7}]}]
+                }
+            }
+        }]
+        }, 
+        {
+            "__skill__": true,
+            "name": "阎王点卯", 
+            "description": "令所有敌方角色受到伤害 +2，造成伤害 -1，持续 3 回合", 
+            "type": 2, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 3}, 
+                "buff": {
+                    "identification": -1, 
+                    "name": "__wl_ywdm_1__", 
+                    "lasttime": 7, 
+                    "usetime": -1, 
+                    "type": 2, 
+                    "positivity": 3,
+                    "buffdata": {
+                        "decrement": {"__mathexpression__": true, "operator": "1", "data": [2, "damage"]}
+            }}}, {
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 3}, 
+                "buff": {
+                    "identification": -1, 
+                    "name": "__wl_ywdm_2__", 
+                    "lasttime": 7, 
+                    "usetime": -1, 
+                    "type": 1, 
+                    "positivity": 3, 
+                    "buffdata": {
+                        "increment": {"__mathexpression__": true, "operator": "1", "data": ["damage", -1]}
+                    }
+                }
+            }]
+        }
+    ]
+}

@@ -6,7 +6,7 @@
         "type": 7, 
         "target": {"__target__": true, "type": 4}, 
         "buff": {
-            "identification": 2, 
+            "identification": -1, 
             "name": "美", 
             "lasttime": -1, 
             "usetime": -1, 

@@ -21,16 +21,7 @@
                 "type": 7, 
                 "target": {"__target__": true, "type": 1}, 
                 "buff": {
-                    "identification": 0, 
-                    "name": "橙", 
-                    "lasttime": -1, 
-                    "usetime": -1, 
-                    "type": 2, 
-                    "positivity": 2, 
-                    "buffdata": {
-                        "decrement": {"__mathexpression__": true, "operator": "1", "data": [2, "damage"]}
-                    }, 
-                    "condition": {"__boolexpression__": true, "operator":"10", "data": [2, "flags"]}
+                    "identification": "_orange"
                 }
             }]
         }, 
@@ -82,7 +73,7 @@
                 "type": 7, 
                 "target": {"__target__": true, "type": 1}, 
                 "buff": {
-                    "identification": 1, 
+                    "identification": -1, 
                     "name": "饭中淹", 
                     "lasttime": 7, 
                     "usetime": -1, 

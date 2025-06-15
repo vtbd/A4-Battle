@@ -60,8 +60,8 @@ class GameConfigApp(wx.Frame):
         self.dropdowns = []  # 保存所有下拉框
         
 
-        char_parameters = lambda x:{"parent": panel, "choices": list(self.chars_display.values()), "style": wx.CB_READONLY, "value": self.chars[self.char_data[x]]}
-        equipment_parameters = lambda x:{"parent": panel, "choices": list(self.equipment_display.values()), "style": wx.CB_READONLY, "value": self.equipment[self.equipment_data[x]]}
+        char_parameters = lambda x:{"parent": panel, "choices": list(self.chars_display.values()), "style": wx.CB_READONLY, "value": self.chars.get(self.char_data[x], "")}
+        equipment_parameters = lambda x:{"parent": panel, "choices": list(self.equipment_display.values()), "style": wx.CB_READONLY, "value": self.equipment.get(self.equipment_data[x], "")}
         # 第一部分：前三行
         grid_sizer_top = wx.GridSizer(3, 3, 10, 10)
         for i in range(0, 3):  # 角色1到角色3
@@ -176,9 +176,9 @@ class GameConfigApp(wx.Frame):
             chars = []
             equipment = []
             for dropdowns in self.config:
-                chars.append(self.chars_reversed[dropdowns[0].GetValue()])
-                equipment.append(self.equipment_reversed[dropdowns[1].GetValue()])
-                equipment.append(self.equipment_reversed[dropdowns[2].GetValue()])
+                chars.append(self.chars_reversed.get(dropdowns[0].GetValue(), '0'))
+                equipment.append(self.equipment_reversed.get(dropdowns[1].GetValue(), '0'))
+                equipment.append(self.equipment_reversed.get(dropdowns[2].GetValue(), '0'))
 
             scene_id = self.scenes_reversed[self.scene_dropdown.GetValue()]
             out = json.dumps({

@@ -33,7 +33,7 @@
                 "type": 7, 
                 "target": {"__target__": true, "type": 1}, 
                 "buff": {
-                    "identification": 4, 
+                    "identification": -1, 
                     "name": "shy", 
                     "lasttime": 5, 
                     "usetime": -1, 
@@ -45,7 +45,7 @@
         {
             "__skill__": true, 
             "name": "憋憋笑笑",
-            "description": "被动：自身每受到一次伤害，则增加一个「憋」标记，若生命值小于10，则生命值立刻变为1，获得(「憋」标记数*2)护盾，失去所有标记且所有技能立即失效",
+            "description": "被动：自身每受到一次伤害，则增加一个「憋」标记，若受到伤害后生命值小于10，则生命值立刻变为3，获得(「憋」标记数*2)护盾，失去所有标记且所有技能立即失效",
             "type": 3,
             "effect": [{
                 "__effect__": true, 
@@ -88,7 +88,7 @@
                                     "__effect__": true, 
                                     "type": 5, 
                                     "variableid": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type":7}},
-                                    "value": 1
+                                    "value": 3
                                 }, 
                                 {
                                     "__effect__": true, 

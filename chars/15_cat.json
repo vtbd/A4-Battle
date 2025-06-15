@@ -1,0 +1,88 @@
+{
+    "name": "cat", 
+    "attack": 9, 
+    "health": 28,
+    "group": 0,
+    "skill": [
+        {
+            "__skill__": true,
+            "name": "路边晒太阳", 
+            "description": "回合开始时若小猫不在出战位，则处于「晒太阳」状态，生命值 +2", 
+            "type": 3, 
+            "effect": [{
+                "__effect__":true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 7},
+                "buff":{
+                    "identification": -1,
+                    "name": "__cat_sunbath__",
+                    "lasttime": -1,
+                    "usetime": -1,
+                    "type": 4,
+                    "positivity": 3, 
+                    "condition": {"__boolexpression__":true, "operator":"10", "data": [{"__target__": true, "type":7}, {"__target__":true, "type": 6}]}, 
+                    "buffdata":{
+                        "eventtime":9, 
+                        "effects":[{
+                            "__effect__": true, 
+                            "type": 4, 
+                            "variableid": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type": 7, "restrict_alive":true}},
+                            "increment": 2
+                        }]
+                    }}
+            }]
+        }, 
+        {
+            "__skill__": true,
+            "name": "食堂蹭饭", 
+            "description": "左右开弓抓挠对手，造成 9+9 两段伤害，并使小猫的随机一个已用道具恢复", 
+            "type": 1, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 1, 
+                "target": {"__target__": true, "type": 1}, 
+                "damage": 9
+            }, {
+                "__effect__": true, 
+                "type": 1, 
+                "target": {"__target__": true, "type": 1}, 
+                "damage": 9
+            }, 
+            {
+                "__effect__": true, 
+                "type": 9,
+                "specific": 4
+            }]
+        }, 
+        {
+            "__skill__": true,
+            "name": "教室游走", 
+            "description": "当小猫死亡后，化身薛定谔的小猫，变成某一队友的召唤物，拥有 8 生命值和 4 协同普攻", 
+            "type": 3, 
+            "effect": [{
+                "__effect__":true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 7},
+                "buff":{
+                    "identification": -1,
+                    "name": "__cat_walk__",
+                    "lasttime": -1,
+                    "usetime": -1,
+                    "type": 4,
+                    "positivity": 3, 
+                    "condition": {"__boolexpression__":true, "operator": "0", "data":[
+                        {"__mathexpression__":true, "operator": "14", "data":[{"__target__": true, "type": 4, "restrict_alive": true, "hardmode": true}]}, 0
+                    ]},
+                    "buffdata":{
+                        "eventtime":15, 
+                        "effects":[{
+                            "__effect__": true, 
+                            "type": 11, 
+                            "target": {"__target__": true, "type": 20, "target": {"__target__":true, "type": 4, "restrict_alive": true, "hardmode": true}}, 
+                            "summoned": {"__summoned__":true, "health":8, "follow_attack": true, "attack": 4, "name": "薛定谔的西工大小猫"}
+                        }]
+                    }}
+            }]
+        }
+    ]
+}

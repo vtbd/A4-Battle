@@ -1,0 +1,10 @@
+{
+    "name": "AD 钙奶", 
+    "description": "回复 7 点生命",
+    "effect": [{
+        "__effect__": true, 
+        "type": 2, 
+        "value": 7, 
+        "target": {"__target__": true, "type":7}
+    }]
+}

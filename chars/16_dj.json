@@ -1,0 +1,108 @@
+{
+    "name": "dj", 
+    "attack": 8, 
+    "health": 42,
+    "group": 2,
+    "skill": [
+        {
+            "__skill__": true,
+            "name": "东南季风", 
+            "description": "己方回合开始时，若当前回合数是 3 的倍数且 dj 存活，则刮一次季风，敌方每人生命值 -1", 
+            "type": 3, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 7}, 
+                "buff": {
+                    "identification": -1, 
+                    "name": "__dj__", 
+                    "lasttime": -1, 
+                    "usetime": -1, 
+                    "type": 4, 
+                    "positivity": 3, 
+                    "buffdata": {
+                        "effects":[{
+                            "__effect__": true, 
+                            "type": 4, 
+                            "variableid": {"__variableid__": true, "type": "1", "target": {
+                                "__target__": true, "type": 3}},
+                            "increment": -1
+                        }],
+                        "eventtime":9
+                    }, 
+                    "condition": {"__boolexpression__":true, "operator":"6", "data":
+                        [{"__boolexpression__":true, "operator":"2", "data":[
+                        {"__mathexpression__": true, "operator":"10", "data":[
+                        {"__mathexpression__": true, "operator":"0", "data":
+                        {"__variableid__":true, "type":"6"}}, 3]}, 0]}, 
+                        {"__boolexpression__":true, "operator":"12", "data":[{"__target__":true, "type":7}]}]
+                }
+            }
+        }]
+        }, 
+        {
+            "__skill__": true,
+            "name": "男女搭配", 
+            "description": "选择一名敌方未出战角色与敌方出战角色结为伴侣，其中一人下次受到伤害时，另一人将承受同等伤害", 
+            "type": 2, 
+            "choose": true, 
+            "choosearea": {"__target__": true, "type": 5}, 
+            "effect": [{
+                "__effect__":true,
+                "type": 5, 
+                "variableid":{"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 1}, "mark": "__dj_couple__"}, 
+                "value":{"__target__":true, "type": 16}
+            }, {
+                "__effect__":true,
+                "type": 5, 
+                "variableid":{"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 16}, "mark": "__dj_couple__"}, 
+                "value":{"__target__":true, "type": 1}
+            }, {
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 1}, 
+                "buff": {
+                    "identification": "_dj_couple"
+                }
+            }, {
+                "__effect__": true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 16}, 
+                "buff": {
+                    "identification": "_dj_couple"
+                }
+            }]
+        }, 
+        {
+            "__skill__": true,
+            "name": "将进酒", 
+            "description": "每使用一次获得一个「酒」标记，「酒」标记数达到 3 时清空，回复 6 生命值，攻击力 +1", 
+            "infinite": true, 
+            "type": 2, 
+            "effect": [{
+                    "__effect__": true, 
+                    "type": 4, 
+                    "variableid": {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "alcohol"},
+                    "increment": 1
+                }, {
+                    "__effect__": true, 
+                    "condition": {"__boolexpression__":true, "operator": "2", "data":[{"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "alcohol"}, 3]}, 
+                    "type": 4, 
+                    "variableid": {"__variableid__": true, "type": "2", "target": {"__target__": true, "type": 7}},
+                    "increment": 1
+                }, {
+                    "__effect__": true, 
+                    "condition": {"__boolexpression__":true, "operator": "2", "data":[{"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "alcohol"}, 3]}, 
+                    "type": 2, 
+                    "target": {"__target__": true, "type": 7},
+                    "value": 6
+                },{
+                    "__effect__": true, 
+                    "condition": {"__boolexpression__":true, "operator": "2", "data":[{"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "alcohol"}, 3]}, 
+                    "type": 5, 
+                    "variableid": {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "alcohol"},
+                    "value": 0
+                }]
+        }
+    ]
+}

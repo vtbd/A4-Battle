@@ -1,0 +1,129 @@
+{
+    "name": "pipe", 
+    "attack": 6, 
+    "health": 36,
+    "group": 1,
+    "skill": [
+        {
+            "__skill__": true,
+            "name": "早卖晚嫖", 
+            "description": "赠予对方出战角色 10 生命、1 攻击，3 回合后若 pipe 存活，则从该角色处夺回 20 生命、2 攻击。（两个效果都采取 [夺取] 计算方式）", 
+            "type": 2, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 14, 
+                "from": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type":7}},
+                "to": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type":1}},
+                "value": 10
+            }, {
+                "__effect__": true, 
+                "type": 14, 
+                "from": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type":7}},
+                "to": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type":1}},
+                "value": 1
+            }, {
+                "__effect__": true, 
+                "type": 5, 
+                "variableid": {"__variableid__": true, "type": "8", "target": {"__target__":true, "type":7}, "mark":"__pipe__"},
+                "value": {"__target__":true, "type":1}
+            }, {
+                "__effect__":true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 7},
+                "buff": {
+                    "identification": -1, 
+                    "name": "__pipe_despoil__", 
+                    "lasttime": -1,
+                    "usetime": 1,
+                    "type":4, 
+                    "positivity": 3, 
+                    "buffdata": {
+                        "eventtime": 9,
+                        "effects":[{
+                            "__effect__": true, 
+                            "type": 14, 
+                            "from": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type":10, "pos": {"__variableid__": true, "type": "8", "target": {"__target__":true, "type":7}, "mark":"__pipe__"}}},
+                            "to": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type":7}},
+                            "value": 20
+                        }, {
+                            "__effect__": true, 
+                            "type": 14, 
+                            "from": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type":10, "pos": {"__variableid__": true, "type": "8", "target": {"__target__":true, "type":7}, "mark":"__pipe__"}}},
+                            "to": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type":7}},
+                            "value": 2
+                        }]
+                    }, 
+                    "condition": {"__boolexpression__":true, "operator": "6", "data": [
+                        {"__boolexpression__":true, "operator": "2", "data": ["age", 6]}, 
+                        {"__boolexpression__":true, "operator": "12", "data": [{"__target__":true, "type":7}]}]}
+                }
+            }]
+        }, 
+        {
+            "__skill__": true,
+            "name": "舌吻群儒", 
+            "description": "舌吻对方全队，所有角色失去一半护盾（下取整）、3 点生命", 
+            "type": 1, 
+            "effect": [{
+                "__effect__": true, 
+                "type": 5, 
+                "variableid": {"__variableid__": true, "type": "7", "target": {"__target__":true, "type":3}},
+                "value": {"__mathexpression__":true, "operator":"9", "data":[{"__mathexpression__":true, "operator":"4", "data":["original", 2]}]}
+            }, {
+                "__effect__": true, 
+                "type": 4, 
+                "variableid": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type":3}},
+                "increment": -3
+            }]
+        }, 
+        {
+            "__skill__": true,
+            "name": "还魂", 
+            "description": "pipe 死后第 3 个己方回合若己方尚未失败，则 pipe 以 10 生命、6 攻击形态复活", 
+            "type": 3, 
+            "effect": [{
+                "__effect__":true, 
+                "type": 7, 
+                "target": {"__target__": true, "type": 7},
+                "buff":{
+                    "identification": -1,
+                    "name": "__pipe_checkdeath__",
+                    "lasttime": -1,
+                    "usetime": 1,
+                    "type": 4,
+                    "positivity": 3, 
+                    "buffdata":{
+                        "eventtime":15, 
+                        "effects":[{
+                            "__effect__":true, 
+                            "type": 7, 
+                            "target": {"__target__": true, "type": 7},
+                            "buff":{
+                                "identification": -1, 
+                                "name": "__pipe_revival__", 
+                                "lasttime": -1,
+                                "usetime": 1,
+                                "type":4, 
+                                "positivity": 3, 
+                                "buffdata": {
+                                    "eventtime": 9,
+                                    "effects":[{
+                                        "__effect__": true, 
+                                        "type": 12, 
+                                        "revivehealth": 10, 
+                                        "target": {"__target__": true, "type": 7}
+                                    }, {
+                                        "__effect__": true, 
+                                        "type": 5, 
+                                        "variableid": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type":7}},
+                                        "value": 6
+                                    }]
+                                }, 
+                                "condition": {"__boolexpression__":true, "operator": "2", "data": ["age", 5]}
+                            }
+                        }]
+                    }}
+            }]
+        }
+    ]
+}

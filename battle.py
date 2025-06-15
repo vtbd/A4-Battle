@@ -1,9 +1,10 @@
 import constants
+import pygame
 import gui
 import json
 import math
 import random
-import settings
+import os
 
 def custom_decoder(obj):
     if "__tuple__" in obj:
@@ -23,6 +24,7 @@ def custom_decoder(obj):
     if "__summoned__" in obj:
         return Summoned(**obj)
     return obj
+
 
 def loadanimation(animlist, screen, root, pos, mode, size, alpha=False):
     an = gui.MtpApprObj(screen, root, 0, pos, mode, size, alpha)
@@ -152,37 +154,46 @@ class Target:
             return [kw['iterchar']]
         elif t == constants.Target.INTEAMNEXT:
             return (kw['base']+1)%3 + kw['base']//3
+        elif t == constants.Target.RANDOM:
+            return [random.choice(self.targetdata['target'].concretize(game, **kw))]
         else:
             raise ValueError(f'Invalid target id:{t}')
 
 
 class Buff:
     def __init__(self, dat:dict):
-        self.dat = dat
-        self.identification = dat['identification']
-        self.name = dat['name']
-        self.lasttime = dat['lasttime']
-        self.usetime = dat['usetime']
+        self.dat = dat.copy()
+        self.load(dat)
+    
+    def load(self, dat):
+        self.identification = dat.get('identification', -1)
+        if self.identification != -1:
+            tempdat = bufflist[self.identification] | dat   # 合并两字典，当前数据覆盖原有
+            self.dat = tempdat
+        self.name = self.dat['name']
+        self.lasttime = self.dat['lasttime']
+        self.usetime = self.dat['usetime']
         self.age = 0
-        self.type = dat['type']
-        self.environmental = dat.get("environmental", False)
+        self.type = self.dat['type']
+        self.environmental = self.dat.get("environmental", False)
+        self.isbuff = False if self.type == constants.BuffPositivity.NOTBUFF else True
         if not self.environmental:
-            self.positivity = dat['positivity']
+            self.positivity = self.dat['positivity']
         if self.type == constants.Bufftype.EFFECT:
-            self.effects = EffectSet(dat['buffdata']['effects'])
+            self.effects = EffectSet(self.dat['buffdata']['effects'])
             if self.environmental:
                 pass
             else:
-                self.eventtime = dat['buffdata']['eventtime']
+                self.eventtime = self.dat['buffdata']['eventtime']
         elif self.type == constants.Bufftype.INCREASEDAMAGEMADE:
-            self.increment = dat['buffdata']['increment']
+            self.increment = self.dat['buffdata']['increment']
         elif self.type == constants.Bufftype.DECREASEDAMAGERECEIVED:
-            self.decrement = dat['buffdata']['decrement']
+            self.decrement = self.dat['buffdata']['decrement']
         elif self.type == constants.Bufftype.ATTRIBUTE:
-            self.attrid = dat['buffdata']['attrid']
-            self.value = dat['buffdata']['value']
-        if dat.get('condition') != None:
-            self.condition = dat['condition']
+            self.attrid = self.dat['buffdata']['attrid']
+            self.value = self.dat['buffdata']['value']
+        if self.dat.get('condition') != None:
+            self.condition = self.dat['condition']
         else:
             self.condition = True
 
@@ -199,7 +210,9 @@ class Effect:
         self.effecttype:int = kw['type']
         self.condition:bool = kw.get('condition', True)
         t = self.effecttype
-        if t == constants.EffectType.DAMAGE:
+        if t == constants.EffectType.DEBUG_PRINT:
+            self.message = kw['message']
+        elif t == constants.EffectType.DAMAGE:
             self.damage:int = kw['damage']
             self.target:Target = kw['target']
             self.source:dict = kw.get('source')
@@ -218,7 +231,13 @@ class Effect:
             self.target:Target = kw['target']
         elif t == constants.EffectType.BUFFCLEAR:
             self.target:Target = kw['target']
-            self.positivities:list[int] = kw['positivities']
+            self.clear_type = kw.get("clear_type", constants.BuffClearType.POSITIVITY)
+            if self.clear_type == constants.BuffClearType.POSITIVITY:
+                self.positivities:list[int] = kw['positivities']
+            elif self.clear_type == constants.BuffClearType.IDENTIFICATION:
+                self.identification = kw['identification']
+            else:
+                raise ValueError(f'Invalid buffclear type:{self.clear_type}')
         elif t == constants.EffectType.SPECIFIC:
             self.specific = kw['specific']
         elif t == constants.EffectType.ENVIRONMENTALBUFF:
@@ -236,6 +255,10 @@ class Effect:
             self.revivehealth = kw['revivehealth']
         elif t == constants.EffectType.SWITCHSCENE:
             self.scene = kw['scene']
+        elif t == constants.EffectType.DESPOIL:
+            self.despoil_from:Variableid = kw['from']
+            self.despoil_to:Variableid = kw['to']
+            self.value = kw['value']
         else:
             raise ValueError(f'Invalid effect type:{t}')
     
@@ -248,11 +271,11 @@ class EffectSet:
 class Equipment:
     def __init__(self, datafilestr, game, seq:int):
         try:
-            with open(datafilestr, encoding='utf-8') as datafile:
+            with open(os.path.join(constants.BASEPATH, datafilestr), encoding='utf-8') as datafile:
                 data:dict = json.load(datafile, object_hook=custom_decoder)
         except FileNotFoundError:
             print(f'Warning: File not found: {datafilestr}')
-            with open(constants.EQUIPMENTNULLFILE, encoding='utf-8') as datafile:
+            with open(os.path.join(constants.BASEPATH, constants.EQUIPMENTNULLFILE), encoding='utf-8') as datafile:
                 data:dict = json.load(datafile, object_hook=custom_decoder)
 
         self.seq:int = seq
@@ -293,11 +316,11 @@ class Equipment:
 class Scene:
     def __init__(self, datafilestr, game):
         try:
-            with open(datafilestr, encoding='utf-8') as datafile:
+            with open(os.path.join(constants.BASEPATH, datafilestr), encoding='utf-8') as datafile:
                 data:dict = json.load(datafile, object_hook=custom_decoder)
         except FileNotFoundError:
             print(f'Warning: File not found: {datafilestr}')
-            with open(constants.SCENENULLFILE, encoding='utf-8') as datafile:
+            with open(os.path.join(constants.BASEPATH, constants.SCENENULLFILE), encoding='utf-8') as datafile:
                 data:dict = json.load(datafile, object_hook=custom_decoder)
 
         self.datafilestr = datafilestr
@@ -324,6 +347,8 @@ class Summoned:
         self.additionalbuff:list[Buff] = list(map(lambda x:Buff(x), kw.get('buff', [])))
         self.health:int = kw['health']
         self.on_death:list[Effect] = EffectSet(kw.get('on_death', []))
+        self.follow_attack:bool = kw.get('follow_attack', False)
+        self.attack = kw.get('attack', 0)
 
     def copy(self):
         return Summoned(**self.dic)
@@ -351,11 +376,11 @@ class Skill:
 class Char:
     def __init__(self, datafilestr, game, seq:int):
         try:
-            with open(datafilestr, encoding='utf-8') as datafile:
+            with open(os.path.join(constants.BASEPATH, datafilestr), encoding='utf-8') as datafile:
                 data:dict = json.load(datafile, object_hook=custom_decoder)
         except FileNotFoundError:
             print(f'Warning: File not found: {datafilestr}')
-            with open(constants.CHARNULLFILE, encoding='utf-8') as datafile:
+            with open(os.path.join(constants.BASEPATH, constants.CHARNULLFILE), encoding='utf-8') as datafile:
                 data:dict = json.load(datafile, object_hook=custom_decoder)
 
         self.game:Game = game
@@ -377,10 +402,10 @@ class Char:
         self.skillboard = gui.LayoutObj(game.root, constants.SKILLBOARDPOS, size=constants.SKILLBOARDSIZE)
         self.skillboard.movability = True
         self.skilltexts_black:list[gui.TextImagifier] = []
-        self.skilltexts_black += [gui.TextImagifier(game.screen, self.skillboard, game.font_big, skill.name, (0, 0, 0), constants.SKILLTITLEPOSLIST[i], (0, 0)) for i, skill in enumerate(self.skills)]
+        self.skilltexts_black += [gui.TextImagifier(game.screen, self.skillboard, game.font_big, ("*" if skill.skilltype == constants.SkillType.ACTIVEAGGRESSIVE else "") + skill.name, (0, 0, 0), constants.SKILLTITLEPOSLIST[i], (0, 0)) for i, skill in enumerate(self.skills)]
         self.skilltexts_black += [gui.TextImagifier(game.screen, self.skillboard, game.font_small, skill.description, (0, 0, 0), constants.SKILLDESCRIPTIONPOSLIST[i], (1, 0), constants.SKILLDESCRIPTIONLENGTH) for i, skill in enumerate(self.skills)]
         self.skilltexts_grey:list[gui.TextImagifier] = []
-        self.skilltexts_grey += [gui.TextImagifier(game.screen, self.skillboard, game.font_big, skill.name, (128, 128, 128), constants.SKILLTITLEPOSLIST[i], (0, 0)) for i, skill in enumerate(self.skills)]
+        self.skilltexts_grey += [gui.TextImagifier(game.screen, self.skillboard, game.font_big, ("*" if skill.skilltype == constants.SkillType.ACTIVEAGGRESSIVE else "") + skill.name, (128, 128, 128), constants.SKILLTITLEPOSLIST[i], (0, 0)) for i, skill in enumerate(self.skills)]
         self.skilltexts_grey += [gui.TextImagifier(game.screen, self.skillboard, game.font_small, skill.description, (128, 128, 128), constants.SKILLDESCRIPTIONPOSLIST[i], (1, 0), constants.SKILLDESCRIPTIONLENGTH) for i, skill in enumerate(self.skills)]
 
         self.skillimage_black:list[gui.ImageObj] = [m.imagify() for i, m in enumerate(self.skilltexts_black)]
@@ -469,12 +494,16 @@ class Char:
         if self.summons == []:
             self._health -= damage_aftershield
         else:
-            self.summons[-1].health -= damage_aftershield
-            if self.summons[-1].health <= 0:
-                s = self.summons.pop()
-                for b in s.additionalbuff:
-                    self.buffs.remove(b)
-                self.game.executeeffects(s.on_death, charself=self.seq)
+            remaining_damage = damage_aftershield
+            while remaining_damage > 0 and len(self.summons) > 0:
+                health_temp = self.summons[-1].health
+                self.summons[-1].health -= remaining_damage
+                remaining_damage -= health_temp
+                if self.summons[-1].health <= 0:
+                    s = self.summons.pop()
+                    for b in s.additionalbuff:
+                        self.buffs.remove(b)
+                    self.game.executeeffects(s.on_death, charself=self.seq)
         self.updatebuff()
         if not constants.AttackFlags.NOEVENT in flags:
             self.game.handleevent((constants.EventType.HURTED, self.seq), source=source, damage=damage_t)
@@ -496,8 +525,10 @@ class Char:
     def health(self, h):
         self._health = h
         if self._health <= 0:
-            self.alive = False
             self._health = 0
+            if self.alive:
+                self.alive = False
+                self.game.handleevent((constants.EventType.DIE, self.seq))
 
     @property
     def attack(self):
@@ -556,6 +587,7 @@ class Game:
             self.charidlist:list[str] = it['chars']
             self.equipidlist:list[int] = it['equipment']
             self.initial_sceneid:str = it['scene']
+
         self.charlist:list[Char] = [Char(constants.CHARFILE[char], self, i) for i, char in enumerate(self.charidlist)]
 
         self.charavatarlist:list[gui.ImageObj] = [gui.ImageObj(screen, root, constants.CHARAVATARFILE.get(char, 'a'), constants.CHARPOSLIST[i], (0, 0), constants.S, True) for i, char in enumerate(self.charidlist)]
@@ -603,7 +635,8 @@ class Game:
         '''
 
         self.attacktime = 1
-        self.skilltime = 1
+        self.skilltime = 0
+        # 第一回合先手不能使用技能
         self.switchchartime = 1
         self.useequiptime = 1
         self.specialvars = {}
@@ -611,15 +644,6 @@ class Game:
 
         self.animations:list[gui.MtpApprObj] = []
 
-        for i, char in enumerate(self.charlist):
-            for m in char.skills:
-                if m.skilltype == constants.SkillType.PASSIVE:
-                    self.executeeffects(m.effects, i)
-        for i, char in enumerate(self.charlist):
-            char.update()
-        for i, equip in enumerate(self.equiplist):
-            equip.update(self)
-        self.updatedecorator()
 
         self.mask = gui.ImageObj(screen, root, constants.MASKFILE, (0, 0), size=constants.SCREENSIZE, alpha=True)
         self.winblock = gui.ImageObj(screen, root, constants.WINBLOCKFILE, constants.WINBLOCKPOS, (0, 0), constants.S, True)
@@ -660,6 +684,16 @@ class Game:
          - 3: choose
          - 4: info
         '''
+
+        for i, char in enumerate(self.charlist):
+            for m in char.skills:
+                if m.skilltype == constants.SkillType.PASSIVE:
+                    self.executeeffects(m.effects, i)
+        for i, char in enumerate(self.charlist):
+            char.update()
+        for i, equip in enumerate(self.equiplist):
+            equip.update(self)
+        self.updatedecorator()
 
     def inturncharseqs(self) -> list[int]:
         return [[0, 1, 2], [3, 4, 5]][self.turns%2]
@@ -762,11 +796,7 @@ class Game:
                 chosechar = self.charlist[self.chose]
                 if chosechar.attackbutton.drawn:
                     if chosechar.attackbutton.surveil(pos):
-                        commonattackdict = {"type": 1, "target": Target({"type": constants.Target.ENEMYONFIGHT}), "damage": chosechar.absattack, "flags": [constants.AttackFlags.COMMONATTACK]}
-                        self.executeeffects(EffectSet([Effect(**commonattackdict)]), self.chose)
-                        self.attacktime -= 1
-                        self.handleevent((constants.EventType.ATTACK, self.chose))
-                        self.updatedecorator()
+                        self.common_attack(chosechar)
                 for i, m in enumerate(chosechar.useskillbuttons):
                     if m.drawn:
                         if m.surveil(pos):
@@ -846,6 +876,18 @@ class Game:
                                 else:
                                     self.choselist.append(i)
                                     self.choosechardecoratorlist[i].setappr(2)
+
+    def common_attack(self, chosechar:Char):
+        commonattackdict = {"type": 1, "target": Target({"type": constants.Target.ENEMYONFIGHT}), "damage": chosechar.absattack, "flags": [constants.AttackFlags.COMMONATTACK]}
+        self.executeeffects(EffectSet([Effect(**commonattackdict)]), self.chose)
+        follow_attack_dict = {"type": 1, "target": Target({"type": constants.Target.ENEMYONFIGHT}), "damage": 0, "source": {"None": True}}
+        for summoned in chosechar.summons:
+            if summoned.follow_attack:
+                follow_attack_dict['damage'] = summoned.attack
+                self.executeeffects(EffectSet([Effect(**follow_attack_dict)]), self.chose)
+        self.attacktime -= 1
+        self.handleevent((constants.EventType.ATTACK, self.chose))
+        self.updatedecorator()
 
     def use_equipment(self, choseequip:Equipment, **kw):
         self.executeeffects(choseequip.effects, [self.onfightl, self.onfightr][self.turns%2], **kw)
@@ -959,7 +1001,9 @@ class Game:
         self.charsummonedhealthlist:list[gui.ImageObj] = [gui.TextImagifier(self.screen, self.root, self.font_big, str(k) if (k:=len(char.summons)) > 0 else '', (96, 86, 47), constants.CHARSUMMONEDPOSLIST[i], (1 if i <= 2 else -1, 1)).imagify() for i, char in enumerate(self.charlist)]
 
     def executeeffect(self, effect:Effect, charself = None, **kw):
-        if effect.effecttype == constants.EffectType.DAMAGE:
+        if effect.effecttype == constants.EffectType.DEBUG_PRINT:
+            print(effect.message)
+        elif effect.effecttype == constants.EffectType.DAMAGE:
             target = effect.target.concretize(self, charself=charself, **kw)
             if effect.source == None:
                 so = charself
@@ -979,13 +1023,15 @@ class Game:
                     char.health = min(char.health, char.maxhealth)
         elif effect.effecttype == constants.EffectType.SET:
             if not effect.variableid.targeted:
-                self.setvariable(effect.variableid, self.calcnum(effect.value, charself=charself, **kw))
+                original = self.getvariable(effect.variableid)
+                self.setvariable(effect.variableid, self.calcnum(effect.value, charself=charself, **kw, original=original))
             else:
                 var_x = effect.variableid.copy()
                 for tar in effect.variableid.target.concretize(self, charself=charself, **kw):
                     var_x.concretized = True
                     var_x.targetabs = tar
-                    self.setvariable(var_x, self.calcnum(effect.value, charself=charself, **kw))
+                    original = self.getvariable(var_x)
+                    self.setvariable(var_x, self.calcnum(effect.value, charself=charself, **kw, original=original))
         elif effect.effecttype == constants.EffectType.INCREASE:
             if not effect.variableid.targeted:
                 self.setvariable(effect.variableid, self.getvariable(effect.variableid) + self.calcnum(effect.increment, charself=charself, **kw))
@@ -1004,9 +1050,14 @@ class Game:
             target = effect.target.concretize(self, charself=charself, **kw)
             for a in target:
                 k = []
-                for b in self.charlist[a].buffs:
-                    if b.positivity not in effect.positivities:
-                        k.append(b)
+                if effect.clear_type == constants.BuffClearType.POSITIVITY:
+                    for b in self.charlist[a].buffs:
+                        if b.positivity not in effect.positivities:
+                            k.append(b)
+                elif effect.clear_type == constants.BuffClearType.IDENTIFICATION:
+                    for b in self.charlist[a].buffs:
+                        if b.identification != effect.identification:
+                            k.append(b)
                 self.charlist[a].buffs = k
         elif effect.effecttype == constants.EffectType.ENVIRONMENTALBUFF:
             self.environmentalbuff.append(effect.buff.copy())
@@ -1036,34 +1087,59 @@ class Game:
         elif effect.effecttype == constants.EffectType.SWITCHSCENE:
             self.currentscene = self.scenes[effect.scene].copy()
             self.executeeffects(self.currentscene.effects_instant, charself=charself, **kw)
+        elif effect.effecttype == constants.EffectType.DESPOIL:
+            var_s = effect.despoil_from.copy()
+            var_s.absolute = True
+            var_s.concretized = True
+            var_s.targetabs = var_s.target.concretize(self, charself=charself, **kw)[0]
+            var_r = effect.despoil_to.copy()
+            var_r.absolute = True
+            var_r.concretized = True
+            var_r.targetabs = var_r.target.concretize(self, charself=charself, **kw)[0]
+            source_value = self.calcnum(var_s, charself=charself, **kw)
+            transfer_value = min(self.calcnum(effect.value, charself=charself, **kw), source_value)
+            self.setvariable(var_s, source_value - transfer_value)
+            self.setvariable(var_r, self.getvariable(var_r) + transfer_value)
         elif effect.effecttype == constants.EffectType.SPECIFIC:
-            if effect.specific == constants.EffectType.Specific.ZHH:
-                equipseqs = [range(6, 12), range(0, 6)][self.turns%2]
-                validequipseq = []
-                for i in equipseqs:
-                    if self.equiplist[i].usetime > 0:
-                        validequipseq.append(i)
-                if len(validequipseq) > 0:
-                    self.equiplist[random.choice(validequipseq)].usetime = 0
-            elif effect.specific == constants.EffectType.Specific.LB_2:
-                enemy_alive = Target({"type": constants.Target.ENEMYALL, "restrict_alive": True}).concretize(self).copy()
-                if len(enemy_alive) >= 2:
-                    on_fight = self.on_fight[(self.turns+1)%2]
-                    enemy_alive.remove(on_fight)
-                    m = self.on_fight.copy()
-                    m[(self.turns+1)%2] = random.choice(enemy_alive)
-                    self.on_fight = m
-                else:
-                    pass
-            elif effect.specific == constants.EffectType.Specific.LB_3:
-                chose = kw['chose'][0]
-                m = self.on_fight.copy()
-                m[(self.turns+1)%2] = chose
-                self.on_fight = m
-            else:
-                raise ValueError(f'Invalid specific:{effect.specific}')
+            self.handle_special_effects(effect, charself, kw)
         else:
             raise ValueError(f'Invalid effecttype:{effect.effecttype}')
+
+    def handle_special_effects(self, effect:Effect, charself, kw):
+        if effect.specific == constants.EffectType.Specific.ZHH:
+            equipseqs = [range(6, 12), range(0, 6)][self.turns%2]
+            validequipseq = []
+            for i in equipseqs:
+                if self.equiplist[i].usetime > 0:
+                    validequipseq.append(i)
+            if len(validequipseq) > 0:
+                self.equiplist[random.choice(validequipseq)].usetime = 0
+        elif effect.specific == constants.EffectType.Specific.LB_2:
+            enemy_alive = Target({"type": constants.Target.ENEMYALL, "restrict_alive": True}).concretize(self).copy()
+            if len(enemy_alive) >= 2:
+                on_fight = self.on_fight[(self.turns+1)%2]
+                enemy_alive.remove(on_fight)
+                m = self.on_fight.copy()
+                m[(self.turns+1)%2] = random.choice(enemy_alive)
+                self.on_fight = m
+            else:
+                pass
+        elif effect.specific == constants.EffectType.Specific.LB_3:
+            chose = kw['chose'][0]
+            m = self.on_fight.copy()
+            m[(self.turns+1)%2] = chose
+            self.on_fight = m
+        elif effect.specific == constants.EffectType.Specific.CAT:
+            eqs = []
+            for i in range(2):
+                if self.equiplist[charself*2+i].usetime == 0:
+                    eqs.append(charself*2+i)
+            if len(eqs) == 0:
+                return
+            eq = random.choice(eqs)
+            self.equiplist[eq].usetime += 1
+        else:
+            raise ValueError(f'Invalid specific:{effect.specific}')
 
     def executeeffects(self, effects:EffectSet, charself = None, **kw):
         for effect in effects.effects:
@@ -1101,9 +1177,12 @@ class Game:
                 return [constants.EventTime.TURNSTART]
             return [constants.EventTime.TURNEND]
         if event[0] == constants.EventType.DAMAGEMADE:
+            resl = []
             if event[2] == charseq:
-                return [constants.EventTime.MAKEDAMAGE]
-            return []
+                resl.append(constants.EventTime.MAKEDAMAGE)
+            if event[1] == charseq:
+                resl.append(constants.EventTime.GETDAMAGED)
+            return resl
         if event[0] == constants.EventType.EQUIP:
             if event[1] // 2 == charseq:
                 return [constants.EventTime.USEEQUIP, constants.EventTime.WEEQUIP]
@@ -1111,6 +1190,13 @@ class Game:
                 return [constants.EventTime.WEEQUIP]
             else:
                 return [constants.EventTime.ENEMYEQUIP]
+        if event[0] == constants.EventType.DIE:
+            if event[1] == charseq:
+                return [constants.EventTime.SELFDIE, constants.EventTime.OWNSIDEDIE]
+            elif event[1] // 2 in [[0, 1, 2], [3, 4, 5]][charseq//3]:
+                return [constants.EventTime.OWNSIDEDIE]
+            else:
+                return [constants.EventTime.ENEMYDIE]
         raise ValueError(f'Invalid event type:{event[0]}')
             
     def handleevent(self, event:tuple, **kw):
@@ -1262,6 +1348,8 @@ class Game:
                     if self.calbool(b, **vars):
                         count += 1
                 return count
+            if cal.operator == constants.Calculator.LEN:
+                return len(self.callist(dat[0], **vars))
             raise ValueError(f'Invalid operator:{cal.operator}')
         if type(cal) == Variableid:
             dat = cal
@@ -1345,6 +1433,8 @@ class Game:
         return [self.calcnum(i, **vars) for i in cal]
     
     def checkdeath(self):
+        for char in self.charlist:
+            char.health = char.health
         if self.charlist[self.onfightl].alive == False:
             for i in range(1, 3):
                 if self.charlist[(self.onfightl+i)%3].alive == True:
@@ -1355,6 +1445,7 @@ class Game:
                 self.gameend = True
                 self.stack.append(1)
                 self.winner = 1
+                return
         if self.charlist[self.onfightr].alive == False:
             for i in range(1, 3):
                 if self.charlist[3 + (self.onfightr+i)%3].alive == True:
@@ -1365,6 +1456,7 @@ class Game:
                 self.gameend = True
                 self.stack.append(1)
                 self.winner = 0
+                return
 
     @property
     def on_fight(self):
@@ -1377,5 +1469,10 @@ class Game:
         self.charframeonfightlist[0].rect.center = constants.CHARPOSLIST[self.onfightl]
         self.charframeonfightlist[1].rect.center = constants.CHARPOSLIST[self.onfightr]
 
+with open(constants.BUFFPATH, encoding='utf-8') as bpf:
+    bp = json.load(bpf, object_hook=custom_decoder)
+    bufflist = bp
+
 debug_showallbuff = False
 debug_showallmark = False
+debug_print = True

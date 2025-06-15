@@ -15,9 +15,13 @@
         "12": "chars/12_zda.json", 
         "13": "chars/13_wyh_3.json", 
         "14": "chars/14_lb.json", 
+        "15": "chars/15_cat.json", 
+        "16": "chars/16_dj.json", 
+        "17": "chars/17_pipe.json", 
+        "18": "chars/18_wl.json", 
         "p1": "chars/p1_zzm.json", 
         "p2": "chars/p2_opf.json", 
-        "TEST_1": "chars/test_1.json"
+        "t1": "chars/test_1.json"
     },
     "charavatarfile": {
         "0": "res/null.png",
@@ -35,7 +39,12 @@
         "12": "res/char/zda.png", 
         "13": "res/char/wyh_3.png", 
         "14": "res/char/lb.png", 
-        "p1": "res/char/zzm.png"
+        "15": "res/char/cat.png", 
+        "16": "res/char/dj.png", 
+        "17": "res/char/pipe.png", 
+        "18": "res/char/wl.png", 
+        "p1": "res/char/zzm.png", 
+        "p2": "res/char/opf.png"
     },
     "equipmentfile": {
         "default": "equipment/0.json", 
@@ -64,7 +73,8 @@
         "23": "equipment/23_japanese_slippers.json", 
         "24": "equipment/24_salt_and_pepper_mushrooms.json", 
         "25": "equipment/25_wyh_compass.json", 
-        "26": "equipment/26_tby.json"
+        "26": "equipment/26_tby.json", 
+        "27": "equipment/27_ad_calcium_milk.json"
     },
     "equipmentpicturefile": {
         "1": "res/equipment/1_ladybug_correction_tape.png",
@@ -92,7 +102,8 @@
         "23": "res/equipment/23_japanese_slippers.png", 
         "24": "res/equipment/24_salt_and_pepper_mushrooms.png", 
         "25": "res/equipment/25_wyh_compass.png", 
-        "26": "res/equipment/26_tby.png"
+        "26": "res/equipment/26_tby.png", 
+        "27": "res/equipment/27_ad_calcium_milk.png"
     }, 
     "scenefile": {
         "default": "scene/0.json",

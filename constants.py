@@ -2,16 +2,17 @@ import sys
 import os
 import json
 
+if getattr(sys, 'frozen', False):
+    BASEPATH = sys._MEIPASS
+else:
+    BASEPATH = os.path.dirname(__file__)
+
+# path
+_res_path = os.path.join(BASEPATH, 'res.json')
+BUFFPATH = os.path.join(BASEPATH, 'bufflist.json')
 
 #display
 ##general
-if getattr(sys, 'frozen', False):
-    _base_path = sys._MEIPASS
-else:
-    _base_path = os.path.dirname(__file__)
-
-_res_path = os.path.join(_base_path, 'res.json')
-
 with open('settings.json', encoding='utf-8') as fl:
     f = json.load(fl)
     S = f['size']
@@ -29,9 +30,78 @@ with open(_res_path, encoding='utf-8') as fl:
     EQUIPMENTNULLFILE = EQUIPMENTFILE['default']
     SCENENULLFILE = SCENEFILE['default']
 
+
+THEME = \
+{
+    "defaults":
+    {
+        "colours":
+        {
+            "normal_bg":"#25292e",
+            "hovered_bg":"#45494e",
+            "disabled_bg":"#25292e",
+            "selected_bg":"#193754",
+            "dark_bg":"#15191e",
+            "normal_text":"#c5cbd8",
+            "hovered_text":"#FFFFFF",
+            "selected_text":"#FFFFFF",
+            "disabled_text":"#6d736f",
+            "link_text": "#0000EE",
+            "link_hover": "#2020FF",
+            "link_selected": "#551A8B",
+            "text_shadow": "#777777",
+            "normal_border": "#DDDDDD",
+            "hovered_border": "#B0B0B0",
+            "disabled_border": "#808080",
+            "selected_border": "#8080B0",
+            "active_border": "#8080B0",
+            "filled_bar":"#f4251b",
+            "unfilled_bar":"#CCCCCC"
+        }
+    },
+    "#regular": {
+        "font": {
+            "name": "zcool",
+            "size": 32*S, 
+            "regular_path": "res/zcool.ttf"
+        }, 
+        "misc": {
+            "shape": "rounded_rectangle", 
+            "shape_corner_radius": f"{round(20*S)}", 
+            "border_width": f"{round(4*S)}", 
+            "tool_tip_delay": "1.0",
+            "text_shadow_size": "1",
+            "text_shadow_offset": "0,0",
+            "state_transitions":
+            {
+                "normal_hovered": "0.2",
+                "hovered_normal": "0.2"
+            }
+        }
+    }, 
+    "button": {
+        "prototype": "#regular"
+    }
+}
+
 ##specific
+
 ###screen
 SCREENSIZE = (1600*S, 900*S)
+
+### main interface
+START_BUTTON_SIZE = (300*S, 80*S)
+START_BUTTON_POS = (800*S, 400*S)
+
+SETTINGS_BUTTON_SIZE = (300*S, 80*S)
+SETTINGS_BUTTON_POS = (800*S, 520*S)
+
+CHOOSE_BUTTON_SIZE = (300*S, 80*S)
+CHOOSE_BUTTON_POS = (800*S, 640*S)
+
+### in game
+BACK_BUTTON_SIZE = (80*S, 80*S)
+BACK_BUTTON_POS = (0, 0)
 
 ###about chars
 CHARPOSLIST = [(400*S, 100*S), (400*S, 225*S), (400*S, 350*S), (1200*S, 100*S), (1200*S, 225*S), (1200*S, 350*S)]
@@ -124,6 +194,8 @@ SURECANCELBUTTONFILE = 'res/cancel_button_new.png'
 CHOOSEBLOCKFILE = 'res/chooseblock.png'
 INGAMERETRYBUTTONFILE = 'res/button_retry_in_game.png'
 
+SOUND_CLICK = 'res/sound/click.wav'
+
 #displayed constants
 ATTACKHINT = '攻击：'
 ROUNDHINT = ('第', '回合')
@@ -144,7 +216,7 @@ class CharGroup:
 
 TARGET = {1: 'ENEMYONFIGHT', 2: 'SELFONFIGHT', 3: 'ENEMYALL', 4: 'SELFALL', 5: 'ENEMYNOTONFIGHT', 6: 'SELFNOTONFIGHT', 7:'SELF', 8:'ALL', 
           9: 'Specific char', 10: 'Specific position', 11:'DAMAGESOURCE', 12:'GROUP', 13:'UNIONSET', 14:'INTERSECTIONSET', 
-          15:'DAMAGERECEIVER', 16: 'CHOOSE', 17: 'MAXIMIZE', 18:'ITERCHAR', 19:'INTEAMNEXT'}
+          15:'DAMAGERECEIVER', 16: 'CHOOSE', 17: 'MAXIMIZE', 18:'ITERCHAR', 19:'INTEAMNEXT', 20:'RANDOM'}
 class Target:
     ENEMYONFIGHT = 1
     SELFONFIGHT = 2
@@ -165,10 +237,12 @@ class Target:
     MAXIMIZE = 17
     ITERCHAR = 18
     INTEAMNEXT = 19
+    RANDOM = 20
 
-EFFECTTYPE = {1: 'DAMAGE', 2: 'HEAL', 3:'KILL', 4: 'INCREASE', 5: 'SET', 6: 'RANDOM', 7:'BUFF', 8:'BUFFCLEAR', 9:'SPECIFIC',
-              10:'ENVIRONMENTALBUFF', 11:'SUMMON', 12:'REVIVE', 13:'SWITCHSCENE'}
+EFFECTTYPE = {-1: 'DEBUG_PRINT', 1: 'DAMAGE', 2: 'HEAL', 3:'KILL', 4: 'INCREASE', 5: 'SET', 6: 'RANDOM', 7:'BUFF', 8:'BUFFCLEAR', 9:'SPECIFIC',
+              10:'ENVIRONMENTALBUFF', 11:'SUMMON', 12:'REVIVE', 13:'SWITCHSCENE', 14:'DESPOIL'}
 class EffectType:
+    DEBUG_PRINT = -1
     DAMAGE = 1
     HEAL = 2
     KILL = 3
@@ -182,10 +256,12 @@ class EffectType:
     SUMMON = 11
     REVIVE = 12
     SWITCHSCENE = 13
+    DESPOIL = 14
     class Specific:
         ZHH = 1
         LB_2 = 2
         LB_3 = 3
+        CAT = 4
 
 VARIABLEID = {'0':'SPECIALVARIABLE', '1': 'HEALTH', '2': 'ATTACK', '3': 'ATTACKTIME', '4': 'SKILLTIME', 
               '5': 'SWITCHCHARTIME', '6': 'ROUND', '7': 'SHIELD', '8': 'MARKS', 9: 'SKILLUSETIME'}
@@ -201,7 +277,7 @@ class VariableId:
     MARKS = '8'
     SKILLUSETIME = '9'
 
-MARKNAMES = {'suppress': '憋', 'dam': '坝', 'lazy': '惰', 'shuang': '爽'}
+MARKNAMES = {'suppress': '憋', 'dam': '坝', 'lazy': '惰', 'shuang': '爽', 'alcohol': '酒', 'ji': "唧"}
 
 SKILLTYPE = {1:'ACTIVEAGGRESSIVE', 2: 'ACTIVENONAGRESSIVE', 3: 'PASSIVE'}
 class SkillType:
@@ -218,7 +294,7 @@ class AttackFlags:
     SKIPSHIELD = 4
 
 CALCULATOR = {'-1': 'CALLSPECIALVARIABLE', '0': 'CALLVARIABLE', '1': 'ADD', '2': 'SUB', '3': 'TIMES', '4': 'DIV', '5': 'EXP', '6': 'LOG',
-               '7': 'ROUND', '8': 'FLOOR', '9': 'CEIL', '10': 'MODE', '11': 'MAX', '12': 'MIN', '13': 'COUNT'}
+               '7': 'ROUND', '8': 'FLOOR', '9': 'CEIL', '10': 'MODE', '11': 'MAX', '12': 'MIN', '13': 'COUNT', '14': 'LEN'}
 class Calculator:
     CALLSPECIALVARIABLE = '-1'
     CALLVARIABLE = '0'
@@ -235,9 +311,11 @@ class Calculator:
     MAX = '11'
     MIN = '12'
     COUNT = '13'
+    LEN = '14'
 
 EVENTTIME = {0: 'COMMONATTACK', 1: 'USESKILL', 2: 'WESWITCH', 3: 'SWITCHTO', 4: 'SWITCHFROM', 5: 'GETHURTED', 6: 'ENEMYCOMMONATTACK',
-              7: 'ENEMYUSESKILL', 8: 'ENEMYSWITCH', 9:'TURNSTART', 10:'TURNEND', 11:'MAKEDAMAGE', 12: 'WEEQUIP', 13:'ENEMYEQUIP', 14:'USEEQUIP'}
+              7: 'ENEMYUSESKILL', 8: 'ENEMYSWITCH', 9:'TURNSTART', 10:'TURNEND', 11:'MAKEDAMAGE', 12: 'WEEQUIP', 13:'ENEMYEQUIP', 14:'USEEQUIP', 
+              15: 'SELFDIE', 16: 'OWNSIDEDIE', 17: 'ENEMYDIE'}
 class EventTime:
     COMMONATTACK = 0
     USESKILL = 1
@@ -254,8 +332,12 @@ class EventTime:
     WEEQUIP = 12
     ENEMYEQUIP = 13
     USEEQUIP = 14
+    SELFDIE = 15
+    OWNSIDEDIE = 16
+    ENEMYDIE = 17
+    GETDAMAGED = 18    # 与 GETHURTED 不等价，此事件参数在触发自身效果之前触发
     
-EVENTTYPE = {0: 'ATTACK', 1: 'SKILL', 2: 'SWITCH', 3: 'HURTED', 4: 'TURNSWITCH', 5:'DAMAGEMADE', 6:'EQUIP'}
+EVENTTYPE = {0: 'ATTACK', 1: 'SKILL', 2: 'SWITCH', 3: 'HURTED', 4: 'TURNSWITCH', 5:'DAMAGEMADE', 6:'EQUIP', 7: 'DIE'}
 class EventType:
     ATTACK = 0
     SKILL = 1
@@ -264,6 +346,7 @@ class EventType:
     TURNSWITCH = 4
     DAMAGEMADE = 5
     EQUIP = 6
+    DIE = 7
 
 BUFFTYPE = {0: 'NONE', 1: 'INCREASEDAMAGEMADE', 2: 'DECREASEDAMAGERECEIVED', 3: 'ATTRIBUTE', 4: 'EFFECT', 5: 'NOSKILL', 6: 'NOATTACK'}
 class Bufftype:
@@ -275,21 +358,18 @@ class Bufftype:
     NOSKILL = 5
     NOATTACK = 6
 
-BUFFIDENTIFICATION = {-1: 'OTHER', 0: 'ORANGE', 1: 'FLOODEDINFOOD', 2:'BEAUTY', 3:'ILLUSION', 4:'SHY'}
-class BuffIdentification:
-    OTHER = -1
-    ORANGE = 0
-    FLOODEDINFOOD = 1
-    BEAUTY = 2
-    ILLUSION = 3
-    SHY = 4
+BUFFCLEARTYPE = {"1": "POSITIVITY", "2": "IDENTIFICATION"}
+class BuffClearType:
+    POSITIVITY = "1"
+    IDENTIFICATION = "2"
 
-BUFFPOSITIVITY = {0: 'POSITIVE', 1: 'NEGATIVE', 2: 'NEUTRAL', 3: 'INDESTRUCTIBLE'}
+BUFFPOSITIVITY = {0: 'POSITIVE', 1: 'NEGATIVE', 2: 'NEUTRAL', 3: 'NOTBUFF', 4: 'INDESTRUCTIBLE'}
 class BuffPositivity:
     POSITIVE = 0
     NEGATIVE = 1
     NEUTRAL = 2
-    INDESTRUCTIBLE = 3
+    NOTBUFF = 3
+    INDESTRUCTIBLE = 4
 
 BOOLJUDGEMENT = {'-1': 'SPECIAL', '0': 'GREATER', '1': 'LESS', '2': 'EQUAL', '3': 'GREATEROREQUAL', '4': 'LESSOREQUAL', '5': 'NOTEQUAL', 
                  '6': 'AND', '7': 'OR', '8': 'NOT', '9': 'XOR', '10': 'IN', '11': 'NOTIN', '12': 'ALIVE', '13': 'GROUP'}

@@ -1,29 +1,10 @@
 {
     "name": "瓢虫修正带", 
-    "description": "召唤「瓢虫」，拥有5生命，会协同该角普通角色攻击造成2伤害",
+    "description": "召唤「瓢虫」，拥有5生命，2 点 [协同普攻]",
     "effect": [{
         "__effect__": true, 
         "type": 11, 
         "target": {"__target__": true, "type": 7}, 
-        "summoned": {"__summoned__":true, "health":5, "name": "瓢虫", "buff":[{
-            "identification": -1,
-            "name": "__ladybug__",
-            "lasttime": -1,
-            "usetime": -1,
-            "type": 4,
-            "positivity": 3,
-            "buffdata": {
-                "effects": [
-                    {
-                        "__effect__": true, 
-                        "type": 1, 
-                        "target": {"__target__": true, "type": 1}, 
-                        "damage": 2, 
-                        "source":{"None": true}
-                    }
-                ],
-                "eventtime": 0
-            }
-        }]}
+        "summoned": {"__summoned__":true, "health":5, "follow_attack": true, "attack": 2, "name": "瓢虫", "buff":[]}
     }]
 }

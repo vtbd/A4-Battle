@@ -1,0 +1,38 @@
+{
+    "_orange": {
+        "name": "橙", 
+        "lasttime": -1, 
+        "usetime": -1, 
+        "type": 2, 
+        "positivity": 2, 
+        "buffdata": {
+            "decrement": {"__mathexpression__": true, "operator": "1", "data": [2, "damage"]}
+        }, 
+        "condition": {"__boolexpression__": true, "operator":"10", "data": [2, "flags"]}
+    }, 
+    "_dj_couple": {
+        "name": "__dj_couple__",
+        "lasttime": -1,
+        "usetime": 1,
+        "type": 4, 
+        "positivity": 3, 
+        "buffdata": {
+            "eventtime": 18, 
+            "effects": [
+                {
+                    "__effect__": true, 
+                    "type": 8,
+                    "target": {"__target__": true, "type": 10, "pos": {"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "__dj_couple__"}},
+                    "clear_type": "2", 
+                    "identification": "_dj_couple"
+                }, 
+                {
+                    "__effect__": true, 
+                    "type": 1,
+                    "target": {"__target__": true, "type": 10, "pos": {"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "__dj_couple__"}},
+                    "damage": "damage"
+                }
+            ]
+        }
+    }
+}

@@ -7,7 +7,7 @@
         {
             "__skill__": true, 
             "name": "放得下不", 
-            "description": "固定敌方出战角色 1 回合，对敌方未出战角色造成 5 点伤害，召唤「yx」，拥有 5 点生命，协同该角普通角色攻击造成 2 伤害。", 
+            "description": "固定敌方出战角色 1 回合，对敌方未出战角色造成 5 点伤害，召唤「yx」，拥有 5 点生命，2 点 [协同普攻]。", 
             "type": 1, 
             "effect": [{
                 "__effect__": true, 
@@ -40,77 +40,25 @@
                 "__effect__": true, 
                 "type": 11, 
                 "target": {"__target__": true, "type": 7}, 
-                "summoned": {"__summoned__":true, "health":5, "name": "yx", "buff":[{
-                    "identification": -1,
-                    "name": "__yx__",
-                    "lasttime": -1,
-                    "usetime": -1,
-                    "type": 4,
-                    "positivity": 3,
-                    "buffdata": {
-                        "effects": [
-                            {
-                                "__effect__": true, 
-                                "type": 1, 
-                                "target": {"__target__": true, "type": 1}, 
-                                "damage": 2, 
-                                "source":{"None": true}
-                            }
-                        ],
-                        "eventtime": 0
-                    }
-                }]}
+                "summoned": {"__summoned__":true, "health":5, "name": "yx", "follow_attack": true, "attack": 2}
             }]
         }, 
         {
             "__skill__": true, 
             "name": "义结金兰", 
-            "description": "召唤「ybh」，拥有 12 点生命，协同该角普通角色攻击造成 3 伤害。该召唤物造成伤害时，whr 有 50% 概率获得 4 护盾", 
+            "description": "召唤「ybh」，拥有 12 点生命，3 点 [协同普攻]。该召唤物造成伤害时，whr 有 50% 概率获得 4 护盾", 
             "type": 2, 
             "effect": [{
                 "__effect__": true, 
                 "type": 11, 
                 "target": {"__target__": true, "type": 7}, 
-                "summoned": {"__summoned__":true, "health":12, "name": "ybh", "buff":[{
-                    "identification": -1,
-                    "name": "__ybh__",
-                    "lasttime": -1,
-                    "usetime": -1,
-                    "type": 4,
-                    "positivity": 3,
-                    "buffdata": {
-                        "effects": [
-                            {
-                                "__effect__": true, 
-                                "type": 1, 
-                                "target": {"__target__": true, "type": 1}, 
-                                "damage": 3, 
-                                "source":{"None": true}
-                            }, {
-                                "__effect__":true,
-                                "type":6, 
-                                "effects":[[{
-                                        "__effect__": true, 
-                                        "type": 4,
-                                        "variableid": {
-                                            "__variableid__": true,
-                                            "type": "7", 
-                                            "target": {"__target__": true, "type": 7}
-                                        },
-                                        "increment": 4
-                                    }]], 
-                                "probabilities": [0.5]
-                            }
-                        ],
-                        "eventtime": 0
-                    }
-                }]}
+                "summoned": {"__summoned__":true, "health":12, "name": "ybh", "follow_attack": true, "attack": 3}
             }]
         }, 
         {
             "__skill__": true, 
             "name": "18", 
-            "description": "对敌方出战造成 9 点伤害，召唤「Molly」，拥有 9 点生命，协同该角普通角色攻击造成 2 伤害。该召唤物血量降为 0 时，whr 会立刻对敌方出战造成 9 点伤害", 
+            "description": "对敌方出战造成 9 点伤害，召唤「Molly」，拥有 9 点生命，2 点 [协同普攻]。该召唤物血量降为 0 时，whr 会立刻对敌方出战造成 9 点伤害", 
             "type": 1, 
             "effect": [{
                 "__effect__": true, 
@@ -121,26 +69,7 @@
                 "__effect__": true, 
                 "type": 11, 
                 "target": {"__target__": true, "type": 7}, 
-                "summoned": {"__summoned__":true, "health":9, "name": "Molly", "buff":[{
-                    "identification": -1,
-                    "name": "__Molly__",
-                    "lasttime": -1,
-                    "usetime": -1,
-                    "type": 4,
-                    "positivity": 3,
-                    "buffdata": {
-                        "effects": [
-                            {
-                                "__effect__": true, 
-                                "type": 1, 
-                                "target": {"__target__": true, "type": 1}, 
-                                "damage": 2, 
-                                "source":{"None": true}
-                            }
-                        ],
-                        "eventtime": 0
-                    }
-                }], "on_death": [{
+                "summoned": {"__summoned__":true, "health":9, "name": "Molly", "follow_attack": true, "attack": 2, "on_death": [{
                     "__effect__": true, 
                     "type": 1,
                     "target": {"__target__": true, "type": 1, "hardmode": true},

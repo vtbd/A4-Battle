@@ -8,7 +8,7 @@
         {
             "__skill__": true, 
             "name": "家门钥匙",
-            "description": "己方全体角色获得5护盾，发动「冰淇淋转盘」：1%触发「父亲」:攻击+2，护盾+6，生命+4；19%触发护盾+3；40%触发生命+2；40%触发攻击+1",
+            "description": "己方全体角色获得5护盾，发动：1%触发「父亲」:攻击+2，护盾+6，生命+4；19%触发护盾+3；40%触发生命+2；40%触发攻击+1",
             "type": 2,
             "effect": [
                 {
@@ -83,7 +83,7 @@
         {
             "__skill__": true, 
             "name": "唧罢反甲",
-            "description": "被动：首次受击时，对攻击者“舍”出ceil(受到伤害/3)点伤害，为自己附加「立」buff，下一次攻击伤害+5，持续3回合",
+            "description": "被动：初始拥有 0 个「唧」标记，每次受伤时反弹 floor( 原伤害/2^「唧」标记数 ) 点伤害，然后为自身增加一个「唧」标记",
             "type": 3,
             "effect": [
                 {
@@ -94,7 +94,7 @@
                         "identification": -1,
                         "name": "__wyh__",
                         "lasttime": -1,
-                        "usetime": 1,
+                        "usetime": -1,
                         "type": 4,
                         "positivity": 3,
                         "buffdata": {
@@ -103,29 +103,16 @@
                                     "__effect__": true, 
                                     "type": 1,
                                     "target": {"__target__": true, "type": 11},
-                                    "damage": {"__mathexpression__": true, "operator": "9", "data": [
-                                        {"__mathexpression__": true, "operator": "4", "data": ["damage", 3]}]},
+                                    "damage": {"__mathexpression__": true, "operator": "8", "data": [
+                                        {"__mathexpression__": true, "operator": "4", "data": ["damage", 
+                                        {"__mathexpression__": true, "operator": "5", "data":[2, 
+                                        {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "ji"}]}]}]},
                                     "flags": [3]
-                                },
-                                {
+                                }, {
                                     "__effect__": true, 
-                                    "type": 7,
-                                    "target": {"__target__": true, "type": 7},
-                                    "buff": {
-                                        "identification": -1,
-                                        "name": "立",
-                                        "lasttime": 7,
-                                        "usetime": 1,
-                                        "type": 1,
-                                        "positivity": 0, 
-                                        "buffdata": {
-                                            "increment": {
-                                                "__mathexpression__": true,
-                                                "operator": "1", 
-                                                "data": ["damage", 5]
-                                            }
-                                        }
-                                    }
+                                    "type": 4, 
+                                    "variableid": {"__variableid__": true, "type": "8", "target": {"__target__": true, "type": 7}, "mark": "ji"},
+                                    "increment": 1
                                 }
                             ],
                             "eventtime": 5
