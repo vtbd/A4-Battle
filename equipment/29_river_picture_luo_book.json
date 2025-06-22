@@ -1,0 +1,360 @@
+{
+    "name": "河图洛书", 
+    "description": "神秘的物件，使用后不知道会发生什么",
+    "effect": [{
+        "__effect__":true,
+        "type":6, 
+        "effects":[[{
+            "__effect__": true, 
+            "type": 4, 
+            "variableid": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type": 7}},
+            "increment": 4
+        }], [{
+            "__effect__": true, 
+            "type": 4, 
+            "variableid": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type": 7}},
+            "increment": 3
+        }], [{
+            "__effect__": true, 
+            "type": 4, 
+            "variableid": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type": 7}},
+            "increment": 2
+        }], [{
+            "__effect__": true, 
+            "type": 4,
+            "variableid": {"__variableid__": true, "type": "7", "target": {"__target__": true, "type": 7}},
+            "increment": 12
+        }], [{
+            "__effect__": true, 
+            "type": 4,
+            "variableid": {"__variableid__": true, "type": "7", "target": {"__target__": true, "type": 7}},
+            "increment": 8
+        }], [{
+            "__effect__": true, 
+            "type": 4,
+            "variableid": {"__variableid__": true, "type": "7", "target": {"__target__": true, "type": 7}},
+            "increment": 5
+        }], [{
+            "__effect__": true, 
+            "type": 4,
+            "variableid": {"__variableid__": true, "type": "7", "target": {"__target__": true, "type": 7}},
+            "increment": 3
+        }, {
+            "__effect__": true, 
+            "type": 4, 
+            "variableid": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type": 7}},
+            "increment": 2
+        }]], 
+        "probabilities": [0.05, 0.2, 0.45, 0.5, 0.65, 0.9, 1]
+    }, {
+        "__effect__":true,
+        "type":6, 
+        "effects":[[{
+            "__effect__": true, 
+            "type": 7, 
+            "target": {"__target__": true, "type": 7}, 
+            "buff": {
+                "identification": -1, 
+                "name": "河图洛书的诅咒#1", 
+                "lasttime": 6, 
+                "usetime": -1, 
+                "type": 3, 
+                "positivity": 1,
+                "buffdata": {
+                    "attrid": "2",
+                    "value": {"__mathexpression__": true, "operator": "2", "data": ["original", -2]}
+        }}}], [{
+            "__effect__": true, 
+            "type": 7, 
+            "target": {"__target__": true, "type": 7}, 
+            "buff": {
+                "identification": -1, 
+                "name": "河图洛书的诅咒#2", 
+                "lasttime": 6, 
+                "usetime": -1, 
+                "type": 3, 
+                "positivity": 1,
+                "buffdata": {
+                    "attrid": "2",
+                    "value": {"__mathexpression__": true, "operator": "2", "data": ["original", -3]}
+        }}}], [{
+            "__effect__": true, 
+            "type": 7, 
+            "target": {"__target__": true, "type": 7}, 
+            "buff": {
+                "identification": -1, 
+                "name": "河图洛书的诅咒#3", 
+                "lasttime": 6, 
+                "usetime": -1, 
+                "type": 1, 
+                "positivity": 1, 
+                "buffdata": {
+                    "increment": {"__mathexpression__": true, "operator": "1", "data": ["damage", -1]}
+        }}}], [{
+            "__effect__": true, 
+            "type": 7, 
+            "target": {"__target__": true, "type": 7}, 
+            "buff": {
+                "identification": -1, 
+                "name": "河图洛书的诅咒#4", 
+                "lasttime": 6, 
+                "usetime": -1, 
+                "type": 1, 
+                "positivity": 1, 
+                "buffdata": {
+                    "increment": {"__mathexpression__": true, "operator": "1", "data": ["damage", -2]}
+        }}}], [{
+            "__effect__": true, 
+            "type": 7, 
+            "target": {"__target__": true, "type": 7}, 
+            "buff": {
+                "identification": -1, 
+                "name": "河图洛书的诅咒#5", 
+                "lasttime": 6, 
+                "usetime": -1, 
+                "type": 2, 
+                "positivity": 1,
+                "buffdata": {
+                    "decrement": {"__mathexpression__": true, "operator": "1", "data": [1, "damage"]}
+        }}}], [{
+            "__effect__": true, 
+            "type": 7, 
+            "target": {"__target__": true, "type": 7}, 
+            "buff": {
+                "identification": -1, 
+                "name": "河图洛书的诅咒#6", 
+                "lasttime": 6, 
+                "usetime": -1, 
+                "type": 2, 
+                "positivity": 1,
+                "buffdata": {
+                    "decrement": {"__mathexpression__": true, "operator": "1", "data": [2, "damage"]}
+        }}}], [{
+            "__effect__": true, 
+            "type": 4,
+            "variableid": {"__variableid__": true, "type": "7", "target": {"__target__": true, "type": 1}},
+            "increment": 5
+        }], [{
+            "__effect__": true, 
+            "type": 4,
+            "variableid": {"__variableid__": true, "type": "7", "target": {"__target__": true, "type": 1}},
+            "increment": 3
+        }], [{
+            "__effect__": true, 
+            "type": 4, 
+            "variableid": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type": 1}},
+            "increment": 1
+        }], [{
+            "__effect__": true, 
+            "type": 4, 
+            "variableid": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type": 1}},
+            "increment": 2
+        }]], 
+        "probabilities": [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1]
+    }, {
+        "__effect__":true, 
+        "type": 6, 
+        "effects":[[{
+            "__effect__": true, 
+            "type": 7, 
+            "target": {"__target__": true, "type": 7}, 
+            "buff": {
+                "identification": -1, 
+                "name": "河图洛书的祝福#1", 
+                "lasttime": 6, 
+                "usetime": -1, 
+                "type": 3, 
+                "positivity": 0,
+                "buffdata": {
+                    "attrid": "2",
+                    "value": {"__mathexpression__": true, "operator": "2", "data": ["original", 3]}
+        }}}]], 
+        "probabilities": [0.1]
+    }, {
+        "__effect__":true, 
+        "type": 6, 
+        "effects":[[{
+            "__effect__": true, 
+            "type": 7, 
+            "target": {"__target__": true, "type": 7}, 
+            "buff": {
+                "identification": -1, 
+                "name": "河图洛书的祝福#2", 
+                "lasttime": 6, 
+                "usetime": -1, 
+                "type": 3, 
+                "positivity": 0,
+                "buffdata": {
+                    "attrid": "2",
+                    "value": {"__mathexpression__": true, "operator": "2", "data": ["original", 2]}
+        }}}]], 
+        "probabilities": [0.2]
+    }, {
+        "__effect__":true, 
+        "type": 6, 
+        "effects":[[{
+            "__effect__": true, 
+            "type": 7, 
+            "target": {"__target__": true, "type": 7}, 
+            "buff": {
+                "identification": -1, 
+                "name": "河图洛书的祝福#3", 
+                "lasttime": 6, 
+                "usetime": -1, 
+                "type": 3, 
+                "positivity": 0,
+                "buffdata": {
+                    "attrid": "2",
+                    "value": {"__mathexpression__": true, "operator": "2", "data": ["original", 1]}
+        }}}]], 
+        "probabilities": [0.3]
+    }, {
+        "__effect__":true, 
+        "type": 6, 
+        "effects":[[{
+            "__effect__": true, 
+            "type": 7, 
+            "target": {"__target__": true, "type": 7}, 
+            "buff": {
+                "identification": -1, 
+                "name": "河图洛书的祝福#4", 
+                "lasttime": 6, 
+                "usetime": -1, 
+                "type": 4, 
+                "positivity": 0, 
+                "buffdata": {
+                    "effects":[{
+                        "__effect__": true, 
+                        "type": 4, 
+                        "variableid": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type": 7, "restrict_alive":true}},
+                        "increment": 2
+                    }],
+                    "eventtime":9
+        }}}]], 
+        "probabilities": [0.2]
+    }, {
+        "__effect__":true, 
+        "type": 6, 
+        "effects":[[{
+            "__effect__": true, 
+            "type": 7, 
+            "target": {"__target__": true, "type": 7}, 
+            "buff": {
+                "identification": -1, 
+                "name": "河图洛书的祝福#5", 
+                "lasttime": 6, 
+                "usetime": -1, 
+                "type": 4, 
+                "positivity": 0, 
+                "buffdata": {
+                    "effects":[{
+                        "__effect__": true, 
+                        "type": 4, 
+                        "variableid": {"__variableid__": true, "type": "7", "target": {"__target__":true, "type": 7, "restrict_alive":true}},
+                        "increment": 3
+                    }],
+                    "eventtime":9
+        }}}]], 
+        "probabilities": [0.2]
+    }, {
+        "__effect__":true, 
+        "type": 6, 
+        "effects":[[{
+            "__effect__": true, 
+            "type": 7, 
+            "target": {"__target__": true, "type": 7}, 
+            "buff": {
+                "identification": -1, 
+                "name": "河图洛书的祝福#6", 
+                "lasttime": 6, 
+                "usetime": -1, 
+                "type": 1, 
+                "positivity": 0,
+                "buffdata": {
+                    "increment": {"__mathexpression__": true, "operator": "1", "data": [1, "damage"]}
+        }}}]], 
+        "probabilities": [0.15]
+    }, {
+        "__effect__":true, 
+        "type": 6, 
+        "effects":[[{
+            "__effect__": true, 
+            "type": 7, 
+            "target": {"__target__": true, "type": 7}, 
+            "buff": {
+                "identification": -1, 
+                "name": "河图洛书的祝福#7", 
+                "lasttime": 6, 
+                "usetime": -1, 
+                "type": 1, 
+                "positivity": 0,
+                "buffdata": {
+                    "increment": {"__mathexpression__": true, "operator": "1", "data": [2, "damage"]}
+        }}}]], 
+        "probabilities": [0.1]
+    }, {
+        "__effect__":true, 
+        "type": 6, 
+        "effects":[[{
+            "__effect__": true, 
+            "type": 1, 
+            "target": {"__target__": true, "type": 7}, 
+            "damage": {"__mathexpression__": true, "operator":"15", "data": [1, 4]}
+        }]], 
+        "probabilities": [0.2]
+    }, {
+        "__effect__":true, 
+        "type": 6, 
+        "effects":[[{
+            "__effect__": true, 
+            "type": 4,
+            "variableid": {"__variableid__": true, "type": "1", "target": {"__target__": true, "type": 7}},
+            "increment": -2
+        }]], 
+        "probabilities": [0.1]
+    }, {
+        "__effect__":true, 
+        "type": 6, 
+        "effects":[[{
+            "__effect__": true, 
+            "type": 4,
+            "variableid": {"__variableid__": true, "type": "1", "target": {"__target__": true, "type": 7}},
+            "increment": -3
+        }]], 
+        "probabilities": [0.1]
+    }, {
+        "__effect__":true, 
+        "type": 6, 
+        "effects":[[{
+            "__effect__": true, 
+            "type": 11, 
+            "target": {"__target__": true, "type": 7}, 
+            "summoned": {"__summoned__":true, "health":8, "follow_attack": true, "attack": -3, "name": "河图洛书", "buff":[]}
+        }]], 
+        "probabilities": [0.3]
+    }, {
+        "__effect__":true, 
+        "type": 6, 
+        "effects":[[{
+            "__effect__": true, 
+            "type": 11, 
+            "target": {"__target__": true, "type": 7}, 
+            "summoned": {"__summoned__":true, "health":8, "follow_attack": true, "attack": -3, "name": "河图洛书", "buff":[]}
+        }, {
+            "__effect__": true, 
+            "type": 11, 
+            "target": {"__target__": true, "type": 7}, 
+            "summoned": {"__summoned__":true, "health":8, "follow_attack": true, "attack": -3, "name": "河图洛书", "buff":[]}
+        }]], 
+        "probabilities": [0.1]
+    }, {
+        "__effect__":true, 
+        "type": 6, 
+        "effects":[[{
+            "__effect__": true, 
+            "type": 3,
+            "target": {"__target__": true, "type": 7}
+        }]], 
+        "probabilities": [0.01]
+    }]
+}

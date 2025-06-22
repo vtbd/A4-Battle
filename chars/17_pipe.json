@@ -89,7 +89,7 @@
                     "identification": -1,
                     "name": "__pipe_checkdeath__",
                     "lasttime": -1,
-                    "usetime": 1,
+                    "usetime": -1,
                     "type": 4,
                     "positivity": 3, 
                     "buffdata":{

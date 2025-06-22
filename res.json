@@ -74,7 +74,9 @@
         "24": "equipment/24_salt_and_pepper_mushrooms.json", 
         "25": "equipment/25_wyh_compass.json", 
         "26": "equipment/26_tby.json", 
-        "27": "equipment/27_ad_calcium_milk.json"
+        "27": "equipment/27_ad_calcium_milk.json", 
+        "29": "equipment/29_river_picture_luo_book.json", 
+        "30": "equipment/30_little_turtle.json"
     },
     "equipmentpicturefile": {
         "1": "res/equipment/1_ladybug_correction_tape.png",
@@ -103,7 +105,9 @@
         "24": "res/equipment/24_salt_and_pepper_mushrooms.png", 
         "25": "res/equipment/25_wyh_compass.png", 
         "26": "res/equipment/26_tby.png", 
-        "27": "res/equipment/27_ad_calcium_milk.png"
+        "27": "res/equipment/27_ad_calcium_milk.png", 
+        "29": "res/equipment/29_river_picture_luo_book.png", 
+        "30": "res/equipment/30_little_turtle.png"
     }, 
     "scenefile": {
         "default": "scene/0.json",

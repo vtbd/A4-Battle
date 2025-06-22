@@ -294,7 +294,7 @@ class AttackFlags:
     SKIPSHIELD = 4
 
 CALCULATOR = {'-1': 'CALLSPECIALVARIABLE', '0': 'CALLVARIABLE', '1': 'ADD', '2': 'SUB', '3': 'TIMES', '4': 'DIV', '5': 'EXP', '6': 'LOG',
-               '7': 'ROUND', '8': 'FLOOR', '9': 'CEIL', '10': 'MODE', '11': 'MAX', '12': 'MIN', '13': 'COUNT', '14': 'LEN'}
+               '7': 'ROUND', '8': 'FLOOR', '9': 'CEIL', '10': 'MODE', '11': 'MAX', '12': 'MIN', '13': 'COUNT', '14': 'LEN', '15': 'RANDINT'}
 class Calculator:
     CALLSPECIALVARIABLE = '-1'
     CALLVARIABLE = '0'
@@ -312,6 +312,7 @@ class Calculator:
     MIN = '12'
     COUNT = '13'
     LEN = '14'
+    RANDINT = '15'
 
 EVENTTIME = {0: 'COMMONATTACK', 1: 'USESKILL', 2: 'WESWITCH', 3: 'SWITCHTO', 4: 'SWITCHFROM', 5: 'GETHURTED', 6: 'ENEMYCOMMONATTACK',
               7: 'ENEMYUSESKILL', 8: 'ENEMYSWITCH', 9:'TURNSTART', 10:'TURNEND', 11:'MAKEDAMAGE', 12: 'WEEQUIP', 13:'ENEMYEQUIP', 14:'USEEQUIP', 

@@ -1,6 +1,6 @@
 {
     "name": "whr", 
-    "attack": 6, 
+    "attack": 5, 
     "health": 29,
     "group": 1,
     "skill": [
@@ -46,19 +46,24 @@
         {
             "__skill__": true, 
             "name": "义结金兰", 
-            "description": "召唤「ybh」，拥有 12 点生命，3 点 [协同普攻]。该召唤物造成伤害时，whr 有 50% 概率获得 4 护盾", 
-            "type": 2, 
+            "description": "对对方出战角色造成 3 点伤害，召唤「ybh」，拥有 8 点生命，3 点 [协同普攻]。", 
+            "type": 1, 
             "effect": [{
+                "__effect__": true, 
+                "type": 1,
+                "target": {"__target__": true, "type": 1},
+                "damage": 3
+            }, {
                 "__effect__": true, 
                 "type": 11, 
                 "target": {"__target__": true, "type": 7}, 
-                "summoned": {"__summoned__":true, "health":12, "name": "ybh", "follow_attack": true, "attack": 3}
+                "summoned": {"__summoned__":true, "health":8, "name": "ybh", "follow_attack": true, "attack": 3}
             }]
         }, 
         {
             "__skill__": true, 
             "name": "18", 
-            "description": "对敌方出战造成 9 点伤害，召唤「Molly」，拥有 9 点生命，2 点 [协同普攻]。该召唤物血量降为 0 时，whr 会立刻对敌方出战造成 9 点伤害", 
+            "description": "对敌方出战造成 9 点伤害，召唤「Molly」，拥有 9 点生命，1 点 [协同普攻]。该召唤物血量降为 0 时，whr 会立刻对敌方出战造成 9 点伤害", 
             "type": 1, 
             "effect": [{
                 "__effect__": true, 
@@ -69,7 +74,7 @@
                 "__effect__": true, 
                 "type": 11, 
                 "target": {"__target__": true, "type": 7}, 
-                "summoned": {"__summoned__":true, "health":9, "name": "Molly", "follow_attack": true, "attack": 2, "on_death": [{
+                "summoned": {"__summoned__":true, "health":9, "name": "Molly", "follow_attack": true, "attack": 1, "on_death": [{
                     "__effect__": true, 
                     "type": 1,
                     "target": {"__target__": true, "type": 1, "hardmode": true},

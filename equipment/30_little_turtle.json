@@ -1,0 +1,20 @@
+{
+    "name": "小王八", 
+    "description": "召唤「小王八」，拥有 5 点生命，持有「小王八」时受到的伤害 -2",
+    "effect": [{
+        "__effect__": true, 
+        "type": 11, 
+        "target": {"__target__": true, "type": 7}, 
+        "summoned": {"__summoned__":true, "health":5, "follow_attack": true, "attack": 2, "name": "小王八", "buff":[
+            {
+                "identification": -1, 
+                "name": "__xwb__", 
+                "lasttime": -1, 
+                "usetime": -1, 
+                "type": 2, 
+                "positivity": 3,
+                "buffdata": {
+                    "decrement": {"__mathexpression__": true, "operator": "1", "data": [-2, "damage"]}
+        }}]}
+    }]
+}

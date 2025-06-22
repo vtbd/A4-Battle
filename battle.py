@@ -877,10 +877,12 @@ class Game:
                                     self.choselist.append(i)
                                     self.choosechardecoratorlist[i].setappr(2)
 
-    def common_attack(self, chosechar:Char):
-        commonattackdict = {"type": 1, "target": Target({"type": constants.Target.ENEMYONFIGHT}), "damage": chosechar.absattack, "flags": [constants.AttackFlags.COMMONATTACK]}
+    def common_attack(self, chosechar:Char, target:Target|None = None):
+        if target == None:
+            target = Target({"type": constants.Target.ENEMYONFIGHT})
+        commonattackdict = {"type": 1, "target": target, "damage": chosechar.absattack, "flags": [constants.AttackFlags.COMMONATTACK]}
         self.executeeffects(EffectSet([Effect(**commonattackdict)]), self.chose)
-        follow_attack_dict = {"type": 1, "target": Target({"type": constants.Target.ENEMYONFIGHT}), "damage": 0, "source": {"None": True}}
+        follow_attack_dict = {"type": 1, "target": target, "damage": 0, "source": {"None": True}}
         for summoned in chosechar.summons:
             if summoned.follow_attack:
                 follow_attack_dict['damage'] = summoned.attack
@@ -1350,6 +1352,8 @@ class Game:
                 return count
             if cal.operator == constants.Calculator.LEN:
                 return len(self.callist(dat[0], **vars))
+            if cal.operator == constants.Calculator.RANDINT:
+                return random.randint(self.calcnum(dat[0], **vars), self.calcnum(dat[1], **vars))
             raise ValueError(f'Invalid operator:{cal.operator}')
         if type(cal) == Variableid:
             dat = cal
