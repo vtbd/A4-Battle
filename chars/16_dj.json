@@ -1,7 +1,7 @@
 {
     "name": "dj", 
     "attack": 8, 
-    "health": 42,
+    "health": 46,
     "group": 2,
     "skill": [
         {

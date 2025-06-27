@@ -24,7 +24,7 @@ class GameInterface:
         title_rect.centerx = self.scaled_width // 2
         title_rect.y = 100 * self.S
         
-        back_button_image = pygame.image.load("res/button_in_game_back.png").convert_alpha()
+        #back_button_image = pygame.image.load("res/button_in_game_back.png").convert_alpha()
         back_button_rect = pygame.Rect(0, 0, *c.BACK_BUTTON_SIZE)
         back_button_rect.topleft = c.BACK_BUTTON_POS
         self.back_button = pygame_gui.elements.UIButton(

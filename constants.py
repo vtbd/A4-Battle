@@ -264,7 +264,7 @@ class EffectType:
         CAT = 4
 
 VARIABLEID = {'0':'SPECIALVARIABLE', '1': 'HEALTH', '2': 'ATTACK', '3': 'ATTACKTIME', '4': 'SKILLTIME', 
-              '5': 'SWITCHCHARTIME', '6': 'ROUND', '7': 'SHIELD', '8': 'MARKS', 9: 'SKILLUSETIME'}
+              '5': 'SWITCHCHARTIME', '6': 'ROUND', '7': 'SHIELD', '8': 'MARKS', '9': 'SKILLUSETIME'}
 class VariableId:
     SPECIALVARIABLE = '0'
     HEALTH = '1'

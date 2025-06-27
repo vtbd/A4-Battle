@@ -7,17 +7,60 @@
         {
             "__skill__": true,
             "name": "桌面放题", 
-            "description": "失去 1 生命，选择一名己方学生为其附加一层「题」buff。手动切换至有「题」的角色时，该角色消耗所有「题」，[夺取] 对方出战角色 (「题」层数*2) 点生命值", 
+            "description": "失去 1 生命，选择一名己方角色为其附加一层「题」buff。手动切换至有「题」的角色时，该角色消耗所有「题」，[夺取] 对方出战角色 (「题」层数*2) 点生命值。每回合首次使用时，不消耗技能次数", 
             "infinite": true, 
             "choose": true, 
-            "choosearea": {
-                "__target__": true, "type": 14, "sets": [{
-                    "__target__": true, "type": 12, "groups": [1]
-                }, {
-                    "__target__": true, "type": 4
-                }]}, 
+            "choosearea": {"__target__": true, "type": 4}, 
             "type": 2, 
             "effect": [{
+                "__effect__":true,
+                "type":7, 
+                "target": {"__target__": true, "type": 1}, 
+                "buff": {
+                    "identification": -1, 
+                    "name": "__wl_skill_usage_checker__", 
+                    "lasttime": -1,
+                    "usetime": -1,
+                    "type": 4,
+                    "positivity": 3, 
+                    "buffdata":{
+                        "effects":[{
+                            "__effect__":true,
+                            "type":5, 
+                            "variableid":{"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "__wl_1_turn_used__"}, 
+                            "value":0
+                        }], 
+                        "eventtime":9
+                    }
+                }, 
+                "condition": {"__boolexpression__":true, "operator":"2", "data":[
+                    {"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "__wl_1_ever_used__"}, 0]
+                }
+            }, {
+                "__effect__":true,
+                "type":5, 
+                "variableid":{"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "__wl_1_ever_used__"}, 
+                "value":1, 
+                "condition": {"__boolexpression__":true, "operator":"2", "data":[
+                    {"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "__wl_1_ever_used__"}, 0]
+                }
+            }, {
+                "__effect__":true,
+                "type":4, 
+                "variableid":{"__variableid__":true, "type":"4"}, 
+                "increment":1, 
+                "condition": {"__boolexpression__":true, "operator":"2", "data":[
+                    {"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "__wl_1_turn_used__"}, 0]
+                }
+            }, {
+                "__effect__":true,
+                "type":5, 
+                "variableid":{"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "__wl_1_turn_used__"}, 
+                "value":1, 
+                "condition": {"__boolexpression__":true, "operator":"2", "data":[
+                    {"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "__wl_1_turn_used__"}, 0]
+                }
+            }, {
                 "__effect__": true, 
                 "type": 4,
                 "variableid": {
@@ -35,7 +78,7 @@
                     "name": "题", 
                     "lasttime": -1, 
                     "usetime": 1, 
-                    "type": 0, 
+                    "type": 4, 
                     "positivity": 0, 
                     "buffdata": {
                         "effects":[{
