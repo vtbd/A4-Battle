@@ -34,5 +34,36 @@
                 }
             ]
         }
-    }
+    }, 
+    "_dtqs": {
+        "name": "__dtqs__",
+        "lasttime": -1,
+        "usetime": -1,
+        "type": 4, 
+        "positivity": 3, 
+        "buffdata": {
+            "eventtime": 9, 
+            "effects": [
+                {
+                    "__effect__": true, 
+                    "type": 4, 
+                    "variableid": {"__variableid__": true, "type": "2", "target": {"__target__": true, "type": 7}},
+                    "increment": -1
+                }, 
+                {
+                    "__effect__": true, 
+                    "type": 4, 
+                    "variableid": {"__variableid__": true, "type": "7", "target": {"__target__": true, "type": 7}},
+                    "increment": 5
+                }, 
+                {
+                    "__effect__": true, 
+                    "type": 8,
+                    "target": {"__target__": true, "type": 7},
+                    "clear_type": "2", 
+                    "identification": "_dtqs", 
+                    "condition": {"__boolexpression__":true, "operator":"4", "data":[{"__variableid__":true, "target":{"__target__":true, "type":7}, "type":"2"}, 0]}
+                }
+            ]
+        }}
 }

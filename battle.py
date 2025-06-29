@@ -1,16 +1,20 @@
 import constants
-import pygame
 import gui
 import json
 import math
 import random
 import os
+import externloader as el
+from copy import copy
+
+def interpret(s):
+    return json.loads(s, object_hook=custom_decoder)
 
 def custom_decoder(obj):
     if "__tuple__" in obj:
         return tuple(obj["data"])
     if "__effect__" in obj:
-        return Effect(**obj)
+        return Effect(obj)
     if "__skill__" in obj:
         return Skill(obj)
     if "__target__" in obj:
@@ -120,9 +124,9 @@ class Target:
             m = td['pos']
             if type(m) == list:
                 return m
-            if type(m) == int:
+            elif type(m) == int:
                 return [m]
-            if type(m) == MathExpression or type(m) == Variableid:
+            else:
                 return [game.calcnum(m, **kw)]
         elif t == constants.Target.GROUP:
             rl = []
@@ -168,7 +172,7 @@ class Buff:
     def load(self, dat):
         self.identification = dat.get('identification', -1)
         if self.identification != -1:
-            tempdat = bufflist[self.identification] | dat   # 合并两字典，当前数据覆盖原有
+            tempdat = bufflist.get(self.identification, {}) | dat   # 合并两字典，当前数据覆盖原有
             self.dat = tempdat
         self.name = self.dat['name']
         self.lasttime = self.dat['lasttime']
@@ -202,16 +206,18 @@ class Buff:
 
 
 class Effect:
-    def __init__(self, **kw):
+    def __init__(self, kw):
         self.kw = kw
-        self.load(**kw)
+        self.load(kw)
 
-    def load(self, **kw):
+    def load(self, kw):
         self.effecttype:int = kw['type']
         self.condition:bool = kw.get('condition', True)
         t = self.effecttype
         if t == constants.EffectType.DEBUG_PRINT:
             self.message = kw['message']
+        elif t == constants.EffectType.EXTERNAL:
+            self.func = kw['func']
         elif t == constants.EffectType.DAMAGE:
             self.damage:int = kw['damage']
             self.target:Target = kw['target']
@@ -366,6 +372,7 @@ class Skill:
         self.choosecondition:bool|BoolExpression = skilldict.get('choosecondition', True)
         self.choosearea:Target = skilldict.get('choosearea', Target({"type":constants.Target.ALL}))
         self.choosecount:int = skilldict.get('choosecount', 1)
+        self.choosecount_dynamic:bool =  skilldict.get('choosecount_dynamic', False)
         #if skilldict.get('animation') != None:
         #    #need to be changed
         #    self.animation = loadanimation(constants.ANIMATIONFILES[skilldict['animation']], game.screen, game.root, constants.ANIMATIONPOSES[skilldict['animation']], (0, 0), constants.S*2, True)
@@ -375,13 +382,25 @@ class Skill:
 
 class Char:
     def __init__(self, datafilestr, game, seq:int):
+        def loader(x):
+            content = x.read()
+            try:
+                return interpret(content)
+            except:
+                api = copy(game.api)
+                api.self = self
+                return el.char_loader(content, api, skill=Skill, effect=Effect)
         try:
-            with open(os.path.join(constants.BASEPATH, datafilestr), encoding='utf-8') as datafile:
-                data:dict = json.load(datafile, object_hook=custom_decoder)
+            with open(datafilestr, encoding='utf-8') as datafile:
+                data:dict = loader(datafile)
         except FileNotFoundError:
-            print(f'Warning: File not found: {datafilestr}')
-            with open(os.path.join(constants.BASEPATH, constants.CHARNULLFILE), encoding='utf-8') as datafile:
-                data:dict = json.load(datafile, object_hook=custom_decoder)
+            try:
+                with open(os.path.join(constants.BASEPATH, datafilestr), encoding='utf-8') as datafile:
+                    data:dict = loader(datafile)
+            except FileNotFoundError:
+                print(f'Warning: File not found: {datafilestr}')
+                with open(os.path.join(constants.BASEPATH, constants.CHARNULLFILE), encoding='utf-8') as datafile:
+                    data:dict = loader(datafile)
 
         self.game:Game = game
         self.seq:int = seq
@@ -391,6 +410,7 @@ class Char:
         self.originalattack:int = self.attack
         self.shield:int = 0
         self.skills:tuple[Skill, Skill, Skill] = tuple(k for k in data['skill'])
+        self.inits:EffectSet = EffectSet(data.get('inits', []))
         self.buffs:list[Buff] = []
         self.group:int = data['group']
         self.alive:bool = True
@@ -442,7 +462,7 @@ class Char:
                         self.changingdisplayer.append(self.attackbutton)
                 if constants.Bufftype.NOSKILL not in map(lambda x: x.type, self.buffs):
                     for i, s in enumerate(self.skills):
-                        if (s.skilltype == constants.SkillType.ACTIVEAGGRESSIVE and self.game.attacktime >= 1 and self.game.skilltime >= 1 or s.skilltype == constants.SkillType.ACTIVENONAGGRESSIVE and self.game.skilltime >= 1) and (s.usetime >= 1):
+                        if (s.skilltype == constants.SkillType.ACTIVEAGGRESSIVE and self.game.attacktime >= 1 and self.game.skilltime >= 1 and self.game.turns != 0 or s.skilltype == constants.SkillType.ACTIVENONAGGRESSIVE and self.game.skilltime >= 1) and (s.usetime >= 1):
                             self.changingdisplayer.append(self.useskillbuttons[i])
             if self.game.chose in Target({"type": constants.Target.SELFNOTONFIGHT}).concretize(self.game):
                 if self.game.switchchartime > 0:
@@ -527,8 +547,14 @@ class Char:
         if self._health <= 0:
             self._health = 0
             if self.alive:
-                self.alive = False
-                self.game.handleevent((constants.EventType.DIE, self.seq))
+                immortal = False
+                for b in self.buffs:
+                    if b.type == constants.Bufftype.IMMORTAL:
+                        immortal = True
+                        break
+                if not immortal:
+                    self.alive = False
+                    self.game.handleevent((constants.EventType.DIE, self.seq))
 
     @property
     def attack(self):
@@ -588,6 +614,8 @@ class Game:
             self.equipidlist:list[int] = it['equipment']
             self.initial_sceneid:str = it['scene']
 
+        self.build_api()
+
         self.charlist:list[Char] = [Char(constants.CHARFILE[char], self, i) for i, char in enumerate(self.charidlist)]
 
         self.charavatarlist:list[gui.ImageObj] = [gui.ImageObj(screen, root, constants.CHARAVATARFILE.get(char, 'a'), constants.CHARPOSLIST[i], (0, 0), constants.S, True) for i, char in enumerate(self.charidlist)]
@@ -635,8 +663,7 @@ class Game:
         '''
 
         self.attacktime = 1
-        self.skilltime = 0
-        # 第一回合先手不能使用技能
+        self.skilltime = 1
         self.switchchartime = 1
         self.useequiptime = 1
         self.specialvars = {}
@@ -673,7 +700,7 @@ class Game:
             deco.start()
 
         self.choosecondition: bool|BoolExpression = True
-        self.choosecount:int = 1
+        self.choosecount:int|list = 1
         self.availablechoice:list[int] = [0, 1, 2, 3, 4, 5]
         self.choselist:list[int] = []
         self.stack:list = [0]
@@ -686,6 +713,8 @@ class Game:
         '''
 
         for i, char in enumerate(self.charlist):
+            self.executeeffects(char.inits, i)
+        for i, char in enumerate(self.charlist):
             for m in char.skills:
                 if m.skilltype == constants.SkillType.PASSIVE:
                     self.executeeffects(m.effects, i)
@@ -694,6 +723,37 @@ class Game:
         for i, equip in enumerate(self.equiplist):
             equip.update(self)
         self.updatedecorator()
+
+    def build_api(self):
+        def raw_exec(x, **kw):
+            if type(x) == list:
+                self.executeeffects(EffectSet(x), **kw)
+            elif type(x) == Effect:
+                self.executeeffect(x, **kw)
+            else:
+                raise TypeError
+
+        def func_expr_builder(func):
+            return MathExpression({"operator":constants.Calculator.FUNCTION, "data": [func]})
+
+        def damage(damagev, target, **kw):
+            ed = {"type":constants.EffectType.DAMAGE, "damage": damagev, "target":target, **kw}
+            self.executeeffect(Effect(ed), **kw)
+        
+        def target(targettype, hardmode=True, **kw):
+            return Target({"type": targettype, "hardmode": hardmode, **kw})
+
+        self.api = el.Api(EffectSet=EffectSet, 
+                          Effect=Effect, 
+                          Target=Target, 
+                          target=target,
+                          math_expr=func_expr_builder, 
+                          c=constants, 
+                          game=self, 
+                          raw_exec=raw_exec,
+                          damage=damage, 
+                          interpret=interpret, 
+                          random = random)
 
     def inturncharseqs(self) -> list[int]:
         return [[0, 1, 2], [3, 4, 5]][self.turns%2]
@@ -852,7 +912,11 @@ class Game:
                 self.stack.pop()
         elif layoutid == 3:
             if self.choosesurebutton.surveil(pos):
-                if len(self.choselist) == self.choosecount:
+                if type(self.choosecount) == int:
+                    cc = [self.choosecount]
+                else:
+                    cc = list(self.choosecount)
+                if len(self.choselist) in cc:
                     if self.choosetype == 1:
                         self.use_skill(self.chooseskillcharseri, self.chooseskill, chose=self.choselist)
                     elif self.choosetype == 2:
@@ -881,12 +945,12 @@ class Game:
         if target == None:
             target = Target({"type": constants.Target.ENEMYONFIGHT})
         commonattackdict = {"type": 1, "target": target, "damage": chosechar.absattack, "flags": [constants.AttackFlags.COMMONATTACK]}
-        self.executeeffects(EffectSet([Effect(**commonattackdict)]), self.chose)
+        self.executeeffects(EffectSet([Effect(commonattackdict)]), self.chose)
         follow_attack_dict = {"type": 1, "target": target, "damage": 0, "source": {"None": True}}
         for summoned in chosechar.summons:
             if summoned.follow_attack:
                 follow_attack_dict['damage'] = summoned.attack
-                self.executeeffects(EffectSet([Effect(**follow_attack_dict)]), self.chose)
+                self.executeeffects(EffectSet([Effect(follow_attack_dict)]), self.chose)
         self.attacktime -= 1
         self.handleevent((constants.EventType.ATTACK, self.chose))
         self.updatedecorator()
@@ -911,7 +975,10 @@ class Game:
         self.chooseskillcharseri = chosechar
         self.choosecondition = sk.choosecondition
         self.choosearea = sk.choosearea.concretize(self, charself=chosechar.seq)
-        self.choosecount = sk.choosecount
+        if sk.choosecount_dynamic:
+            self.choosecount = self.calcnum(sk.choosecount, charself=chosechar.seq)
+        else:
+            self.choosecount = sk.choosecount
         self.availablechoice = []
         for j in self.choosearea:
             if self.calbool(self.choosecondition, iterchar=j):
@@ -1005,6 +1072,8 @@ class Game:
     def executeeffect(self, effect:Effect, charself = None, **kw):
         if effect.effecttype == constants.EffectType.DEBUG_PRINT:
             print(effect.message)
+        elif effect.effecttype == constants.EffectType.EXTERNAL:
+            effect.func(charself=charself, **kw)
         elif effect.effecttype == constants.EffectType.DAMAGE:
             target = effect.target.concretize(self, charself=charself, **kw)
             if effect.source == None:
@@ -1176,8 +1245,8 @@ class Game:
             return [constants.EventTime.ENEMYSWITCH]
         if event[0] == constants.EventType.TURNSWITCH:
             if event[1] == (0 if charseq in [0, 1, 2] else 1):
-                return [constants.EventTime.TURNSTART]
-            return [constants.EventTime.TURNEND]
+                return [constants.EventTime.TURNSTART, constants.EventTime.TURNSWITCH]
+            return [constants.EventTime.TURNEND, constants.EventTime.TURNSWITCH]
         if event[0] == constants.EventType.DAMAGEMADE:
             resl = []
             if event[2] == charseq:
@@ -1269,6 +1338,8 @@ class Game:
             return self.charlist[varid.targetabs].marks.get(d['mark'], 0)
         if dt == constants.VariableId.SKILLUSETIME:
             return self.charlist[varid.targetabs].skills[varid.vardata['serial']].usetime
+        if dt == constants.VariableId.EQUIPTIME:
+            return self.useequiptime
         raise ValueError(f'Invalid id:{dt}')
             
     def setvariable(self, varid:Variableid, value):
@@ -1298,6 +1369,8 @@ class Game:
             sk = char.skills[skillindex]
             sk.usetime = value
             char.update()
+        elif dt == constants.VariableId.EQUIPTIME:
+            self.useequiptime = value
         else:
             raise ValueError(f'Invalid id:{dt}')
     
@@ -1354,6 +1427,8 @@ class Game:
                 return len(self.callist(dat[0], **vars))
             if cal.operator == constants.Calculator.RANDINT:
                 return random.randint(self.calcnum(dat[0], **vars), self.calcnum(dat[1], **vars))
+            if cal.operator == constants.Calculator.FUNCTION:
+                return dat[0](**vars)
             raise ValueError(f'Invalid operator:{cal.operator}')
         if type(cal) == Variableid:
             dat = cal
@@ -1472,6 +1547,7 @@ class Game:
         self.onfightr = value[1]
         self.charframeonfightlist[0].rect.center = constants.CHARPOSLIST[self.onfightl]
         self.charframeonfightlist[1].rect.center = constants.CHARPOSLIST[self.onfightr]
+
 
 with open(constants.BUFFPATH, encoding='utf-8') as bpf:
     bp = json.load(bpf, object_hook=custom_decoder)

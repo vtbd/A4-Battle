@@ -108,6 +108,12 @@
                                         "usetime": -1,
                                         "type": 5,
                                         "positivity": 3}
+                                }, {
+                                    "__effect__": true, 
+                                    "type": 8,
+                                    "target": {"__target__": true, "type": 7},
+                                    "clear_type": "2", 
+                                    "identification": "_zhh_immortal"
                                 }
                             ],
                             "eventtime": 5
@@ -115,8 +121,20 @@
                         "condition": {"__boolexpression__":true, "operator": "1", "data":[
                             {"__mathexpression__": true, "operator": "0", "data":
                             {"__variableid__": true, "target": {"__target__":true, "type":7}, "type": "1"}}, 10]}}
+                }, {
+                    "__effect__": true, 
+                    "type": 7,
+                    "target": {"__target__": true, "type": 7},
+                    "buff": {
+                        "identification": "_zhh_immortal",
+                        "name": "__zhh__",
+                        "lasttime": -1,
+                        "usetime": -1,
+                        "type": 7,
+                        "positivity": 3
+                    }
                 }
             ]
-        }
+        } 
     ]
 }

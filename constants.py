@@ -239,10 +239,11 @@ class Target:
     INTEAMNEXT = 19
     RANDOM = 20
 
-EFFECTTYPE = {-1: 'DEBUG_PRINT', 1: 'DAMAGE', 2: 'HEAL', 3:'KILL', 4: 'INCREASE', 5: 'SET', 6: 'RANDOM', 7:'BUFF', 8:'BUFFCLEAR', 9:'SPECIFIC',
+EFFECTTYPE = {-1: 'DEBUG_PRINT', 0:'EXTERNAL', 1: 'DAMAGE', 2: 'HEAL', 3:'KILL', 4: 'INCREASE', 5: 'SET', 6: 'RANDOM', 7:'BUFF', 8:'BUFFCLEAR', 9:'SPECIFIC',
               10:'ENVIRONMENTALBUFF', 11:'SUMMON', 12:'REVIVE', 13:'SWITCHSCENE', 14:'DESPOIL'}
 class EffectType:
     DEBUG_PRINT = -1
+    EXTERNAL = 0
     DAMAGE = 1
     HEAL = 2
     KILL = 3
@@ -264,7 +265,8 @@ class EffectType:
         CAT = 4
 
 VARIABLEID = {'0':'SPECIALVARIABLE', '1': 'HEALTH', '2': 'ATTACK', '3': 'ATTACKTIME', '4': 'SKILLTIME', 
-              '5': 'SWITCHCHARTIME', '6': 'ROUND', '7': 'SHIELD', '8': 'MARKS', '9': 'SKILLUSETIME'}
+              '5': 'SWITCHCHARTIME', '6': 'ROUND', '7': 'SHIELD', '8': 'MARKS', '9': 'SKILLUSETIME', 
+              '10': 'EQUIPTIME'}
 class VariableId:
     SPECIALVARIABLE = '0'
     HEALTH = '1'
@@ -276,8 +278,9 @@ class VariableId:
     SHIELD = '7'
     MARKS = '8'
     SKILLUSETIME = '9'
+    EQUIPTIME = '10'
 
-MARKNAMES = {'suppress': '憋', 'dam': '坝', 'lazy': '惰', 'shuang': '爽', 'alcohol': '酒', 'ji': "唧"}
+MARKNAMES = {'suppress': '憋', 'dam': '坝', 'lazy': '惰', 'shuang': '爽', 'alcohol': '酒', 'ji': "唧", 'power': '权威'}
 
 SKILLTYPE = {1:'ACTIVEAGGRESSIVE', 2: 'ACTIVENONAGRESSIVE', 3: 'PASSIVE'}
 class SkillType:
@@ -293,9 +296,10 @@ class AttackFlags:
     NORETURN = 3
     SKIPSHIELD = 4
 
-CALCULATOR = {'-1': 'CALLSPECIALVARIABLE', '0': 'CALLVARIABLE', '1': 'ADD', '2': 'SUB', '3': 'TIMES', '4': 'DIV', '5': 'EXP', '6': 'LOG',
+CALCULATOR = {'-2': 'FUNCTION', '-1': 'CALLSPECIALVARIABLE', '0': 'CALLVARIABLE', '1': 'ADD', '2': 'SUB', '3': 'TIMES', '4': 'DIV', '5': 'EXP', '6': 'LOG',
                '7': 'ROUND', '8': 'FLOOR', '9': 'CEIL', '10': 'MODE', '11': 'MAX', '12': 'MIN', '13': 'COUNT', '14': 'LEN', '15': 'RANDINT'}
 class Calculator:
+    FUNCTION = '-2'
     CALLSPECIALVARIABLE = '-1'
     CALLVARIABLE = '0'
     ADD = '1'
@@ -337,6 +341,7 @@ class EventTime:
     OWNSIDEDIE = 16
     ENEMYDIE = 17
     GETDAMAGED = 18    # 与 GETHURTED 不等价，此事件参数在触发自身效果之前触发
+    TURNSWITCH = 19
     
 EVENTTYPE = {0: 'ATTACK', 1: 'SKILL', 2: 'SWITCH', 3: 'HURTED', 4: 'TURNSWITCH', 5:'DAMAGEMADE', 6:'EQUIP', 7: 'DIE'}
 class EventType:
@@ -349,7 +354,7 @@ class EventType:
     EQUIP = 6
     DIE = 7
 
-BUFFTYPE = {0: 'NONE', 1: 'INCREASEDAMAGEMADE', 2: 'DECREASEDAMAGERECEIVED', 3: 'ATTRIBUTE', 4: 'EFFECT', 5: 'NOSKILL', 6: 'NOATTACK'}
+BUFFTYPE = {0: 'NONE', 1: 'INCREASEDAMAGEMADE', 2: 'DECREASEDAMAGERECEIVED', 3: 'ATTRIBUTE', 4: 'EFFECT', 5: 'NOSKILL', 6: 'NOATTACK', 7:'IMMORTAL'}
 class Bufftype:
     NONE = 0
     INCREASEDAMAGEMADE = 1 
@@ -358,6 +363,7 @@ class Bufftype:
     EFFECT = 4
     NOSKILL = 5
     NOATTACK = 6
+    IMMORTAL = 7
 
 BUFFCLEARTYPE = {"1": "POSITIVITY", "2": "IDENTIFICATION"}
 class BuffClearType:

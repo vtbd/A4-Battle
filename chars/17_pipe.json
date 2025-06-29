@@ -10,23 +10,6 @@
             "description": "赠予对方出战角色 10 生命、1 攻击，3 回合后若 pipe 存活，则从该角色处夺回 20 生命、2 攻击。（两个效果都采取 [夺取] 计算方式）", 
             "type": 2, 
             "effect": [{
-                "__effect__": true, 
-                "type": 14, 
-                "from": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type":7}},
-                "to": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type":1}},
-                "value": 10
-            }, {
-                "__effect__": true, 
-                "type": 14, 
-                "from": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type":7}},
-                "to": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type":1}},
-                "value": 1
-            }, {
-                "__effect__": true, 
-                "type": 5, 
-                "variableid": {"__variableid__": true, "type": "8", "target": {"__target__":true, "type":7}, "mark":"__pipe__"},
-                "value": {"__target__":true, "type":1}
-            }, {
                 "__effect__":true, 
                 "type": 7, 
                 "target": {"__target__": true, "type": 7},
@@ -57,6 +40,23 @@
                         {"__boolexpression__":true, "operator": "2", "data": ["age", 6]}, 
                         {"__boolexpression__":true, "operator": "12", "data": [{"__target__":true, "type":7}]}]}
                 }
+            }, {
+                "__effect__": true, 
+                "type": 14, 
+                "from": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type":7}},
+                "to": {"__variableid__": true, "type": "1", "target": {"__target__":true, "type":1}},
+                "value": 10
+            }, {
+                "__effect__": true, 
+                "type": 14, 
+                "from": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type":7}},
+                "to": {"__variableid__": true, "type": "2", "target": {"__target__":true, "type":1}},
+                "value": 1
+            }, {
+                "__effect__": true, 
+                "type": 5, 
+                "variableid": {"__variableid__": true, "type": "8", "target": {"__target__":true, "type":7}, "mark":"__pipe__"},
+                "value": {"__target__":true, "type":1}
             }]
         }, 
         {
@@ -79,7 +79,7 @@
         {
             "__skill__": true,
             "name": "还魂", 
-            "description": "pipe 死后第 3 个己方回合若己方尚未失败，则 pipe 以 10 生命、6 攻击形态复活", 
+            "description": "pipe 死后第 3 回合若己方尚未失败，则 pipe 以 10 生命、6 攻击形态复活，每次死亡使这一时间增加 1 回合", 
             "type": 3, 
             "effect": [{
                 "__effect__":true, 
@@ -95,6 +95,11 @@
                     "buffdata":{
                         "eventtime":15, 
                         "effects":[{
+                            "__effect__": true, 
+                            "type": 4, 
+                            "variableid": {"__variableid__": true, "type": "8", "target": {"__target__":true, "type":7}, "mark":"__pipe_revive_time__"},
+                            "increment": 2
+                        }, {
                             "__effect__":true, 
                             "type": 7, 
                             "target": {"__target__": true, "type": 7},
@@ -106,7 +111,7 @@
                                 "type":4, 
                                 "positivity": 3, 
                                 "buffdata": {
-                                    "eventtime": 9,
+                                    "eventtime": 19,
                                     "effects":[{
                                         "__effect__": true, 
                                         "type": 12, 
@@ -119,11 +124,20 @@
                                         "value": 6
                                     }]
                                 }, 
-                                "condition": {"__boolexpression__":true, "operator": "2", "data": ["age", 5]}
+                                "condition": {"__boolexpression__":true, "operator": "2", "data": ["age", 
+                                {"__variableid__": true, "type": "8", "target": {"__target__":true, "type":7}, "mark":"__pipe_revive_time__"}]}
                             }
                         }]
                     }}
             }]
+        }
+    ], 
+    "inits": [
+        {
+            "__effect__": true, 
+            "type": 5, 
+            "variableid": {"__variableid__": true, "type": "8", "target": {"__target__":true, "type":7}, "mark":"__pipe_revive_time__"},
+            "value": 4
         }
     ]
 }

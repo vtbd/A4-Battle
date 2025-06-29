@@ -19,9 +19,12 @@
         "16": "chars/16_dj.json", 
         "17": "chars/17_pipe.json", 
         "18": "chars/18_wl.json", 
+        "19": "chars_py/19_yc.py", 
+        "20": "chars_py/20_wyl_2.py", 
         "p1": "chars/p1_zzm.json", 
         "p2": "chars/p2_opf.json", 
-        "t1": "chars/test_1.json"
+        "t1": "chars/test_1.json", 
+        "t2": "chars_py/test_2.py"
     },
     "charavatarfile": {
         "0": "res/null.png",
@@ -43,7 +46,9 @@
         "16": "res/char/dj.png", 
         "17": "res/char/pipe.png", 
         "18": "res/char/wl.png", 
-        "p1": "res/char/zzm.png", 
+        "19": "res/char/yc.png", 
+        "20": "res/char/wyl_2.png", 
+        "p1:": "res/char/zzm.png", 
         "p2": "res/char/opf.png"
     },
     "equipmentfile": {
