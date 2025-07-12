@@ -3,19 +3,10 @@
     "attack": 5, 
     "health": 34,
     "group": 2,
-    "skill": [
-        {
-            "__skill__": true,
-            "name": "桌面放题", 
-            "description": "失去 1 生命，选择一名己方角色为其附加一层「题」buff。手动切换至有「题」的角色时，该角色消耗所有「题」，每层「题」能够 [夺取] 对方出战角色 2 点生命值。每回合首次使用时，不消耗技能次数", 
-            "infinite": true, 
-            "choose": true, 
-            "choosearea": {"__target__": true, "type": 4}, 
-            "type": 2, 
-            "effect": [{
+    "inits":[{
                 "__effect__":true,
                 "type":7, 
-                "target": {"__target__": true, "type": 1}, 
+                "target": {"__target__": true, "type": 7}, 
                 "buff": {
                     "identification": -1, 
                     "name": "__wl_skill_usage_checker__", 
@@ -32,19 +23,18 @@
                         }], 
                         "eventtime":9
                     }
-                }, 
-                "condition": {"__boolexpression__":true, "operator":"2", "data":[
-                    {"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "__wl_1_ever_used__"}, 0]
                 }
-            }, {
-                "__effect__":true,
-                "type":5, 
-                "variableid":{"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "__wl_1_ever_used__"}, 
-                "value":1, 
-                "condition": {"__boolexpression__":true, "operator":"2", "data":[
-                    {"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "__wl_1_ever_used__"}, 0]
-                }
-            }, {
+            }],
+    "skill": [
+        {
+            "__skill__": true,
+            "name": "桌面放题", 
+            "description": "失去 1 生命，选择一名己方角色为其附加一层「题」buff。手动切换至有「题」的角色时，该角色消耗所有「题」，每层「题」能够 [夺取] 对方出战角色 2 点生命值。每回合首次使用时，不消耗技能次数", 
+            "infinite": true, 
+            "choose": true, 
+            "choosearea": {"__target__": true, "type": 4}, 
+            "type": 2, 
+            "effect": [{
                 "__effect__":true,
                 "type":4, 
                 "variableid":{"__variableid__":true, "type":"4"}, 
@@ -56,10 +46,7 @@
                 "__effect__":true,
                 "type":5, 
                 "variableid":{"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "__wl_1_turn_used__"}, 
-                "value":1, 
-                "condition": {"__boolexpression__":true, "operator":"2", "data":[
-                    {"__variableid__":true, "type":"8", "target":{"__target__": true, "type": 7}, "mark": "__wl_1_turn_used__"}, 0]
-                }
+                "value":1
             }, {
                 "__effect__": true, 
                 "type": 4,

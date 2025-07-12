@@ -364,6 +364,7 @@ class Bufftype:
     NOSKILL = 5
     NOATTACK = 6
     IMMORTAL = 7
+BuffType = Bufftype
 
 BUFFCLEARTYPE = {"1": "POSITIVITY", "2": "IDENTIFICATION"}
 class BuffClearType:
@@ -400,3 +401,4 @@ class BoolJudgement:
     class Special:
         HAVEBUFF = "1"
         EQUIPMENTUSED = "2"
+        FUNCTION = "3"

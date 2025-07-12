@@ -180,9 +180,9 @@ class Buff:
         self.age = 0
         self.type = self.dat['type']
         self.environmental = self.dat.get("environmental", False)
-        self.isbuff = False if self.type == constants.BuffPositivity.NOTBUFF else True
         if not self.environmental:
             self.positivity = self.dat['positivity']
+            self.isbuff = False if self.positivity == constants.BuffPositivity.NOTBUFF else True
         if self.type == constants.Bufftype.EFFECT:
             self.effects = EffectSet(self.dat['buffdata']['effects'])
             if self.environmental:
@@ -366,6 +366,8 @@ class Skill:
         self.description:str = skilldict['description'] if 'long_description_alternate' not in skilldict else skilldict.get('long_description_alternate', '')
         self.skilltype:int = skilldict['type']
         self.effects:EffectSet = EffectSet(skilldict['effect'])
+        self.cost = skilldict.get("cost", 1)
+        self.usecondition = skilldict.get("usecondition", True)
         self.usetime = skilldict.get("usetime", 1)
         self.infinite = skilldict.get('infinite', False)
         self.choose:bool = skilldict.get('choose', False)
@@ -462,7 +464,8 @@ class Char:
                         self.changingdisplayer.append(self.attackbutton)
                 if constants.Bufftype.NOSKILL not in map(lambda x: x.type, self.buffs):
                     for i, s in enumerate(self.skills):
-                        if (s.skilltype == constants.SkillType.ACTIVEAGGRESSIVE and self.game.attacktime >= 1 and self.game.skilltime >= 1 and self.game.turns != 0 or s.skilltype == constants.SkillType.ACTIVENONAGGRESSIVE and self.game.skilltime >= 1) and (s.usetime >= 1):
+                        c = s.cost
+                        if (s.skilltype == constants.SkillType.ACTIVEAGGRESSIVE and self.game.attacktime >= 1 and self.game.skilltime >= c and self.game.turns != 0 or s.skilltype == constants.SkillType.ACTIVENONAGGRESSIVE and self.game.skilltime >= c) and (s.usetime >= 1) and (self.game.calbool(s.usecondition, charself=self.seq)):
                             self.changingdisplayer.append(self.useskillbuttons[i])
             if self.game.chose in Target({"type": constants.Target.SELFNOTONFIGHT}).concretize(self.game):
                 if self.game.switchchartime > 0:
@@ -537,6 +540,9 @@ class Char:
         self.buffs = k
         self.updatestatus()
 
+    def append_buff(self, buff):
+        self.buffs.append(buff)
+
     @property
     def health(self):
         return self._health
@@ -603,11 +609,12 @@ class BoolExpression:
 
 
 class Game:
-    def __init__(self, screen, root, font_big, font_small):
+    def __init__(self, screen, root, fonts):
         self.screen = screen
         self.root = root
-        self.font_big = font_big
-        self.font_small = font_small
+        self.font_big = fonts['big']
+        self.font_small = fonts['small']
+        self.font_name = fonts['name']
         with open(constants.INITIALIZEFILE) as itf:
             it = json.load(itf, object_hook=custom_decoder)
             self.charidlist:list[str] = it['chars']
@@ -626,7 +633,7 @@ class Game:
             deco.setimagelist(constants.CHARDECORATORFILELIST, 2, [(deco.rect.center, (0, 0), constants.S, True)]*len(constants.CHARDECORATORFILELIST))
             deco.start()
         self.generate_char_states()
-        self.charnamelist:list[gui.ImageObj] = [gui.TextImagifier(screen, root, font_big, char.name, (0, 0, 0), constants.CHARNAMEPOSLIST[i], (1 if i <= 2 else -1, -1)).imagify() for i, char in enumerate(self.charlist)]
+        self.charnamelist:list[gui.ImageObj] = [gui.TextImagifier(screen, root, self.font_name, char.name, (0, 0, 0), constants.CHARNAMEPOSLIST[i], (1 if i <= 2 else -1, -1)).imagify() for i, char in enumerate(self.charlist)]
 
         self.equiplist:list[Equipment] = [Equipment(constants.EQUIPMENTFILE[equip], self, i) for i, equip in enumerate(self.equipidlist)]
         self.equipframelist:list[gui.ButtonObj] = [gui.ButtonObj(screen, root, constants.EQUIPMENTFRAMEFILE, constants.EQUIPMENTPOSLIST[i], (0, 0), constants.S, True) for i, equip in enumerate(self.equipidlist)]
@@ -642,9 +649,9 @@ class Game:
         self.endturnbutton = gui.ButtonObj(screen, root, constants.ENDTURNBUTTONFILE, constants.ENDTURNBUTTONPOS, (0, 0), constants.S, True)
         self.informationbutton = gui.ButtonObj(screen, root, constants.INFORMATIONBUTTONFILE, constants.INFORMATIONBUTTONPOS, (0, 0), constants.S, True)
 
-        self.roundimagifier = gui.TextImagifier(screen, root, font_big, constants.ROUNDHINT[0] + str(1) + constants.ROUNDHINT[1], (0, 0, 0), constants.ROUNDPOS, (0, 1))
+        self.roundimagifier = gui.TextImagifier(screen, root, self.font_big, constants.ROUNDHINT[0] + str(1) + constants.ROUNDHINT[1], (0, 0, 0), constants.ROUNDPOS, (0, 1))
         self.roundshow = self.roundimagifier.imagify()
-        self.turnshowlist:list[gui.ImageObj] = [gui.TextImagifier(screen, root, font_small, constants.TURNHINT[i], (0, 0, 0), constants.TURNPOS, (0, 1)).imagify() for i in range(2)]
+        self.turnshowlist:list[gui.ImageObj] = [gui.TextImagifier(screen, root, self.font_small, constants.TURNHINT[i], (0, 0, 0), constants.TURNPOS, (0, 1)).imagify() for i in range(2)]
         self.turnshowing = self.turnshowlist[0]
 
         self.ingameretrybutton = gui.ButtonObj(screen, root, constants.INGAMERETRYBUTTONFILE, constants.INGAMERETRYBUTTONPOS, (0, 1), constants.S, True)
@@ -674,17 +681,17 @@ class Game:
 
         self.mask = gui.ImageObj(screen, root, constants.MASKFILE, (0, 0), size=constants.SCREENSIZE, alpha=True)
         self.winblock = gui.ImageObj(screen, root, constants.WINBLOCKFILE, constants.WINBLOCKPOS, (0, 0), constants.S, True)
-        self.wintext = [gui.TextImagifier(screen, root, font_big, constants.WINTEXT[i], (0, 0, 0), constants.WINTEXTPOS, (0, 1)).imagify() for i in range(2)]
+        self.wintext = [gui.TextImagifier(screen, root, self.font_big, constants.WINTEXT[i], (0, 0, 0), constants.WINTEXTPOS, (0, 1)).imagify() for i in range(2)]
         self.winretrybutton = gui.ButtonObj(screen, root, constants.WINRETRYBUTTONFILE, constants.WINRETRYBUTTONPOS, (0, 0), constants.S, True)
         self.winexitbutton = gui.ButtonObj(screen, root, constants.WINEXITBUTTONFILE, constants.WINEXITBUTTONPOS, (0, 0), constants.S, True)
 
         self.sureblock = gui.ImageObj(screen, root, constants.WINBLOCKFILE, constants.WINBLOCKPOS, (0, 0), constants.S, True)
-        self.suretext = gui.TextImagifier(screen, root, font_big, constants.SURETEXT, (0, 0, 0), constants.WINTEXTPOS, (0, 1)).imagify()
+        self.suretext = gui.TextImagifier(screen, root, self.font_big, constants.SURETEXT, (0, 0, 0), constants.WINTEXTPOS, (0, 1)).imagify()
         self.suresurebutton = gui.ButtonObj(screen, root, constants.SURESUREBUTTONFILE, constants.WINRETRYBUTTONPOS, (0, 0), constants.S, True)
         self.surecancelbutton = gui.ButtonObj(screen, root, constants.SURECANCELBUTTONFILE, constants.WINEXITBUTTONPOS, (0, 0), constants.S, True)
 
         self.chooseblock = gui.ImageObj(screen, root, constants.CHOOSEBLOCKFILE, constants.CHOOSEBLOCKPOS, (0, 0), constants.S, True)
-        self.choosetext = gui.TextImagifier(screen, root, font_big, constants.CHOOSETEXT, (0, 0, 0), constants.CHOOSETEXTPOS, (0, 1)).imagify()
+        self.choosetext = gui.TextImagifier(screen, root, self.font_big, constants.CHOOSETEXT, (0, 0, 0), constants.CHOOSETEXTPOS, (0, 1)).imagify()
         self.choosesurebutton = gui.ButtonObj(screen, root, constants.SURESUREBUTTONFILE, constants.CHOOSEYESBUTTONPOS, (0, 0), constants.S, True)
         self.choosecancelbutton = gui.ButtonObj(screen, root, constants.SURECANCELBUTTONFILE, constants.CHOOSENOBUTTONPOS, (0, 0), constants.S, True)
 
@@ -735,6 +742,9 @@ class Game:
 
         def func_expr_builder(func):
             return MathExpression({"operator":constants.Calculator.FUNCTION, "data": [func]})
+        
+        def func_bool_builder(func):
+            return BoolExpression({"operator":constants.BoolJudgement.SPECIAL, "data": [func], "type": constants.BoolJudgement.Special.FUNCTION})
 
         def damage(damagev, target, **kw):
             ed = {"type":constants.EffectType.DAMAGE, "damage": damagev, "target":target, **kw}
@@ -742,12 +752,22 @@ class Game:
         
         def target(targettype, hardmode=True, **kw):
             return Target({"type": targettype, "hardmode": hardmode, **kw})
+        
+        def conc_target(given_target, **kw):
+            return given_target.concretize(self, **kw)
+        
+        def get_target(targettype, hardmode=True, **kw):
+            return conc_target(target(targettype, hardmode, **kw), **kw)
 
         self.api = el.Api(EffectSet=EffectSet, 
                           Effect=Effect, 
                           Target=Target, 
+                          Buff=Buff, 
                           target=target,
+                          conc_target=conc_target, 
+                          get_target=get_target, 
                           math_expr=func_expr_builder, 
+                          bool_expr=func_bool_builder, 
                           c=constants, 
                           game=self, 
                           raw_exec=raw_exec,
@@ -1003,9 +1023,9 @@ class Game:
         self.executeeffects(sk.effects, self.chose, **kw)
         if sk.skilltype == constants.SkillType.ACTIVEAGGRESSIVE:
             self.attacktime -= 1
-            self.skilltime -= 1
+            self.skilltime -= sk.cost
         elif sk.skilltype == constants.SkillType.ACTIVENONAGGRESSIVE:
-            self.skilltime -= 1
+            self.skilltime -= sk.cost
         if not sk.infinite:
             sk.usetime -= 1
         char.update()
@@ -1116,7 +1136,7 @@ class Game:
         elif effect.effecttype == constants.EffectType.BUFF:
             target = effect.target.concretize(self, charself=charself, **kw)
             for a in target:
-                self.charlist[a].buffs.append(effect.buff.copy())
+                self.charlist[a].append_buff(effect.buff.copy())
         elif effect.effecttype == constants.EffectType.BUFFCLEAR:
             target = effect.target.concretize(self, charself=charself, **kw)
             for a in target:
@@ -1490,6 +1510,8 @@ class Game:
                     if tuple(map(lambda x:self.equiplist[x].usetime, [eqseri, eqseri+1])) == (0, 0):
                         return True
                     return False
+                if cal.specialid == constants.BoolJudgement.Special.FUNCTION:
+                    return dat[0](**vars)
                 raise ValueError(f'Invalid special type:{cal.specialid}')
             raise ValueError(f'Invalid operator:{cal.operator}')
         if type(cal) == str:
@@ -1553,6 +1575,6 @@ with open(constants.BUFFPATH, encoding='utf-8') as bpf:
     bp = json.load(bpf, object_hook=custom_decoder)
     bufflist = bp
 
-debug_showallbuff = False
+debug_showallbuff = True
 debug_showallmark = False
 debug_print = True

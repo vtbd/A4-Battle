@@ -1,0 +1,20 @@
+{
+    "name": "wyh 异色球鞋", 
+    "description": "本回合内切换角色次数、技能次数、使用道具次数+1",
+    "effect": [{
+        "__effect__": true, 
+        "type": 4, 
+        "variableid": {"__variableid__": true, "type": "5"},
+        "increment": 1
+    }, {
+        "__effect__": true, 
+        "type": 4, 
+        "variableid": {"__variableid__": true, "type": "4"},
+        "increment": 1
+    }, {
+        "__effect__": true, 
+        "type": 4, 
+        "variableid": {"__variableid__": true, "type": "10"},
+        "increment": 1
+    }]
+}

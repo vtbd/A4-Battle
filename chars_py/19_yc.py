@@ -1,3 +1,4 @@
+__version__ = "0"
 def main(api):
     r = {}
     r['__type__'] = "char"

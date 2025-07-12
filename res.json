@@ -6,7 +6,7 @@
         "3": "chars/3_wm.json",
         "4": "chars/4_zhh.json",
         "5": "chars/5_felix.json",
-        "6": "chars/6_zyf.json", 
+        "6": "chars_py/6_zyf.py", 
         "7": "chars/7_wyh_2.json", 
         "8": "chars/8_wjt.json", 
         "9": "chars/9_yq.json", 
@@ -23,8 +23,7 @@
         "20": "chars_py/20_wyl_2.py", 
         "p1": "chars/p1_zzm.json", 
         "p2": "chars/p2_opf.json", 
-        "t1": "chars/test_1.json", 
-        "t2": "chars_py/test_2.py"
+        "t1": "chars/test_1.json"
     },
     "charavatarfile": {
         "0": "res/null.png",
@@ -81,7 +80,8 @@
         "26": "equipment/26_tby.json", 
         "27": "equipment/27_ad_calcium_milk.json", 
         "29": "equipment/29_river_picture_luo_book.json", 
-        "30": "equipment/30_little_turtle.json"
+        "30": "equipment/30_little_turtle.json", 
+        "31": "equipment/31_wyh_heterochrome_sneakers.json"
     },
     "equipmentpicturefile": {
         "1": "res/equipment/1_ladybug_correction_tape.png",
@@ -112,7 +112,8 @@
         "26": "res/equipment/26_tby.png", 
         "27": "res/equipment/27_ad_calcium_milk.png", 
         "29": "res/equipment/29_river_picture_luo_book.png", 
-        "30": "res/equipment/30_little_turtle.png"
+        "30": "res/equipment/30_little_turtle.png", 
+        "31": "res/equipment/31_wyh_heterochrome_sneakers.png"
     }, 
     "scenefile": {
         "default": "scene/0.json",

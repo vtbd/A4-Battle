@@ -41,6 +41,8 @@ def skill_dict_builder(s:dict, *, assign: Callable, **kw):
     assign('type', 'skill_type', c.SkillType.PASSIVE)
     assign('infinite', 'infinite', False)
     assign('choose', 'choose', False)
+    assign('cost', 'cost', NotImplemented)
+    assign('usecondition', 'usecondition', NotImplemented)
     assign('choosearea', 'choosearea', NotImplemented)
     assign('choosecondition', 'choosecondition', NotImplemented)
     assign('choosecount', 'choosecount', NotImplemented)

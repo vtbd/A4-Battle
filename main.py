@@ -21,7 +21,8 @@ bg = gui.ImageObj(screen, root, 'res/background.png', (0, 0), size=size)
 
 
 font_big = pygame.font.Font('res/zcool.ttf', int(round(48*constants.S)))
-font_small = pygame.font.Font('res/zcool.ttf', int(round(32*constants.S)))
+font_charname = pygame.font.Font('res/zcool.ttf', int(round(48*constants.S)))
+font_small = pygame.font.Font('res/SourceHanSansCN-Light.otf', int(round(28*constants.S)))
 
 
 clock = pygame.time.Clock()
@@ -45,7 +46,7 @@ def switch_interface(intf):
 
 def newgame():
     global game
-    game = battle.Game(screen, root, font_big, font_small)
+    game = battle.Game(screen, root, {"big": font_big, "small": font_small, "name": font_charname})
     return game
 
 def main_interface_update():

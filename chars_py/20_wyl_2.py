@@ -1,3 +1,4 @@
+__version__ = "0"
 def main(api):
     r = {}
     r['__type__'] = "char"
@@ -8,17 +9,23 @@ def main(api):
 
     s1 = {}
     s1['skill_name'] = '龙的传人'
-    s1['skill_description'] = '失去 2 点生命，获得 2 个标记「权威」' 
+    s1['skill_description'] = '失去 2 点生命，获得 2 个标记「权威」。本技能每回合只能使用一次，但使用本技能不消耗技能使用次数。' 
     s1['skill_type'] = api.c.SkillType.ACTIVENONAGGRESSIVE
     s1['infinite'] = True
+    s1['cost'] = 0
+    def usec(**kw):
+        return api.self.marks.get("__wyl_II_s1_usage__", 0) == 0
+    s1['usecondition'] = api.bool_expr(usec)
     def s1f(**kw):
+        api.self.marks['__wyl_II_s1_usage__'] = 1
         api.self.health -= 2
         api.self.marks['power'] = api.self.marks.get('power', 0) + 2
     s1['effect'] = {"func": s1f}
 
     s2 = {}
     s2['skill_name'] = '且听龙吟'
-    s2['skill_description'] = '选择不超过当前自身「权威」个数的任意名角色，失去等量「权威」并使选择的角色都获得 1 枚「权威」。使敌方角色获得「权威」时，对其造成 5 点伤害，对自己造成 2 点伤害；使己方其他角色获得「权威」时，使其回复 5 点生命并失去一个随机负面 buff' 
+    #s2['skill_description'] = '选择不超过当前自身「权威」个数的任意名角色，失去等量「权威」并使选择的角色都获得 1 枚「权威」。使敌方角色获得「权威」时，对其造成 5 点伤害，对自己造成 2 点伤害；使己方其他角色获得「权威」时，使其回复 5 点生命并失去一个随机负面 buff' 
+    s2['skill_description'] = '选止权人失等权选子得1权且对敌5伤对自2伤对己他其回5生失一遌疢' 
     s2['skill_type'] = api.c.SkillType.ACTIVEAGGRESSIVE
     s2['infinite'] = True
     s2['choose'] = True
@@ -74,5 +81,23 @@ def main(api):
     s3['effect'] = {"func": s3f}
 
     r['skill'] = [s1, s2, s3]
+
+    def init(**kw):
+        def bc(**kw):
+            api.self.marks['__wyl_II_s1_usage__'] = 0
+        buff = api.Buff({
+            "name": "__wyl_1_usage_checker__", 
+            "lasttime": -1, 
+            "usetime": -1, 
+            "type": api.c.BuffType.EFFECT, 
+            "positivity": 3,
+            "buffdata": {
+                "eventtime": api.c.EventTime.TURNSTART, 
+                "effects":[api.Effect({"type":0, "func":bc})]
+            }
+        })
+        api.self.append_buff(buff)
+
+    r['inits'] = {"func": init}
 
     return r

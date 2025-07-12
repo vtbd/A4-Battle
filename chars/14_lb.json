@@ -7,7 +7,7 @@
         {
             "__skill__": true,
             "name": "黄金左脚", 
-            "description": "猛踏（二声）对方未出战角色，每人造成 8 点伤害", 
+            "description": "猛踏（tá）对方未出战角色，每人造成 8 点伤害", 
             "type": 1, 
             "effect": [{
                 "__effect__": true, 
